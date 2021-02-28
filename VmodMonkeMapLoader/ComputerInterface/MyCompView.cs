@@ -31,23 +31,23 @@ namespace VmodMonkeMapLoader.ComputerInterface
                     break;
 
                 case EKeyboardKey.Enter:
-                    MapLoader.LoadMap(new MapInfo
-                    {
-                        FilePath =
-                            @"C:\gry\Steam\steamapps\common\Gorilla Tag\BepInEx\plugins\VmodMonkeMapLoader\CustomMaps\testmap6.zip",
-                        PackageInfo = new MapPackageInfo
-                        {
-                            PcFileName = @"maptest6",
-                            Descriptor = new MapDescriptor
-                            {
-                                Name = "Test map 6"
-                            },
-                            Config = new MapConfig
-                            {
-                                RootObjectName = "Origin"
-                            }
-                        }
-                    }, b => Text = "SUCCESS!!!!!!!!");
+                    //MapLoader.LoadMap(new MapInfo
+                    //{
+                    //    FilePath =
+                    //        @"C:\gry\Steam\steamapps\common\Gorilla Tag\BepInEx\plugins\VmodMonkeMapLoader\CustomMaps\gkz_beginnerblock.zip",
+                    //    PackageInfo = new MapPackageInfo
+                    //    {
+                    //        PcFileName = @"gkz_beginnerblock",
+                    //        Descriptor = new MapDescriptor
+                    //        {
+                    //            Name = "Test map 6"
+                    //        },
+                    //        Config = new MapConfig
+                    //        {
+                    //            RootObjectName = "map.prefab"
+                    //        }
+                    //    }
+                    //}, b => Text = "SUCCESS!!!!!!!!");
                     break;
             }
         }

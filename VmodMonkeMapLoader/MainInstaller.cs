@@ -25,6 +25,14 @@ namespace VmodMonkeMapLoader
             
             Container.Bind<MapLoaderObject>().FromInstance(mapLoaderGameObject).AsSingle();
             Container.Bind<MapLoader>().FromInstance(mapLoader).AsSingle();
+            
+            Utilla.Events.RoomJoined += OnRoomJoined;
+
+            //Task.Factory.StartNew(() =>
+            //{
+            //    Task.Delay(5000).Wait();
+            //    Utilla.Utils.RoomUtils.JoinPrivateLobby();
+            //});
 
             //Task.Factory.StartNew(() =>
             //{
@@ -56,6 +64,15 @@ namespace VmodMonkeMapLoader
             // since MyModCommandManager inherits the IInitializable interface
             // the class gets instantiated even if no other class needs it
             Container.BindInterfacesAndSelfTo<CompManager>().AsSingle();
+        }
+
+        private void OnRoomJoined(bool isPrivate)
+        {
+            if (!isPrivate)
+            {
+                //PhotonNetworkController.instance.
+                Utilla.Utils.RoomUtils.JoinPrivateLobby();
+            }
         }
     }
 }

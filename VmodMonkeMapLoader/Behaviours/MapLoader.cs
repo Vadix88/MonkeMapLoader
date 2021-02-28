@@ -244,7 +244,7 @@ namespace VmodMonkeMapLoader.Behaviours
             {
                 if (collider.isTrigger)
                 {
-                    child.layer = Constants.MaskLayerHandTrigger;
+                    child.layer = Constants.MaskLayerGorillaTrigger;
                     break;
                 }
             }

@@ -45,6 +45,9 @@
     <Reference Include="UnityEngine.PhysicsModule">
       <HintPath>Libs\UnityEngine.PhysicsModule.dll</HintPath>
     </Reference>
+    <Reference Include="Utilla">
+      <HintPath>Libs\Utilla.dll</HintPath>
+    </Reference>
     <Reference Include="Zenject">
       <HintPath>Libs\Zenject.dll</HintPath>
     </Reference>

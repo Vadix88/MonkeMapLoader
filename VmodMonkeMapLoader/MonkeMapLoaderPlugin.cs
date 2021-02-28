@@ -2,6 +2,7 @@
 using Bepinject;
 using System.Collections;
 using UnityEngine;
+using Utilla;
 using VmodMonkeMapLoader.Behaviours;
 using VmodMonkeMapLoader.Helpers;
 using VmodMonkeMapLoader.Models;
@@ -9,8 +10,9 @@ using VmodMonkeMapLoader.Patches;
 
 namespace VmodMonkeMapLoader
 {
-    [BepInPlugin("org.vadix.gorillatag.maploader", "VmodMonkeMapLoader", "1.0.0")]
-    //add dependencies
+    [BepInPlugin("org.vadix.gorillatag.maploader", "Vmod Monke Map Loader", "1.0.0")]
+    [BepInDependency("tonimacaroni.computerinterface")]
+    [BepInDependency("org.legoandmars.gorillatag.utilla")]
     public class MonkeMapLoaderPlugin : BaseUnityPlugin
     {
         void Awake()

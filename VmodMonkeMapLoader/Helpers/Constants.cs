@@ -10,6 +10,7 @@ namespace VmodMonkeMapLoader.Helpers
         public const string ObjectNameTreeTeleportTrigger = "TreeTeleportTrigger";
         public const string ObjectNameTreeTeleportTargetLegacyStart = "Start";
         public const string ObjectNameTreeTeleportTargetLegacyEnd = "End";
+        public const int MaskLayerGorillaTrigger = 15;
         public const int MaskLayerHandTrigger = 18;
         public const string MapRootNameOrigin = "origin";
         public const string MapRootNameLegacy = "map.prefab";
