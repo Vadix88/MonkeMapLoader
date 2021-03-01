@@ -30,6 +30,9 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>Libs\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="PhotonUnityNetworking">
+      <HintPath>Libs\PhotonUnityNetworking.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>Libs\UnityEngine.dll</HintPath>
     </Reference>

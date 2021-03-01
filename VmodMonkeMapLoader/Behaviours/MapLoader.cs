@@ -40,7 +40,7 @@ namespace VmodMonkeMapLoader.Behaviours
 
             _isLoading = true;
 
-            Logger.LogText("Loading map: " + mapInfo.FilePath + "\\" + mapInfo.PackageInfo.PcFileName);
+            Logger.LogText("Loading map: " + mapInfo.FilePath + " -> " + mapInfo.PackageInfo.Descriptor.Name);
 
             var bundleDataStream = MapFileUtils.GetMapDataStreamFromZip(mapInfo);
             if (bundleDataStream == null)
@@ -73,7 +73,7 @@ namespace VmodMonkeMapLoader.Behaviours
 
             _globalData.IsLegacyMap = false;
 
-            var assetName = assetNames.FirstOrDefault(n => n.ToLowerInvariant().Contains(mapInfo.PackageInfo.Descriptor.Name.ToLowerInvariant()));
+            var assetName = assetNames.FirstOrDefault(n => n.ToLowerInvariant().Contains(mapInfo.PackageInfo.Config.RootObjectName.ToLowerInvariant()));
 
             if (string.IsNullOrWhiteSpace(assetName))
             {
