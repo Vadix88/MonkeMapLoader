@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using ComputerInterface.Interfaces;
+using Photon.Pun;
 using UnityEngine;
 using VmodMonkeMapLoader.Behaviours;
 using VmodMonkeMapLoader.ComputerInterface;
@@ -56,21 +57,28 @@ namespace VmodMonkeMapLoader
             //    }, b => Logger.LogText("_____SUCCESS!!!!!!!!"));
             //});
 
-            Container.Bind<IComputerModEntry>().To<MyEntry>().AsSingle();
-
-            // I just bind another class here to demonstrate adding a command
-            // of course you can request the CommandHandler in any of your types as long as you bind it
-            // notice how I use BindInterfacesAndSelfTo
-            // since MyModCommandManager inherits the IInitializable interface
-            // the class gets instantiated even if no other class needs it
-            Container.BindInterfacesAndSelfTo<CompManager>().AsSingle();
+            Container.Bind<IComputerModEntry>().To<MapListEntry>().AsSingle();
+            Container.BindInterfacesAndSelfTo<CommandManager>().AsSingle();
         }
 
         private void OnRoomJoined(bool isPrivate)
         {
             if (!isPrivate)
             {
-                //PhotonNetworkController.instance.
+                if (PhotonNetwork.InRoom)
+                {
+                    PhotonNetworkController.instance.attemptingToConnect = false;
+                    PhotonNetworkController.instance.currentGorillaParent
+                        .GetComponentInChildren<GorillaScoreboardSpawner>().OnLeftRoom();
+                    foreach (SkinnedMeshRenderer skinnedMeshRenderer in PhotonNetworkController.instance.offlineVRRig)
+                    {
+                        if ((UnityEngine.Object)skinnedMeshRenderer != (UnityEngine.Object)null)
+                            skinnedMeshRenderer.enabled = true;
+                    }
+
+                    PhotonNetwork.Disconnect();
+                    PhotonNetwork.ConnectUsingSettings();
+                }
                 Utilla.Utils.RoomUtils.JoinPrivateLobby();
             }
         }
