@@ -69,6 +69,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
                 case EKeyboardKey.Enter:
                     Text = "Loaded: " + _mapList[_mapSelection].PackageInfo.Descriptor.Name;
                     _isError = true;
+                    MapLoader.LoadMap(_mapList[_mapSelection], b => 
                     //MapLoader.LoadMap(new MapInfo
                     //{
                     //    FilePath =
@@ -85,7 +86,8 @@ namespace VmodMonkeMapLoader.ComputerInterface
                     //            RootObjectName = "origin"
                     //        }
                     //    }
-                    //}, b => Text = "SUCCESS!!!!!!!!");
+                    //}, b =>
+                    Text = "SUCCESS!!!!!!!!");
                     break;
 
                 case EKeyboardKey.Left:
@@ -153,7 +155,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
                 var mapName = _mapList[i].PackageInfo.Descriptor.Name.Length > 31
                     ? _mapList[i].PackageInfo.Descriptor.Name.Substring(0, 30) + ".."
                     : _mapList[i].PackageInfo.Descriptor.Name;
-                mapText.AppendLine($"{(line == _selectedRow ? "<color=#3fbe05>>" : "  ")} {mapName.ToUpper()}{(line == _selectedRow ? "</color>" : "")}");
+                mapText.AppendLine($"{(line == _selectedRow ? "<color=#3fbe05>>" : "  ")} {mapName}{(line == _selectedRow ? "</color>" : "")}");
                 line++;
                 _mapSelection = startIndex + _selectedRow;
             }

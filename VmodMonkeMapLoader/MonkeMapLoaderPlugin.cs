@@ -10,9 +10,9 @@ using VmodMonkeMapLoader.Patches;
 
 namespace VmodMonkeMapLoader
 {
-    [BepInPlugin("org.vadix.gorillatag.maploader", "Vmod Monke Map Loader", "1.0.0")]
+    [BepInPlugin("vadix.gorillatag.maploader", "Vmod Monke Map Loader", "1.0.0")]
     [BepInDependency("tonimacaroni.computerinterface")]
-    [BepInDependency("org.legoandmars.gorillatag.utilla")]
+    [BepInDependency("org.legoandmars.gorillatag.utilla", "1.1.0")]
     public class MonkeMapLoaderPlugin : BaseUnityPlugin
     {
         void Awake()
