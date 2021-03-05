@@ -27,7 +27,7 @@ namespace VmodMonkeMapLoader
             Container.Bind<MapLoaderObject>().FromInstance(mapLoaderGameObject).AsSingle();
             Container.Bind<MapLoader>().FromInstance(mapLoader).AsSingle();
             
-            Utilla.Events.RoomJoined += OnRoomJoined;
+            //Utilla.Events.RoomJoined += OnRoomJoined;
 
             //Task.Factory.StartNew(() =>
             //{

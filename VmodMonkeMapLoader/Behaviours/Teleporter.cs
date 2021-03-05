@@ -1,27 +1,31 @@
-﻿using System;
-using GorillaLocomotion;
-using System.Collections;
+﻿using ModestTree;
+using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Text;
 using UnityEngine;
-using VmodMonkeMapLoader.Helpers;
-using VmodMonkeMapLoader.Models;
-using VmodMonkeMapLoader.Patches;
 using Logger = VmodMonkeMapLoader.Helpers.Logger;
+using System.Collections;
+using System.Linq;
+using VmodMonkeMapLoader.Patches;
 using Random = UnityEngine.Random;
+using BepInEx;
 
 namespace VmodMonkeMapLoader.Behaviours
 {
-    public class PlayerTeleporter : MonoBehaviour
+    [System.Serializable]
+    public class Teleporter : MonoBehaviour
     {
-        public List<TeleportTarget> Destinations = new List<TeleportTarget>();
+        public List<Transform> TeleportPoints;
+        public bool TagOnTeleport = false;
         public float TeleportDelay = 0f;
 
+        [HideInInspector]
+        public bool JoinGameOnTeleport = false;
+
         private bool _isTeleporting = false;
-        
         void OnTriggerEnter(Collider collider)
         {
-            if (_isTeleporting || !Destinations.Any())
+            if (_isTeleporting || TeleportPoints == null || !TeleportPoints.HasAtLeast(0))
                 return;
 
             if (collider.GetComponentInParent<GorillaTriggerColliderHandIndicator>() == null)
@@ -37,16 +41,18 @@ namespace VmodMonkeMapLoader.Behaviours
         {
             yield return new WaitForSeconds(time);
 
-            if (Destinations == null || !Destinations.Any())
+            if (TeleportPoints == null || !TeleportPoints.HasAtLeast(0))
                 yield break;
 
-            var destination = Destinations.Count > 1
-                ? Destinations[Random.Range(0, Destinations.Count)]
-                : Destinations[0];
+            var destination = TeleportPoints.Count > 1
+                ? TeleportPoints[Random.Range(0, TeleportPoints.Count)]
+                : TeleportPoints[0];
 
             Logger.LogText("Teleporting");
 
             PlayerTeleportPatch.TeleportPlayer(destination);
+            if (TagOnTeleport) TagZone.TagLocalPlayer();
+            if (JoinGameOnTeleport && !MapLoader.LobbyName.IsNullOrWhiteSpace()) Utilla.Utils.RoomUtils.JoinModdedLobby(MapLoader.LobbyName);
             _isTeleporting = false;
         }
     }

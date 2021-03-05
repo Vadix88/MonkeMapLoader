@@ -36,12 +36,10 @@ namespace VmodMonkeMapLoader.Models
 
         public GameObject BigTreeTeleportToMap;
 
-        public GameObject TeleportTriggerBackToBigTree;
-
-        public GameObject TeleportPrefab;
+        public GameObject BigTreePoint;
 
         public GameObject FallEmergencyTeleport;
-        
+
         public bool IsLegacyMap = false;
     }
 }

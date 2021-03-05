@@ -20,7 +20,7 @@ namespace VmodMonkeMapLoader.Helpers
                 {
                     Directory.CreateDirectory(dirPath);
                 }
-                var files = Directory.GetFiles(dirPath, "*.zip", SearchOption.TopDirectoryOnly);
+                var files = Directory.GetFiles(dirPath, "*.gmap", SearchOption.TopDirectoryOnly);
                 var mapPackagesInfo = files
                     .Select(f => new MapInfo
                     {
