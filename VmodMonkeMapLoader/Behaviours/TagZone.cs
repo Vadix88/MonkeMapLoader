@@ -21,6 +21,7 @@ namespace VmodMonkeMapLoader.Behaviours
                 return;
 
             canBeTagged = false;
+            TagLocalPlayer();
             StartCoroutine(TagCoroutine(1f));
         }
 
@@ -35,11 +36,13 @@ namespace VmodMonkeMapLoader.Behaviours
         {
             if (PhotonNetwork.InRoom)
             {
-                PhotonView.Get(GorillaTagManager.instance.GetComponent<GorillaGameManager>()).RPC("ReportTagRPC", RpcTarget.MasterClient, new object[]
+                foreach (var ply in PhotonNetwork.PlayerList)
                 {
-                    PhotonNetwork.LocalPlayer,
-                    PhotonNetwork.LocalPlayer
-                });
+                    PhotonView.Get(GorillaTagManager.instance.GetComponent<GorillaGameManager>()).RPC("ReportTagRPC", RpcTarget.MasterClient, new object[]{
+                        PhotonNetwork.LocalPlayer,
+                        ply
+                    });
+                }
             }
         }
     }
