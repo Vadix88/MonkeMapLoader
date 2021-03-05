@@ -39,8 +39,8 @@ namespace VmodMonkeMapLoader.Behaviours
                 foreach (var ply in PhotonNetwork.PlayerList)
                 {
                     PhotonView.Get(GorillaTagManager.instance.GetComponent<GorillaGameManager>()).RPC("ReportTagRPC", RpcTarget.MasterClient, new object[]{
-                        PhotonNetwork.LocalPlayer,
-                        ply
+                        ply,
+                        PhotonNetwork.LocalPlayer
                     });
                 }
             }

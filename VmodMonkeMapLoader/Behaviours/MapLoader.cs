@@ -137,6 +137,15 @@ namespace VmodMonkeMapLoader.Behaviours
 
                 _globalData.BigTreeTeleportToMap.GetComponent<Teleporter>().TeleportPoints = _mapInstance.transform.Find("SpawnPointContainer").GetComponentsInChildren<Transform>().ToList();
 
+                if(_mapInstance.transform.Find("FakeSkybox") != null)
+                {
+                    GameObject sky = GameObject.Find("Level/sky");
+                    if(sky != null)
+                    {
+                        _mapInstance.transform.Find("FakeSkybox").GetComponent<Renderer>().material = sky.GetComponent<Renderer>().material;
+                    }
+                }
+
             });
         }
 

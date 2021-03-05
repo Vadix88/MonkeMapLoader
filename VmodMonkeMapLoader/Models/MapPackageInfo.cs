@@ -11,7 +11,7 @@ namespace VmodMonkeMapLoader.Models
         public string AndroidFileName { get; set; }
 
         [JsonProperty(PropertyName = "descriptor")]
-        public MapDescriptor Descriptor { get; set; }
+        public Descriptor Descriptor { get; set; }
 
         [JsonProperty(PropertyName = "config")]
         public MapConfig Config { get; set; }
