@@ -9,9 +9,15 @@ namespace VmodMonkeMapLoader.Behaviours
     public class ObjectTrigger : MonoBehaviour
     {
         public GameObject ObjectToTrigger;
+        public bool DisableObject = false;
         public bool OnlyTriggerOnce = false;
 
         private bool triggered = false;
+        void Start()
+        {
+            if (!DisableObject) ObjectToTrigger.SetActive(false);
+            else ObjectToTrigger.SetActive(true);
+        }
         void OnTriggerEnter(Collider collider)
         {
             if (triggered && OnlyTriggerOnce)
@@ -20,8 +26,9 @@ namespace VmodMonkeMapLoader.Behaviours
             if (collider.GetComponentInParent<GorillaTriggerColliderHandIndicator>() == null)
                 return;
 
-            ObjectToTrigger.SetActive(false);
-            ObjectToTrigger.SetActive(true);
+            ObjectToTrigger.SetActive(DisableObject);
+            ObjectToTrigger.SetActive(!DisableObject);
+
             triggered = true;
         }
     }
