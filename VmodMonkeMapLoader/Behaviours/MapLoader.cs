@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BepInEx;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,13 +18,32 @@ namespace VmodMonkeMapLoader.Behaviours
         private static GameObject _mapInstance;
         private static bool _isLoading;
         private static GlobalData _globalData;
-        public static string LobbyName;
+        private static MapDescriptor _descriptor;
+
+        public static string _lobbyName;
 
         private void Awake()
         {
             InitializeGlobalData();
         }
         
+        public static void JoinGame()
+        {
+            if (!_lobbyName.IsNullOrWhiteSpace())
+            {
+                Utilla.Utils.RoomUtils.JoinModdedLobby(_lobbyName);
+                if(_descriptor != null && _descriptor.GravitySpeed != -9.8f)
+                {
+                    Physics.gravity = new Vector3(0, _descriptor.GravitySpeed, 0);
+                }
+            }
+        }
+
+        public static void ResetMapProperties()
+        {
+            if (Physics.gravity.y != -9.8f) Physics.gravity = new Vector3(0, -9.8f, 0);
+        }
+
         public void LoadMap(MapInfo mapInfo, Action<bool> isSuccess)
         {
             StartCoroutine(LoadMapFromPackageFileAsync(mapInfo, b =>
@@ -90,7 +110,7 @@ namespace VmodMonkeMapLoader.Behaviours
             }
 
             Logger.LogText("Map asset loaded: " + map.name);
-            LobbyName = mapInfo.PackageInfo.Descriptor.Author + "_" + mapInfo.PackageInfo.Descriptor.Name;
+            _lobbyName = mapInfo.PackageInfo.Descriptor.Author + "_" + mapInfo.PackageInfo.Descriptor.Name;
 
             Exception ex = null;
 
@@ -137,15 +157,26 @@ namespace VmodMonkeMapLoader.Behaviours
 
                 _globalData.BigTreeTeleportToMap.GetComponent<Teleporter>().TeleportPoints = _mapInstance.transform.Find("SpawnPointContainer").GetComponentsInChildren<Transform>().ToList();
 
-                if(_mapInstance.transform.Find("FakeSkybox") != null)
+                Transform fakeSkybox = _mapInstance.transform.Find("FakeSkybox");
+                if (fakeSkybox != null)
                 {
                     GameObject sky = GameObject.Find("Level/sky");
                     if(sky != null)
                     {
-                        _mapInstance.transform.Find("FakeSkybox").GetComponent<Renderer>().material = sky.GetComponent<Renderer>().material;
+                        fakeSkybox.GetComponent<Renderer>().material = sky.GetComponent<Renderer>().material;
                     }
                 }
 
+                GameObject FallEmergencyTeleport = new GameObject("FallEmergencyTeleport");
+                FallEmergencyTeleport.layer = Constants.MaskLayerHandTrigger;
+                FallEmergencyTeleport.AddComponent<BoxCollider>().isTrigger = true;
+                FallEmergencyTeleport.transform.SetParent(_mapInstance.transform);
+                FallEmergencyTeleport.transform.localScale = new Vector3(2000f, 1f, 2000f);
+                FallEmergencyTeleport.transform.localPosition = new Vector3(0f, -300f, 0f);
+
+                Teleporter emergencyFallTeleporter = FallEmergencyTeleport.AddComponent<Teleporter>();
+                emergencyFallTeleporter.TeleportPoints = _mapInstance.transform.Find("SpawnPointContainer").GetComponentsInChildren<Transform>().ToList();
+                emergencyFallTeleporter.TagOnTeleport = true;
             });
         }
 
@@ -161,7 +192,7 @@ namespace VmodMonkeMapLoader.Behaviours
 
                 Logger.LogText("Processing object: " + child.name);
 
-                FixShader(child);
+                //FixShader(child); <- this crashes for some reason.
 
                 SetupCollisions(child);
 
@@ -176,6 +207,7 @@ namespace VmodMonkeMapLoader.Behaviours
                 if (teleporter.TeleportPoints == null || teleporter.TeleportPoints.Count == 0)
                 {
                     teleporter.TeleportPoints = new List<Transform>() { _globalData.BigTreePoint.transform };
+                    teleporter.GoesToTreehouse = true;
                 }
             }
         }
@@ -220,6 +252,9 @@ namespace VmodMonkeMapLoader.Behaviours
                 {
                     child.layer = Constants.MaskLayerGorillaTrigger;
                     break;
+                }else if(child != null && child.layer == 0)
+                {
+                    child.layer = 9;
                 }
                 if (child.GetComponent<Teleporter>() || child.GetComponent<TagZone>() != null)
                 {
@@ -237,6 +272,8 @@ namespace VmodMonkeMapLoader.Behaviours
 
             _mapInstance = Instantiate(map, _globalData.CustomOrigin + (_globalData.IsLegacyMap ? Constants.LegacyMapOffset : Vector3.zero), Quaternion.identity);
             _mapInstance.transform.position += new Vector3(5000, 0, 5000);
+
+            _descriptor = _mapInstance?.GetComponent<MapDescriptor>();
         }
 
         private void InitializeGlobalData()
@@ -276,7 +313,7 @@ namespace VmodMonkeMapLoader.Behaviours
             _globalData.FallEmergencyTeleport = new GameObject("FallEmergencyTeleport");
             _globalData.FallEmergencyTeleport.layer = Constants.MaskLayerHandTrigger;
             _globalData.FallEmergencyTeleport.AddComponent<BoxCollider>().isTrigger = true;
-            _globalData.FallEmergencyTeleport.transform.localScale = new Vector3(10000f, 1f, 10000f);
+            _globalData.FallEmergencyTeleport.transform.localScale = new Vector3(1000f, 1f, 1000f);
             _globalData.FallEmergencyTeleport.transform.position = _globalData.TreeOrigin + new Vector3(0f, -200f, 0f);
 
             Teleporter emergencyFallTeleporter = _globalData.FallEmergencyTeleport.AddComponent<Teleporter>();

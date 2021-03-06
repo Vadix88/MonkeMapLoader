@@ -6,8 +6,10 @@ using UnityEngine;
 
 namespace VmodMonkeMapLoader.Behaviours
 {
-    public class MakeObjectUnclimbable : MonoBehaviour
+    public class SurfaceClimbSettings : MonoBehaviour
     {
+        public bool Unclimbable = false;
+        public float slipPercentage = 0.03f;
         void Start()
         {
             Surface surface = gameObject.GetComponent<Surface>();
@@ -15,7 +17,14 @@ namespace VmodMonkeMapLoader.Behaviours
             {
                 surface = gameObject.AddComponent<Surface>();
             }
-            surface.slipPercentage = 0;
+            if (Unclimbable)
+            {
+                surface.slipPercentage = 0;
+            }
+            else
+            {
+                surface.slipPercentage = slipPercentage;
+            }
         }
     }
 }

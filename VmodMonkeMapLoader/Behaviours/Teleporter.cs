@@ -22,6 +22,9 @@ namespace VmodMonkeMapLoader.Behaviours
         [HideInInspector]
         public bool JoinGameOnTeleport = false;
 
+        [HideInInspector]
+        public bool GoesToTreehouse = false;
+
         private bool _isTeleporting = false;
         void OnTriggerEnter(Collider collider)
         {
@@ -51,8 +54,11 @@ namespace VmodMonkeMapLoader.Behaviours
             Logger.LogText("Teleporting");
 
             PlayerTeleportPatch.TeleportPlayer(destination);
+
             if (TagOnTeleport) TagZone.TagLocalPlayer();
-            if (JoinGameOnTeleport && !MapLoader.LobbyName.IsNullOrWhiteSpace()) Utilla.Utils.RoomUtils.JoinModdedLobby(MapLoader.LobbyName);
+            if (JoinGameOnTeleport) MapLoader.JoinGame();
+            if (GoesToTreehouse) MapLoader.ResetMapProperties();
+
             _isTeleporting = false;
         }
     }
