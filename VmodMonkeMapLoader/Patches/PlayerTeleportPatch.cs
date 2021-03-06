@@ -11,7 +11,7 @@ namespace VmodMonkeMapLoader.Patches
     internal class PlayerTeleportPatch
     {
         private static bool _isTeleporting = false;
-        private static TeleportTarget _teleportDestination;
+        private static Transform _teleportDestination;
 
         internal static bool Prefix(Player __instance, ref Vector3 ___lastPosition, ref Vector3[] ___velocityHistory, ref Vector3 ___lastHeadPosition, ref Vector3 ___lastLeftHandPosition, ref Vector3 ___lastRightHandPosition, ref Vector3 ___currentVelocity, ref Vector3 ___denormalizedVelocityAverage)
         {
@@ -22,11 +22,13 @@ namespace VmodMonkeMapLoader.Patches
                 {
                     playerRigidBody.velocity = Vector3.zero;
                     playerRigidBody.isKinematic = true;
-                    __instance.transform.position = _teleportDestination.Position;
+                    __instance.transform.position = _teleportDestination.position;
+                    __instance.transform.rotation = _teleportDestination.rotation;
+                    /*
                     __instance.transform.rotation = Quaternion.Euler(__instance.transform.rotation.eulerAngles.x, _teleportDestination.RotationAngle,
-                        __instance.transform.rotation.eulerAngles.z);
+                        __instance.transform.rotation.eulerAngles.z);*/
 
-                    ___lastPosition = _teleportDestination.Position;
+                    ___lastPosition = _teleportDestination.position;
                     ___velocityHistory = new Vector3[__instance.velocityHistorySize];
 
                     ___lastHeadPosition = __instance.headCollider.transform.position;
@@ -48,7 +50,7 @@ namespace VmodMonkeMapLoader.Patches
             return true;
         }
 
-        internal static void TeleportPlayer(TeleportTarget destination)
+        internal static void TeleportPlayer(Transform destination)
         {
             if(_isTeleporting)
                 return;
