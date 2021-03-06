@@ -160,10 +160,11 @@ namespace VmodMonkeMapLoader.Behaviours
                 Transform fakeSkybox = _mapInstance.transform.Find("FakeSkybox");
                 if (fakeSkybox != null)
                 {
-                    GameObject sky = GameObject.Find("Level/sky");
-                    if(sky != null)
+                    Material oldMat = fakeSkybox.GetComponent<Renderer>().material;
+                    if (oldMat.HasProperty("_Tex"))
                     {
-                        fakeSkybox.GetComponent<Renderer>().material = sky.GetComponent<Renderer>().material;
+                        oldMat.SetTexture("_Tex", Resources.Load<Texture2D>("objects/forest/materials/sky"));
+                        oldMat.SetColor("_Color", new Color(1, 1, 1, 1));
                     }
                 }
 
