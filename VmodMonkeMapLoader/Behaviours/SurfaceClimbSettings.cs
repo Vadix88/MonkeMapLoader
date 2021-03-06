@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace VmodMonkeMapLoader.Behaviours
 {
+    [System.Serializable]
     public class SurfaceClimbSettings : MonoBehaviour
     {
         public bool Unclimbable = false;

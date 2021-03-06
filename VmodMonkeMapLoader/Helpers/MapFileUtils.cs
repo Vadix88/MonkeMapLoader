@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
+using UnityEngine;
 using VmodMonkeMapLoader.Models;
 
 namespace VmodMonkeMapLoader.Helpers
@@ -75,6 +76,14 @@ namespace VmodMonkeMapLoader.Helpers
                 }
             }
             return mapPackageInfo;
+        }
+
+        public static AssetBundle GetAssetBundleFromZip(string path)
+        {
+            MapInfo mapInfo = new MapInfo();
+            mapInfo.FilePath = path;
+            mapInfo.PackageInfo = GetMapInfoFromZip(path);
+            return AssetBundle.LoadFromStream(GetMapDataStreamFromZip(mapInfo));
         }
     }
 }
