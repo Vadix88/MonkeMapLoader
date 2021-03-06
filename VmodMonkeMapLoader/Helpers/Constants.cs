@@ -9,5 +9,6 @@ namespace VmodMonkeMapLoader.Helpers
         public static readonly Vector3 LegacyMapOffset = new Vector3(0f, 28f, 0f);
         public const string DefaultShaderName = "Standard";
         public const string CustomMapsFolderName = "CustomMaps";
+        public const string MiscObjectsFolderName = "Misc";
     }
 }

@@ -26,6 +26,31 @@ namespace VmodMonkeMapLoader.Behaviours
         {
             InitializeGlobalData();
         }
+
+        public static void ForceRespawn()
+        {
+            Teleporter treeTeleporter = _globalData.BigTreeTeleportToMap.GetComponent<Teleporter>();
+
+            var destination = treeTeleporter.TeleportPoints.Count > 1
+            ? treeTeleporter.TeleportPoints[UnityEngine.Random.Range(0, treeTeleporter.TeleportPoints.Count)]
+            : treeTeleporter.TeleportPoints[0];
+
+            Logger.LogText("Teleporting due to round end");
+
+            Patches.PlayerTeleportPatch.TeleportPlayer(destination);
+            
+        }
+
+        public static void ColorTreeTeleporter(Color color)
+        {
+            foreach(Renderer renderer in _globalData.BigTreeTeleportToMap.GetComponentsInChildren<Renderer>())
+            {
+                foreach(Material mat in renderer.sharedMaterials)
+                {
+                    if (mat.name.Contains("Center")) mat.SetColor("_Color", color);
+                }
+            }
+        }
         
         public static void JoinGame()
         {
@@ -266,19 +291,20 @@ namespace VmodMonkeMapLoader.Behaviours
 
             _globalData.TreeOrigin = GameObject.Find("stool")?.transform.position ?? Vector3.zero;
 
+            // Tree Teleport Stuff
             if (_globalData.BigTreeTeleportToMap != null)
             {
                 Destroy(_globalData.BigTreeTeleportToMap);
                 _globalData.BigTreeTeleportToMap = null;
             }
-            _globalData.BigTreeTeleportToMap = GameObject.CreatePrimitive(PrimitiveType.Cube);
+
+            var dirPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(typeof(MapFileUtils).Assembly.Location), Constants.MiscObjectsFolderName, "Teleporter");
+            AssetBundle bundle = MapFileUtils.GetAssetBundleFromZip(dirPath);
+            _globalData.BigTreeTeleportToMap = Object.Instantiate(bundle.LoadAsset<GameObject>("_Teleporter"));
+
             _globalData.BigTreeTeleportToMap.layer = Constants.MaskLayerHandTrigger;
-            _globalData.BigTreeTeleportToMap.GetComponent<Collider>().isTrigger = true;
-            _globalData.BigTreeTeleportToMap.GetComponent<Renderer>().material.color = Color.green;
-            _globalData.BigTreeTeleportToMap.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
-            _globalData.BigTreeTeleportToMap.transform.position =
-                _globalData.TreeOrigin + new Vector3(0f, 0.5f, -1f);
-            Teleporter treeTeleporter = _globalData.BigTreeTeleportToMap.AddComponent<Teleporter>();
+
+            Teleporter treeTeleporter = _globalData.BigTreeTeleportToMap.GetComponent<Teleporter>();
             treeTeleporter.JoinGameOnTeleport = true;
             treeTeleporter.TeleportPoints = new List<Transform>();
 
@@ -286,6 +312,9 @@ namespace VmodMonkeMapLoader.Behaviours
             _globalData.BigTreePoint.transform.position = new Vector3(-66f, 12.3f, -83f);
             treeTeleporter.TeleportPoints.Add(_globalData.BigTreePoint.transform);
 
+            ColorTreeTeleporter(new Color(0, 1, 0));
+
+            // Emergency Teleport Stuff
             if (_globalData.FallEmergencyTeleport != null)
             {
                 Destroy(_globalData.FallEmergencyTeleport);
