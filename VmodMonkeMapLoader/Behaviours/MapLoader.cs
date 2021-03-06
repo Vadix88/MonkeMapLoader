@@ -160,7 +160,7 @@ namespace VmodMonkeMapLoader.Behaviours
                 Transform fakeSkybox = _mapInstance.transform.Find("FakeSkybox");
                 if (fakeSkybox != null)
                 {
-                    Material oldMat = fakeSkybox.GetComponent<Renderer>().material;
+                    Material oldMat = fakeSkybox.GetComponent<Renderer>().material; 
                     if (oldMat.HasProperty("_Tex"))
                     {
                         oldMat.SetTexture("_Tex", Resources.Load<Texture2D>("objects/forest/materials/sky"));
