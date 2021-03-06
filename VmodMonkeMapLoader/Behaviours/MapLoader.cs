@@ -182,8 +182,6 @@ namespace VmodMonkeMapLoader.Behaviours
 
         private void ProcessChildObjects(GameObject parent)
         {
-            DestroyExistingTeleports();
-
             Logger.LogText("Processing parent: " + parent.name + ", childs: " + parent.transform.childCount);
 
             for (var i = 0; i < parent.transform.childCount; i++)
@@ -209,22 +207,6 @@ namespace VmodMonkeMapLoader.Behaviours
                     teleporter.TeleportPoints = new List<Transform>() { _globalData.BigTreePoint.transform };
                     teleporter.GoesToTreehouse = true;
                 }
-            }
-        }
-
-        private void DestroyExistingTeleports()
-        {
-            if (_globalData.Teleports.Any())
-            {
-                foreach (var teleportList in _globalData.Teleports.Values)
-                {
-                    foreach (var trigger in teleportList.Triggers)
-                    {
-                        Destroy(trigger);
-                    }
-                }
-
-                _globalData.Teleports.Clear();
             }
         }
 
