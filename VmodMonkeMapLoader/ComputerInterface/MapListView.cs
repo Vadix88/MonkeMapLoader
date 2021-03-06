@@ -34,8 +34,8 @@ namespace VmodMonkeMapLoader.ComputerInterface
             if (_isFirstView)
             {
                 Text = "========================================\n"
-                +      "                       Vmod Monke Map Loader\n"
-                +      "                                 by <color=#3fbe05>Vadix</color>\n"
+                +      "                              Monke Map Loader\n"
+                + "                           by <color=#3fbc04>Vadix</color> & <color=#8dc2ef>Bobbie</color>\n"
                 +      "========================================";
             }
             else
@@ -142,7 +142,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
             }
             
             var mapText = new StringBuilder()
-                .Append("<color=#297d03>SELECT MAP WITH ARROWS, LOAD WITH ENTER:</color>")
+                .Append("<color=#009933>SELECT MAP WITH ARROWS, LOAD WITH ENTER:</color>")
                 .AppendLine();
             
             var startIndex = (_currentPage - 1) * _pageSize;
@@ -155,7 +155,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
                 var mapName = _mapList[i].PackageInfo.Descriptor.Name.Length > 31
                     ? _mapList[i].PackageInfo.Descriptor.Name.Substring(0, 30) + ".."
                     : _mapList[i].PackageInfo.Descriptor.Name;
-                mapText.AppendLine($"{(line == _selectedRow ? "<color=#3fbe05>>" : "  ")} {mapName}{(line == _selectedRow ? "</color>" : "")}");
+                mapText.AppendLine($"{(line == _selectedRow ? "<color=#00cc44>>" : "  ")} {mapName}{(line == _selectedRow ? "</color>" : "")}");
                 line++;
                 _mapSelection = startIndex + _selectedRow;
             }
