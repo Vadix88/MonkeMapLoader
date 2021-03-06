@@ -8,13 +8,13 @@ namespace VmodMonkeMapLoader.Helpers
     {
         public static void LogText(string text)
         {
-            var logText = $"{DateTime.Now}: Vmod LOG: {text}";
+            var logText = $"{DateTime.Now}: MML LOG: {text}";
             Debug.Log(logText);
         }
 
         public static void LogException(Exception ex)
         {
-            var logText = $"{DateTime.Now}: Vmod LOG ERROR: {ex}";
+            var logText = $"{DateTime.Now}: MML LOG ERROR: {ex}";
             Debug.Log(logText);
         }
     }

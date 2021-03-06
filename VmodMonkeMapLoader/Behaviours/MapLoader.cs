@@ -92,9 +92,7 @@ namespace VmodMonkeMapLoader.Behaviours
             var assetNames = bundle.GetAllAssetNames();
 
             Logger.LogText("Asset count: " + assetNames.Length + ", assets: " + string.Join(";", assetNames));
-
-            _globalData.IsLegacyMap = false;
-
+            
             Logger.LogText("Asset name: " + mapInfo.PackageInfo.Descriptor.Name);
 
             var mapRequest = bundle.LoadAssetAsync<GameObject>("_Map");
@@ -253,7 +251,7 @@ namespace VmodMonkeMapLoader.Behaviours
 
             Logger.LogText("Instantiate map");
 
-            _mapInstance = Instantiate(map, _globalData.CustomOrigin + (_globalData.IsLegacyMap ? Constants.LegacyMapOffset : Vector3.zero), Quaternion.identity);
+            _mapInstance = Instantiate(map, _globalData.CustomOrigin, Quaternion.identity);
             _mapInstance.transform.position += new Vector3(5000, 0, 5000);
 
             _descriptor = _mapInstance?.GetComponent<MapDescriptor>();
