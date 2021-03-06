@@ -1,5 +1,7 @@
-﻿using System;
+﻿using BepInEx;
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -16,12 +18,32 @@ namespace VmodMonkeMapLoader.Behaviours
         private static GameObject _mapInstance;
         private static bool _isLoading;
         private static GlobalData _globalData;
+        private static MapDescriptor _descriptor;
+
+        public static string _lobbyName;
 
         private void Awake()
         {
             InitializeGlobalData();
         }
         
+        public static void JoinGame()
+        {
+            if (!_lobbyName.IsNullOrWhiteSpace())
+            {
+                Utilla.Utils.RoomUtils.JoinModdedLobby(_lobbyName);
+                if(_descriptor != null && _descriptor.GravitySpeed != -9.8f)
+                {
+                    Physics.gravity = new Vector3(0, _descriptor.GravitySpeed, 0);
+                }
+            }
+        }
+
+        public static void ResetMapProperties()
+        {
+            if (Physics.gravity.y != -9.8f) Physics.gravity = new Vector3(0, -9.8f, 0);
+        }
+
         public void LoadMap(MapInfo mapInfo, Action<bool> isSuccess)
         {
             StartCoroutine(LoadMapFromPackageFileAsync(mapInfo, b =>
@@ -73,30 +95,9 @@ namespace VmodMonkeMapLoader.Behaviours
 
             _globalData.IsLegacyMap = false;
 
-            var assetName = assetNames.FirstOrDefault(n => n.ToLowerInvariant().Contains(mapInfo.PackageInfo.Config.RootObjectName.ToLowerInvariant()));
+            Logger.LogText("Asset name: " + mapInfo.PackageInfo.Descriptor.Name);
 
-            if (string.IsNullOrWhiteSpace(assetName))
-            {
-                assetName = assetNames.FirstOrDefault(n => n.ToLowerInvariant().Contains(Constants.MapRootNameOrigin));
-                if (string.IsNullOrWhiteSpace(assetName))
-                {
-                    _globalData.IsLegacyMap = true;
-                    assetName = assetNames.FirstOrDefault(n => n.ToLowerInvariant().Contains(Constants.MapRootNameLegacy));
-                }
-                if (string.IsNullOrWhiteSpace(assetName))
-                {
-                    Logger.LogText("Map asset not found. Asset names in bundle: " + string.Join("|", assetNames));
-
-                    _isLoading = false;
-                    isSuccess(false);
-                    bundle.Unload(false);
-                    yield break;
-                }
-            }
-
-            Logger.LogText("Asset name: " + assetName);
-
-            var mapRequest = bundle.LoadAssetAsync<GameObject>(assetName);
+            var mapRequest = bundle.LoadAssetAsync<GameObject>("_Map");
             yield return mapRequest;
 
             var map = mapRequest.asset as GameObject;
@@ -109,6 +110,7 @@ namespace VmodMonkeMapLoader.Behaviours
             }
 
             Logger.LogText("Map asset loaded: " + map.name);
+            _lobbyName = mapInfo.PackageInfo.Descriptor.Author + "_" + mapInfo.PackageInfo.Descriptor.Name;
 
             Exception ex = null;
 
@@ -148,21 +150,39 @@ namespace VmodMonkeMapLoader.Behaviours
         private async Task ProcessAndInstantiateMap(GameObject map)
         {
             await Task.Factory.StartNew(() =>
-            {
-                _globalData.BigTreeTeleportToMap.GetComponent<PlayerTeleporter>().Destinations.Clear();
-                _globalData.BigTreeTeleportToMap.GetComponent<PlayerTeleporter>().Destinations
-                    .Add(_globalData.TeleportTargetToBigTree);
-                
+            {                
                 ProcessChildObjects(map);
                 
                 InstantiateMap(map);
+
+                _globalData.BigTreeTeleportToMap.GetComponent<Teleporter>().TeleportPoints = _mapInstance.transform.Find("SpawnPointContainer").GetComponentsInChildren<Transform>().ToList();
+
+                Transform fakeSkybox = _mapInstance.transform.Find("FakeSkybox");
+                if (fakeSkybox != null)
+                {
+                    Material oldMat = fakeSkybox.GetComponent<Renderer>().material; 
+                    if (oldMat.HasProperty("_Tex"))
+                    {
+                        oldMat.SetTexture("_Tex", Resources.Load<Texture2D>("objects/forest/materials/sky"));
+                        oldMat.SetColor("_Color", new Color(1, 1, 1, 1));
+                    }
+                }
+
+                GameObject FallEmergencyTeleport = new GameObject("FallEmergencyTeleport");
+                FallEmergencyTeleport.layer = Constants.MaskLayerHandTrigger;
+                FallEmergencyTeleport.AddComponent<BoxCollider>().isTrigger = true;
+                FallEmergencyTeleport.transform.SetParent(_mapInstance.transform);
+                FallEmergencyTeleport.transform.localScale = new Vector3(2000f, 1f, 2000f);
+                FallEmergencyTeleport.transform.localPosition = new Vector3(0f, -300f, 0f);
+
+                Teleporter emergencyFallTeleporter = FallEmergencyTeleport.AddComponent<Teleporter>();
+                emergencyFallTeleporter.TeleportPoints = _mapInstance.transform.Find("SpawnPointContainer").GetComponentsInChildren<Transform>().ToList();
+                emergencyFallTeleporter.TagOnTeleport = true;
             });
         }
 
         private void ProcessChildObjects(GameObject parent)
         {
-            DestroyExistingTeleports();
-
             Logger.LogText("Processing parent: " + parent.name + ", childs: " + parent.transform.childCount);
 
             for (var i = 0; i < parent.transform.childCount; i++)
@@ -171,54 +191,23 @@ namespace VmodMonkeMapLoader.Behaviours
 
                 Logger.LogText("Processing object: " + child.name);
 
-                FixShader(child);
+                //FixShader(child); <- this crashes for some reason.
 
                 SetupCollisions(child);
-
-                switch (child.name)
-                {
-                    case Constants.ObjectNameTreeTeleportTarget:
-                    case Constants.ObjectNameTreeTeleportTargetLegacyStart:
-                        SetTreeTeleportTargetToMap(child);
-                        break;
-
-                    case Constants.ObjectNameTreeTeleportTrigger:
-                    case Constants.ObjectNameTreeTeleportTargetLegacyEnd:
-                        SetTeleportTriggerBackToTree(child);
-                        break;
-
-                    default:
-                        if (child.name.StartsWith(Constants.ObjectNameTeleportTarget))
-                        {
-                            SetupTeleportTaget(child);
-                        }
-                        else if (child.name.StartsWith(Constants.ObjectNameTeleportTrigger))
-                        {
-                            SetupTeleportTrigger(child);
-                        }
-                        break;
-                }
 
                 if (child.transform.childCount > 0)
                 {
                     ProcessChildObjects(child);
                 }
             }
-        }
 
-        private void DestroyExistingTeleports()
-        {
-            if (_globalData.Teleports.Any())
+            foreach(Teleporter teleporter in parent.gameObject.GetComponentsInChildren<Teleporter>())
             {
-                foreach (var teleportList in _globalData.Teleports.Values)
+                if (teleporter.TeleportPoints == null || teleporter.TeleportPoints.Count == 0)
                 {
-                    foreach (var trigger in teleportList.Triggers)
-                    {
-                        Destroy(trigger);
-                    }
+                    teleporter.TeleportPoints = new List<Transform>() { _globalData.BigTreePoint.transform };
+                    teleporter.GoesToTreehouse = true;
                 }
-
-                _globalData.Teleports.Clear();
             }
         }
 
@@ -246,112 +235,16 @@ namespace VmodMonkeMapLoader.Behaviours
                 {
                     child.layer = Constants.MaskLayerGorillaTrigger;
                     break;
+                }else if(child != null && child.layer == 0)
+                {
+                    child.layer = 9;
+                }
+                if (child.GetComponent<Teleporter>() || child.GetComponent<TagZone>() != null)
+                {
+                    collider.isTrigger = true;
+                    child.layer = Constants.MaskLayerHandTrigger;
                 }
             }
-        }
-
-        private void SetTreeTeleportTargetToMap(GameObject child)
-        {
-            _globalData.BigTreeTeleportToMap.GetComponent<PlayerTeleporter>().Destinations.Clear();
-            _globalData.BigTreeTeleportToMap.GetComponent<PlayerTeleporter>().Destinations
-                .Add(new TeleportTarget
-                {
-                    Position = _globalData.CustomOrigin + child.transform.position,
-                    RotationAngle = child.transform.rotation.eulerAngles.y
-                });
-        }
-
-        private void SetTeleportTriggerBackToTree(GameObject child)
-        {
-            if (_globalData.TeleportTriggerBackToBigTree != null)
-            {
-                Destroy(_globalData.TeleportTriggerBackToBigTree);
-            }
-
-            _globalData.TeleportTriggerBackToBigTree = Instantiate(_globalData.TeleportPrefab,
-                _globalData.CustomOrigin + child.transform.position, child.transform.rotation);
-            _globalData.TeleportTriggerBackToBigTree.GetComponent<PlayerTeleporter>().Destinations
-                .Add(_globalData.TeleportTargetToBigTree);
-        }
-
-        private void SetupTeleportTaget(GameObject child)
-        {
-            var teleportIdIndex = child.name.IndexOf('_') + 1;
-            if (teleportIdIndex > child.name.Length - 1)
-            {
-                Logger.LogText("Teleport ID not valid: " + child.name);
-                return;
-            }
-
-            var teleportId = child.name.Substring(teleportIdIndex);
-
-            Logger.LogText("Teleport ID: " + teleportId);
-
-            if (string.IsNullOrWhiteSpace(teleportId))
-            {
-                Logger.LogText("Teleport ID not valid: " + child.name);
-                return;
-            }
-
-            if (!_globalData.Teleports.ContainsKey(teleportId))
-            {
-                Logger.LogText("Target New info");
-
-                _globalData.Teleports[teleportId] = new TeleportData();
-            }
-
-            var teleportInfoTarget = _globalData.Teleports[teleportId];
-            teleportInfoTarget.Targets.Add(new TeleportTarget
-            {
-                Position = _globalData.CustomOrigin + child.transform.position,
-                RotationAngle = child.transform.rotation.eulerAngles.y
-            });
-
-            if (teleportInfoTarget.Triggers.Any())
-            {
-                Logger.LogText("Setting destination target");
-
-                foreach (var trigger in teleportInfoTarget.Triggers)
-                {
-                    trigger.GetComponent<PlayerTeleporter>().Destinations = teleportInfoTarget.Targets;
-                }
-            }
-        }
-
-        private void SetupTeleportTrigger(GameObject child)
-        {
-            var teleportIdIndex = child.name.IndexOf('_') + 1;
-            if (teleportIdIndex > child.name.Length - 1)
-            {
-                Logger.LogText("Teleport ID not valid: " + child.name);
-                return;
-            }
-
-            var teleportId = child.name.Substring(teleportIdIndex);
-
-            Logger.LogText("Teleport ID: " + teleportId);
-
-            if (string.IsNullOrWhiteSpace(teleportId))
-            {
-                Logger.LogText("Teleport ID not valid: " + child.name);
-                return;
-            }
-
-            if (!_globalData.Teleports.ContainsKey(teleportId))
-            {
-                Logger.LogText("Trigger New info");
-
-                _globalData.Teleports[teleportId] = new TeleportData();
-            }
-
-            var teleportInfoTrigger = _globalData.Teleports[teleportId];
-
-            var newTrigger = Instantiate(_globalData.TeleportPrefab,
-                _globalData.CustomOrigin + child.transform.position, child.transform.rotation);
-            newTrigger.GetComponent<Renderer>().material.color = Color.red;
-            newTrigger.GetComponent<PlayerTeleporter>().Destinations = teleportInfoTrigger.Targets;
-
-            teleportInfoTrigger.Triggers.Add(newTrigger);
         }
 
         private void InstantiateMap(GameObject map)
@@ -361,6 +254,9 @@ namespace VmodMonkeMapLoader.Behaviours
             Logger.LogText("Instantiate map");
 
             _mapInstance = Instantiate(map, _globalData.CustomOrigin + (_globalData.IsLegacyMap ? Constants.LegacyMapOffset : Vector3.zero), Quaternion.identity);
+            _mapInstance.transform.position += new Vector3(5000, 0, 5000);
+
+            _descriptor = _mapInstance?.GetComponent<MapDescriptor>();
         }
 
         private void InitializeGlobalData()
@@ -384,8 +280,13 @@ namespace VmodMonkeMapLoader.Behaviours
             _globalData.BigTreeTeleportToMap.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
             _globalData.BigTreeTeleportToMap.transform.position =
                 _globalData.TreeOrigin + new Vector3(0f, 0.5f, -1f);
-            _globalData.BigTreeTeleportToMap.AddComponent<PlayerTeleporter>().Destinations
-                .Add(_globalData.TeleportTargetToBigTree);
+            Teleporter treeTeleporter = _globalData.BigTreeTeleportToMap.AddComponent<Teleporter>();
+            treeTeleporter.JoinGameOnTeleport = true;
+            treeTeleporter.TeleportPoints = new List<Transform>();
+
+            _globalData.BigTreePoint = new GameObject("TreeHomeTargetObject");
+            _globalData.BigTreePoint.transform.position = new Vector3(-66f, 12.3f, -83f);
+            treeTeleporter.TeleportPoints.Add(_globalData.BigTreePoint.transform);
 
             if (_globalData.FallEmergencyTeleport != null)
             {
@@ -397,22 +298,9 @@ namespace VmodMonkeMapLoader.Behaviours
             _globalData.FallEmergencyTeleport.AddComponent<BoxCollider>().isTrigger = true;
             _globalData.FallEmergencyTeleport.transform.localScale = new Vector3(1000f, 1f, 1000f);
             _globalData.FallEmergencyTeleport.transform.position = _globalData.TreeOrigin + new Vector3(0f, -200f, 0f);
-            _globalData.FallEmergencyTeleport.AddComponent<PlayerTeleporter>().Destinations
-                .Add(_globalData.TeleportTargetToBigTree);
 
-            if (_globalData.TeleportPrefab != null)
-            {
-                Destroy(_globalData.TeleportPrefab);
-                _globalData.TeleportPrefab = null;
-            }
-            _globalData.TeleportPrefab = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            _globalData.TeleportPrefab.layer = Constants.MaskLayerHandTrigger;
-            _globalData.TeleportPrefab.GetComponent<Collider>().isTrigger = true;
-            _globalData.TeleportPrefab.GetComponent<Renderer>().material.color = Color.green;
-            _globalData.TeleportPrefab.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
-            _globalData.TeleportPrefab.transform.position = new Vector3(0f, -1000f, 0f);
-            _globalData.TeleportPrefab.AddComponent<PlayerTeleporter>().Destinations
-                .Add(_globalData.TeleportTargetToBigTree);
+            Teleporter emergencyFallTeleporter = _globalData.FallEmergencyTeleport.AddComponent<Teleporter>();
+            emergencyFallTeleporter.TeleportPoints = new List<Transform>() { _globalData.BigTreePoint.transform };
         }
     }
 }

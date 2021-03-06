@@ -2,7 +2,7 @@
 
 namespace VmodMonkeMapLoader.Models
 {
-    public class MapDescriptor
+    public class Descriptor
     {
         [JsonProperty(PropertyName = "objectName")]
         public string Name { get; set; }
