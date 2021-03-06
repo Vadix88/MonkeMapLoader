@@ -19,7 +19,7 @@ namespace VmodMonkeMapLoader.Behaviours
             }
             if (Unclimbable)
             {
-                surface.slipPercentage = 0;
+                surface.slipPercentage = 1;
             }
             else
             {
