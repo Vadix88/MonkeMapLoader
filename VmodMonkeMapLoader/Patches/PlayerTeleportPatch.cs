@@ -23,10 +23,10 @@ namespace VmodMonkeMapLoader.Patches
                     playerRigidBody.velocity = Vector3.zero;
                     playerRigidBody.isKinematic = true;
                     __instance.transform.position = _teleportDestination.position;
-                    __instance.transform.rotation = _teleportDestination.rotation;
-                    /*
-                    __instance.transform.rotation = Quaternion.Euler(__instance.transform.rotation.eulerAngles.x, _teleportDestination.RotationAngle,
-                        __instance.transform.rotation.eulerAngles.z);*/
+                    //__instance.transform.rotation = _teleportDestination.rotation;
+
+                    __instance.transform.rotation = Quaternion.Euler(__instance.transform.rotation.eulerAngles.x, _teleportDestination.rotation.eulerAngles.y,
+                        __instance.transform.rotation.eulerAngles.z);
 
                     ___lastPosition = _teleportDestination.position;
                     ___velocityHistory = new Vector3[__instance.velocityHistorySize];

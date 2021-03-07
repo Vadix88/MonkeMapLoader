@@ -28,37 +28,9 @@ namespace VmodMonkeMapLoader
             Container.Bind<MapLoader>().FromInstance(mapLoader).AsSingle();
             
             //Utilla.Events.RoomJoined += OnRoomJoined;
-
-            //Task.Factory.StartNew(() =>
-            //{
-            //    Task.Delay(5000).Wait();
-            //    Utilla.Utils.RoomUtils.JoinPrivateLobby();
-            //});
-
-            //Task.Factory.StartNew(() =>
-            //{
-            //    Task.Delay(5000).Wait();
-            //    mapLoader.LoadMap(new MapInfo
-            //    {
-            //        FilePath =
-            //            @"C:\gry\Steam\steamapps\common\Gorilla Tag\BepInEx\plugins\VmodMonkeMapLoader\CustomMaps\testmap6.zip",
-            //        PackageInfo = new MapPackageInfo
-            //        {
-            //            PcFileName = @"maptest6",
-            //            Descriptor = new MapDescriptor
-            //            {
-            //                Name = "Test map 6"
-            //            },
-            //            Config = new MapConfig
-            //            {
-            //                RootObjectName = "Origin"
-            //            }
-            //        }
-            //    }, b => Logger.LogText("_____SUCCESS!!!!!!!!"));
-            //});
-
+            
             Container.Bind<IComputerModEntry>().To<MapListEntry>().AsSingle();
-            Container.BindInterfacesAndSelfTo<CommandManager>().AsSingle();
+            //Container.BindInterfacesAndSelfTo<CommandManager>().AsSingle();
         }
 
         private void OnRoomJoined(bool isPrivate)

@@ -12,8 +12,8 @@ namespace VmodMonkeMapLoader.ComputerInterface
 {
     public class MapListView : ComputerView
     {
-        [Inject]
-        public MapLoader MapLoader { get; set; }
+        //[Inject]
+        //public MapLoader MapLoader { get; set; }
 
         private List<MapInfo> _mapList = new List<MapInfo>();
         private bool _isFirstView = true;
@@ -34,8 +34,8 @@ namespace VmodMonkeMapLoader.ComputerInterface
             if (_isFirstView)
             {
                 Text = "========================================\n"
-                +      "                              Monke Map Loader\n"
-                + "                           by <color=#3fbc04>Vadix</color> & <color=#8dc2ef>Bobbie</color>\n"
+                +      "<align=\"center\">Monke Map Loader\n"
+                +      "<align=\"center\">by <color=#3fbc04>Vadix</color> & <color=#8dc2ef>Bobbie</color>\n"
                 +      "========================================";
             }
             else
@@ -56,38 +56,23 @@ namespace VmodMonkeMapLoader.ComputerInterface
             if (_isError)
             {
                 _isError = false;
-                ReturnView();
+                //ReturnView();
+                ReturnToMainMenu();
                 return;
             }
 
             switch (key)
             {
                 case EKeyboardKey.Back:
-                    ReturnView();
+                    //ReturnView();
+                    ReturnToMainMenu();
                     break;
 
                 case EKeyboardKey.Enter:
-                    Text = "Loaded: " + _mapList[_mapSelection].PackageInfo.Descriptor.Name;
-                    _isError = true;
-                    MapLoader.LoadMap(_mapList[_mapSelection], b => 
-                    //MapLoader.LoadMap(new MapInfo
-                    //{
-                    //    FilePath =
-                    //        @"C:\gry\Steam\steamapps\common\Gorilla Tag\BepInEx\plugins\VmodMonkeMapLoader\CustomMaps\testmap6.zip",
-                    //    PackageInfo = new MapPackageInfo
-                    //    {
-                    //        PcFileName = @"maptest6",
-                    //        Descriptor = new MapDescriptor
-                    //        {
-                    //            Name = "Test map 6"
-                    //        },
-                    //        Config = new MapConfig
-                    //        {
-                    //            RootObjectName = "origin"
-                    //        }
-                    //    }
-                    //}, b =>
-                    Text = "SUCCESS!!!!!!!!");
+                    if(_mapCount == 0)
+                        break;
+                    ShowView<MapDetailsView>(_mapList[_mapSelection]);
+                    return;
                     break;
 
                 case EKeyboardKey.Left:
@@ -124,6 +109,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
             _mapCount = _mapList.Count;
             _totalPages = (int)Math.Ceiling((decimal)_mapCount / (decimal)_pageSize);
             _mapListLoaded = false;
+            _isError = false;
             DrawList();
         }
 
@@ -142,7 +128,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
             }
             
             var mapText = new StringBuilder()
-                .Append("<color=#009933>SELECT MAP WITH ARROWS, LOAD WITH ENTER:</color>")
+                .Append("SELECT MAP WITH ARROWS, LOAD WITH ENTER:")
                 .AppendLine();
             
             var startIndex = (_currentPage - 1) * _pageSize;
@@ -164,11 +150,16 @@ namespace VmodMonkeMapLoader.ComputerInterface
                 mapText.AppendLine();
 
 
-            mapText.Append(_currentPage > 1 ? "<<      " : "         ");
-            mapText.Append($"{_currentPage,3}/{_totalPages,-4}");
-            mapText.Append(_currentPage < _totalPages ? "      >>" : "        ");
+            mapText.Append(_currentPage > 1 ? "<noparse><<      </noparse>" : "         ");
+            mapText.Append($"<noparse>{_currentPage,3} : {_totalPages,-4}</noparse>");
+            mapText.Append(_currentPage < _totalPages ? "<noparse>      >></noparse>" : "        ");
             //"  [ ^/v - selection   </> - change page ]"   {i + 1,2}.
             Text = mapText.ToString();
         }
+
+        //private void OnMapLoaded()
+        //{
+        //    Text = "Map loaded";
+        //}
     }
 }

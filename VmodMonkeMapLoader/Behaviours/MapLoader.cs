@@ -277,7 +277,7 @@ namespace VmodMonkeMapLoader.Behaviours
             Logger.LogText("Instantiate map");
 
             _mapInstance = Instantiate(map, _globalData.CustomOrigin, Quaternion.identity);
-            _mapInstance.transform.position += new Vector3(5000, 0, 5000);
+            _mapInstance.transform.position += new Vector3(0, 5000, 0);
 
             _descriptor = _mapInstance?.GetComponent<MapDescriptor>();
         }

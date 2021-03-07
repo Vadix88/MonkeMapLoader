@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using VmodMonkeMapLoader.Models;
 
 namespace VmodMonkeMapLoader.Helpers
 {
@@ -10,5 +11,17 @@ namespace VmodMonkeMapLoader.Helpers
         public const string DefaultShaderName = "Standard";
         public const string CustomMapsFolderName = "CustomMaps";
         public const string MiscObjectsFolderName = "Misc";
+        public static MapInfo MapInfoError = new MapInfo
+        {
+            PackageInfo = new MapPackageInfo
+            {
+                Descriptor = new Descriptor
+                {
+                    Author = "[error]",
+                    Name = "[error]",
+                    Description = "[error]"
+                }
+            }
+        };
     }
 }

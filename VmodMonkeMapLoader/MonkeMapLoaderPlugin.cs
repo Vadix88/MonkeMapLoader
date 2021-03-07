@@ -20,26 +20,6 @@ namespace VmodMonkeMapLoader
             Debug.Log("Monke Map Loader started");
             
             Zenjector.Install<MainInstaller>().OnProject();
-
-            //StartCoroutine(Test());
-        }
-
-        IEnumerator Test()
-        {
-            yield return new WaitForSeconds(5f);
-            
-
-            //var mapLoaderObject = new GameObject("MapLoader");
-            //var mapLoader = mapLoaderObject.AddComponent<MapLoader>();
-            ////var mapLoaderGameObject = new MapLoaderObject
-            ////{
-            ////    MapLoaderGameObject = mapLoaderObject
-            ////};
-            //mapLoader.InitializeMapObjects();
-            //GlobalData.GetMapFileNames();
-            //mapLoader.LoadMap();
-
-            //PlayerTeleportPatch.TeleportPlayer(MapHelper.TeleportTargetToBigTree);
         }
     }
 }

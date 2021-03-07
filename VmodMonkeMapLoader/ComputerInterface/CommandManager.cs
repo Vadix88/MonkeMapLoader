@@ -1,12 +1,15 @@
-﻿using ComputerInterface;
+﻿using System;
+using System.Collections.Generic;
+using ComputerInterface;
 using Zenject;
 
 namespace VmodMonkeMapLoader.ComputerInterface
 {
-    public class CommandManager : IInitializable
+    public class CommandManager : IInitializable, IDisposable
     {
         private readonly CommandHandler _commandHandler;
-        
+        private List<CommandToken> _commandTokens;
+
         public CommandManager(CommandHandler commandHandler)
         {
             _commandHandler = commandHandler;
@@ -14,10 +17,25 @@ namespace VmodMonkeMapLoader.ComputerInterface
 
         public void Initialize()
         {
-            _commandHandler.AddCommand(new Command(name: "whoami", argumentCount: 0, args =>
+        }
+
+        public void RegisterCommand(Command cmd)
+        {
+            var token = _commandHandler.AddCommand(cmd);
+            _commandTokens.Add(token);
+        }
+
+        public void UnregisterAllCommands()
+        {
+            foreach (var token in _commandTokens)
             {
-                return "MONKE";
-            }));
+                token.UnregisterCommand();
+            }
+        }
+
+        public void Dispose()
+        {
+            UnregisterAllCommands();
         }
     }
 }
