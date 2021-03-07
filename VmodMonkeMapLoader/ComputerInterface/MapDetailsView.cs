@@ -70,14 +70,11 @@ namespace VmodMonkeMapLoader.ComputerInterface
             var sb = new StringBuilder()
                 .AppendLine("<noparse> << BACK            ENTER - LOAD MAP</noparse>")
                 .AppendLine()
-                .AppendLine("<u>MAP DETAILS</u>")
+                .AppendLine("MAP DETAILS")
                 .AppendLine()
-                .Append("NAME:  ")
-                .AppendLine(mapDescriptor.Name)
-                .Append("AUTHOR:  ")
-                .AppendLine(mapDescriptor.Author)
-                .Append("DESCRIPTION:  ")
-                .AppendLine(mapDescriptor.Description);
+                .Append("NAME:  <color=#00cc44>").Append(mapDescriptor.Name).AppendLine("</color>")
+                .Append("AUTHOR:  <color=#00cc44>").Append(mapDescriptor.Author).AppendLine("</color>")
+                .Append("DESCRIPTION:  <color=#00cc44>").Append(mapDescriptor.Description).AppendLine("</color>");
 
             Text = sb.ToString();
         }
