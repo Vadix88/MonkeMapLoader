@@ -6,30 +6,30 @@ using UnityEngine;
 namespace VmodMonkeMapLoader.Behaviours
 {
     [System.Serializable]
-    public class ObjectTrigger : MonoBehaviour
+    public class ObjectTrigger : GorillaMapTriggerBase
     {
         public GameObject ObjectToTrigger;
         public bool DisableObject = false;
         public bool OnlyTriggerOnce = false;
 
-        private bool triggered = false;
+        private bool _triggered = false;
         void Start()
         {
             if (!DisableObject) ObjectToTrigger.SetActive(false);
             else ObjectToTrigger.SetActive(true);
         }
-        void OnTriggerEnter(Collider collider)
-        {
-            if (triggered && OnlyTriggerOnce)
-                return;
 
-            if (collider.GetComponentInParent<GorillaTriggerColliderHandIndicator>() == null)
+        public override void Trigger(Collider collider)
+        {
+            if (_triggered && OnlyTriggerOnce)
                 return;
 
             ObjectToTrigger.SetActive(DisableObject);
             ObjectToTrigger.SetActive(!DisableObject);
 
-            triggered = true;
+            _triggered = true;
+
+            base.Trigger(collider);
         }
     }
 }

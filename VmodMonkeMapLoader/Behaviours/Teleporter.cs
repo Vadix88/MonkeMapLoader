@@ -9,15 +9,16 @@ using System.Linq;
 using VmodMonkeMapLoader.Patches;
 using Random = UnityEngine.Random;
 using BepInEx;
+using GorillaLocomotion;
+using VmodMonkeMapLoader.Helpers;
 
 namespace VmodMonkeMapLoader.Behaviours
 {
     [System.Serializable]
-    public class Teleporter : MonoBehaviour
+    public class Teleporter : GorillaMapTriggerBase
     {
         public List<Transform> TeleportPoints;
         public bool TagOnTeleport = false;
-        public float TeleportDelay = 0f;
 
         [HideInInspector]
         public bool JoinGameOnTeleport = false;
@@ -26,20 +27,18 @@ namespace VmodMonkeMapLoader.Behaviours
         public bool GoesToTreehouse = false;
 
         private bool _isTeleporting = false;
-        void OnTriggerEnter(Collider collider)
+
+        public override void Trigger(Collider collider)
         {
             if (_isTeleporting || TeleportPoints == null || !TeleportPoints.HasAtLeast(0))
                 return;
 
-            if (collider.GetComponentInParent<GorillaTriggerColliderHandIndicator>() == null)
-                return;
-
-            Logger.LogText("Triggered: " + gameObject.name);
-
             _isTeleporting = true;
-            StartCoroutine(TeleportPlayer(TeleportDelay));
-        }
+            StartCoroutine(TeleportPlayer(0f));
 
+            base.Trigger(collider);
+        }
+        
         private IEnumerator TeleportPlayer(float time)
         {
             yield return new WaitForSeconds(time);
@@ -51,7 +50,7 @@ namespace VmodMonkeMapLoader.Behaviours
                 ? TeleportPoints[Random.Range(0, TeleportPoints.Count)]
                 : TeleportPoints[0];
 
-            Logger.LogText("Teleporting");
+            Logger.LogText("Teleporting player to: " + destination.position);
 
             PlayerTeleportPatch.TeleportPlayer(destination);
 

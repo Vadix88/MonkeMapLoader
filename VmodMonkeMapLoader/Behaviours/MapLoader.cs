@@ -21,7 +21,7 @@ namespace VmodMonkeMapLoader.Behaviours
         private static MapDescriptor _descriptor;
 
         public static string _lobbyName;
-
+        
         private void Awake()
         {
             InitializeGlobalData();
@@ -262,7 +262,7 @@ namespace VmodMonkeMapLoader.Behaviours
                 {
                     child.layer = 9;
                 }
-                if (child.GetComponent<Teleporter>() || child.GetComponent<TagZone>() != null)
+                if (child.GetComponent<Teleporter>() != null || child.GetComponent<TagZone>() != null)
                 {
                     collider.isTrigger = true;
                     child.layer = Constants.MaskLayerHandTrigger;
@@ -276,8 +276,8 @@ namespace VmodMonkeMapLoader.Behaviours
 
             Logger.LogText("Instantiate map");
 
-            _mapInstance = Instantiate(map, _globalData.CustomOrigin, Quaternion.identity);
-            _mapInstance.transform.position += new Vector3(0, 5000, 0);
+            _mapInstance = Instantiate(map, _globalData.CustomOrigin + new Vector3(0, 5000, 0), Quaternion.identity);
+            //_mapInstance.transform.position += new Vector3(0, 5000, 0);
 
             _descriptor = _mapInstance?.GetComponent<MapDescriptor>();
         }
@@ -290,7 +290,7 @@ namespace VmodMonkeMapLoader.Behaviours
             _globalData.Origin = GameObject.Find("slide")?.transform.position ?? Vector3.zero;
 
             _globalData.TreeOrigin = GameObject.Find("stool")?.transform.position ?? Vector3.zero;
-
+            
             // Tree Teleport Stuff
             if (_globalData.BigTreeTeleportToMap != null)
             {
@@ -302,14 +302,17 @@ namespace VmodMonkeMapLoader.Behaviours
             AssetBundle bundle = MapFileUtils.GetAssetBundleFromZip(dirPath);
             _globalData.BigTreeTeleportToMap = Object.Instantiate(bundle.LoadAsset<GameObject>("_Teleporter"));
 
-            _globalData.BigTreeTeleportToMap.layer = Constants.MaskLayerHandTrigger;
+            _globalData.BigTreeTeleportToMap.layer = Constants.MaskLayerPlayerTrigger;
 
             Teleporter treeTeleporter = _globalData.BigTreeTeleportToMap.GetComponent<Teleporter>();
             treeTeleporter.JoinGameOnTeleport = true;
             treeTeleporter.TeleportPoints = new List<Transform>();
+            treeTeleporter.Delay = 2f;
+            treeTeleporter.TouchType = GorillaTouchType.Head;
 
             _globalData.BigTreePoint = new GameObject("TreeHomeTargetObject");
             _globalData.BigTreePoint.transform.position = new Vector3(-66f, 12.3f, -83f);
+            _globalData.BigTreePoint.transform.rotation = Quaternion.Euler(0f, -90f, 0f);
             treeTeleporter.TeleportPoints.Add(_globalData.BigTreePoint.transform);
 
             ColorTreeTeleporter(new Color(0, 1, 0));
