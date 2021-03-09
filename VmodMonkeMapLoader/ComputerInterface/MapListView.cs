@@ -117,7 +117,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
         {
             if (_mapCount == 0)
             {
-                Text = "NO CUSTOM MAPS FOUND\n\nPRESS ANY BUTTON TO CONTINUE...";
+                Text = "NO CUSTOM MAPS FOUND.\n\nIf you have map files in the folder make sure they are in the right format.\n\nPRESS ANY BUTTON TO CONTINUE...";
                 _isError = true;
                 return;
             }
