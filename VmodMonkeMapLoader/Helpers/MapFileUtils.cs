@@ -17,11 +17,13 @@ namespace VmodMonkeMapLoader.Helpers
             try
             {
                 var dirPath = Path.Combine(Path.GetDirectoryName(typeof(MapFileUtils).Assembly.Location), Constants.CustomMapsFolderName);
+                Logger.LogText("Map folder: " + dirPath);
                 if (!Directory.Exists(dirPath))
                 {
                     Directory.CreateDirectory(dirPath);
                 }
                 var files = Directory.GetFiles(dirPath, "*.gtmap", SearchOption.TopDirectoryOnly);
+                Logger.LogText("Files found: " + string.Join(" | ", files));
                 var mapPackagesInfo = files
                     .Select(f => new MapInfo
                     {
@@ -30,6 +32,8 @@ namespace VmodMonkeMapLoader.Helpers
                     })
                     .Where(pi => pi.PackageInfo != null)
                     .ToList();
+
+                Logger.LogText("Maps found: " + string.Join(" | " , mapPackagesInfo.Select(mp => mp.PackageInfo.Descriptor.Name).ToList()));
 
                 return mapPackagesInfo;
             }
