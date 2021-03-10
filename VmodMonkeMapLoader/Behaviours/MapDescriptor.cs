@@ -13,5 +13,6 @@ namespace VmodMonkeMapLoader.Behaviours
         public Transform[] SpawnPoints;
         public Cubemap CustomSkybox;
         public float GravitySpeed = -9.8f;
+        public bool ExportLighting = true;
     }
 }
