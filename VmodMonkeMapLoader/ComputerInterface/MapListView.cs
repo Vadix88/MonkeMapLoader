@@ -76,23 +76,23 @@ namespace VmodMonkeMapLoader.ComputerInterface
                     break;
 
                 case EKeyboardKey.Left:
-                    if (_currentPage > 1)
-                        _currentPage--;
+                    if (_currentPage > 1) _currentPage--;
+                    PreviewOrb.ChangeOrb(_mapList[_currentPage - 1]);
                     break;
 
                 case EKeyboardKey.Right:
-                    if (_currentPage < _totalPages)
-                        _currentPage++;
+                    if (_currentPage < _totalPages) _currentPage++;
+                    PreviewOrb.ChangeOrb(_mapList[_currentPage - 1]);
                     break;
 
                 case EKeyboardKey.Up:
-                    if (_selectedRow > 0)
-                        _selectedRow--;
+                    if (_selectedRow > 0) _selectedRow--;
+                    PreviewOrb.ChangeOrb(_mapList[_currentPage - 1]);
                     break;
 
                 case EKeyboardKey.Down:
-                    if (_selectedRow < _maxRowOnPage)
-                        _selectedRow++;
+                    if (_selectedRow < _maxRowOnPage) _selectedRow++;
+                    PreviewOrb.ChangeOrb(_mapList[_currentPage - 1]);
                     break;
             }
 
@@ -111,6 +111,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
             _mapListLoaded = false;
             _isError = false;
             DrawList();
+            PreviewOrb.ChangeOrb(_mapList[_currentPage - 1]);
         }
 
         private void DrawList()

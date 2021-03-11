@@ -48,6 +48,9 @@
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>Libs\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>Libs\UnityEngine.ImageConversionModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.InputLegacyModule">
       <HintPath>Libs\UnityEngine.InputLegacyModule.dll</HintPath>
     </Reference>
@@ -66,7 +69,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;F:\SteamLibrary\steamapps\common\Gorilla Tag\BepInEx\plugins\VmodMonkeMapLoader\$(TargetName).dll&quot;" />
+    <Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;C:\gry\Steam\steamapps\common\Gorilla Tag\BepInEx\plugins\MonkeMapLoader\$(TargetName).dll&quot;" />
   </Target>
 
 </Project>

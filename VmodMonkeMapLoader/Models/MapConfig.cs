@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using UnityEngine;
 
 namespace VmodMonkeMapLoader.Models
 {
@@ -12,5 +13,8 @@ namespace VmodMonkeMapLoader.Models
 
         [JsonProperty(PropertyName = "spawnPoints")]
         public string[] SpawnPoints { get; set; }
+
+        [JsonProperty(PropertyName = "mapColor")]
+        public Color MapColor { get; set; }
     }
 }

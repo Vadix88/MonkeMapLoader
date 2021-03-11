@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using VmodMonkeMapLoader.Helpers;
 using VmodMonkeMapLoader.Models;
 using Zenject;
@@ -120,10 +121,36 @@ namespace VmodMonkeMapLoader.Behaviours
             
             Logger.LogText("Asset name: " + mapInfo.PackageInfo.Descriptor.Name);
 
-            var mapRequest = bundle.LoadAssetAsync<GameObject>("_Map");
-            yield return mapRequest;
+            string[] scenePath = bundle.GetAllScenePaths();
 
-            var map = mapRequest.asset as GameObject;
+            if (scenePath.Length <= 0)
+            {
+                Logger.LogText("Bundle NOT LOADED");
+
+                _isLoading = false;
+                isSuccess(false);
+                yield break;
+            }
+
+            var scene = SceneManager.LoadSceneAsync(scenePath[0], LoadSceneMode.Additive);
+            yield return scene;
+
+            GameObject[] allObjects = FindObjectsOfType<GameObject>();
+            MapDescriptor descriptor = FindObjectOfType<MapDescriptor>();
+
+            foreach(GameObject gameObject in allObjects)
+            {
+                Logger.LogText(gameObject.scene.name);
+                if (gameObject.scene.name != "GorillaTagNewVisuals")
+                {
+                    if(gameObject.transform.parent == null & gameObject.transform != descriptor.transform)
+                    {
+                        gameObject.transform.SetParent(descriptor.transform);
+                    }
+                }
+            }
+            GameObject map = descriptor.gameObject;
+
             if (map == null)
             {
                 _isLoading = false;
@@ -276,7 +303,9 @@ namespace VmodMonkeMapLoader.Behaviours
 
             Logger.LogText("Instantiate map");
 
-            _mapInstance = Instantiate(map, _globalData.CustomOrigin + new Vector3(0, 5000, 0), Quaternion.identity);
+            //_mapInstance = Instantiate(map, _globalData.CustomOrigin + new Vector3(0, 5000, 0), Quaternion.identity);
+            _mapInstance = map;
+            //_mapInstance.transform.position = new Vector3(0, 5000, 0);
             //_mapInstance.transform.position += new Vector3(0, 5000, 0);
 
             _descriptor = _mapInstance?.GetComponent<MapDescriptor>();
@@ -298,11 +327,17 @@ namespace VmodMonkeMapLoader.Behaviours
                 _globalData.BigTreeTeleportToMap = null;
             }
 
-            var dirPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(typeof(MapFileUtils).Assembly.Location), Constants.MiscObjectsFolderName, "Teleporter");
-            AssetBundle bundle = MapFileUtils.GetAssetBundleFromZip(dirPath);
+            var teleporterPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(typeof(MapFileUtils).Assembly.Location), Constants.MiscObjectsFolderName, "Teleporter");
+            AssetBundle bundle = MapFileUtils.GetAssetBundleFromZip(teleporterPath);
             _globalData.BigTreeTeleportToMap = Object.Instantiate(bundle.LoadAsset<GameObject>("_Teleporter"));
 
             _globalData.BigTreeTeleportToMap.layer = Constants.MaskLayerPlayerTrigger;
+
+            var orbPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(typeof(MapFileUtils).Assembly.Location), Constants.MiscObjectsFolderName, "Orb");
+            AssetBundle orbBundle = MapFileUtils.GetAssetBundleFromZip(orbPath);
+            GameObject orb = Object.Instantiate(orbBundle.LoadAsset<GameObject>("_Orb"));
+            orb.AddComponent<PreviewOrb>();
+            //orb.layer = Constants.MaskLayerPlayerTrigger;
 
             Teleporter treeTeleporter = _globalData.BigTreeTeleportToMap.GetComponent<Teleporter>();
             treeTeleporter.JoinGameOnTeleport = true;

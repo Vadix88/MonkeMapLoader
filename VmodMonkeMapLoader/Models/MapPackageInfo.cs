@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using UnityEngine;
 
 namespace VmodMonkeMapLoader.Models
 {
@@ -15,5 +16,7 @@ namespace VmodMonkeMapLoader.Models
 
         [JsonProperty(PropertyName = "config")]
         public MapConfig Config { get; set; }
+
+        public Texture2D PreviewCubemap { get; set; }
     }
 }

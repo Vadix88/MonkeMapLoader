@@ -76,7 +76,20 @@ namespace VmodMonkeMapLoader.Helpers
                 using (var stream = new StreamReader(jsonEntry.Open(), Encoding.Default))
                 {
                     string jsonString = stream.ReadToEnd();
-                    mapPackageInfo = JsonConvert.DeserializeObject<MapPackageInfo>(jsonString); 
+                    mapPackageInfo = JsonConvert.DeserializeObject<MapPackageInfo>(jsonString);
+
+                    // Cubemap Stuff
+                    if (mapPackageInfo.Config.CubemapImagePath != null)
+                    {
+                        var cubemapEntry = archive.Entries.FirstOrDefault(i => i.Name == mapPackageInfo.Config.CubemapImagePath);
+                        if (cubemapEntry != null)
+                        {
+                            var seekableStream = new MemoryStream();
+                            cubemapEntry.Open().CopyTo(seekableStream);
+                            seekableStream.Position = 0;
+                            mapPackageInfo.PreviewCubemap = Texture2DFromStream(seekableStream);
+                        }
+                    }
                 }
             }
             return mapPackageInfo;
@@ -88,6 +101,14 @@ namespace VmodMonkeMapLoader.Helpers
             mapInfo.FilePath = path;
             mapInfo.PackageInfo = GetMapInfoFromZip(path);
             return AssetBundle.LoadFromStream(GetMapDataStreamFromZip(mapInfo));
+        }
+
+        public static Texture2D Texture2DFromStream(MemoryStream stream)
+        {
+
+            Texture2D tex = new Texture2D(2, 2);
+            ImageConversion.LoadImage(tex, stream.ToArray());
+            return tex;
         }
     }
 }
