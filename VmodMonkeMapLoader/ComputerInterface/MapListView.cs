@@ -77,22 +77,18 @@ namespace VmodMonkeMapLoader.ComputerInterface
 
                 case EKeyboardKey.Left:
                     if (_currentPage > 1) _currentPage--;
-                    PreviewOrb.ChangeOrb(_mapList[_currentPage - 1]);
                     break;
 
                 case EKeyboardKey.Right:
                     if (_currentPage < _totalPages) _currentPage++;
-                    PreviewOrb.ChangeOrb(_mapList[_currentPage - 1]);
                     break;
 
                 case EKeyboardKey.Up:
                     if (_selectedRow > 0) _selectedRow--;
-                    PreviewOrb.ChangeOrb(_mapList[_currentPage - 1]);
                     break;
 
                 case EKeyboardKey.Down:
                     if (_selectedRow < _maxRowOnPage) _selectedRow++;
-                    PreviewOrb.ChangeOrb(_mapList[_currentPage - 1]);
                     break;
             }
 
@@ -111,7 +107,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
             _mapListLoaded = false;
             _isError = false;
             DrawList();
-            PreviewOrb.ChangeOrb(_mapList[_currentPage - 1]);
+            PreviewOrb.ChangeOrb(_mapList[0]);
         }
 
         private void DrawList()
@@ -156,6 +152,8 @@ namespace VmodMonkeMapLoader.ComputerInterface
             mapText.Append(_currentPage < _totalPages ? "<noparse>      >></noparse>" : "        ");
             //"  [ ^/v - selection   </> - change page ]"   {i + 1,2}.
             Text = mapText.ToString();
+            int selectedMap = ((_currentPage - 1) * _pageSize) + _selectedRow;
+            PreviewOrb.ChangeOrb(_mapList[selectedMap]);
         }
 
         //private void OnMapLoaded()

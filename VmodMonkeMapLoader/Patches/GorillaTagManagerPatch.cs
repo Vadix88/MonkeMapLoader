@@ -7,43 +7,60 @@ using VmodMonkeMapLoader.Behaviours;
 
 namespace VmodMonkeMapLoader.Patches
 {
-    [HarmonyPatch(typeof(GorillaTagManager))]
-    [HarmonyPatch("InfectionEnd", MethodType.Normal)]
+    [HarmonyPatch(typeof(VRRig))]
+    [HarmonyPatch("PlayTagSound", MethodType.Normal)]
     internal class GorillaTagManagerPatch
     {
-        internal static void Postfix(GorillaTagManager __instance)
+        private static double lastGameEnd = 0;
+        internal static void Postfix()
         {
-            if (PhotonNetworkController.instance.currentGameType.Contains(MapLoader._lobbyName))
+            try
             {
-                //it's proper. do whatever with the Room Settings.
-                if(RoundEndActions._instance != null)
+                if (PhotonNetworkController.instance?.currentGameType != null && MapLoader._lobbyName != null && PhotonNetworkController.instance.currentGameType.Contains(MapLoader._lobbyName))
                 {
-                    RoundEndActions roundEndActions = RoundEndActions._instance;
-                    if (roundEndActions.ObjectsToEnable != null)
+                    GorillaTagManager __instance = GorillaTagManager.instance;
+                    if (__instance.isCurrentlyTag) TriggerRoundEndEvents();
+                    if (RoundEndActions._instance != null && __instance.timeInfectedGameEnded > lastGameEnd)
                     {
-                        foreach (GameObject objectToEnable in roundEndActions.ObjectsToEnable)
-                        {
-                            if (objectToEnable != null)
-                            {
-                                objectToEnable.SetActive(false);
-                                objectToEnable.SetActive(true);
-                            }
-                        }
+                        //it's proper. do whatever with the Room Settings.
+                        lastGameEnd = __instance.timeInfectedGameEnded;
+                        TriggerRoundEndEvents();
                     }
-                    if (roundEndActions.ObjectsToDisable != null)
-                    {
-                        foreach (GameObject objectToDisable in roundEndActions.ObjectsToDisable)
-                        {
-                            if (objectToDisable != null)
-                            {
-                                objectToDisable.SetActive(true);
-                                objectToDisable.SetActive(false);
-                            }
-                        }
-                    }
-                    if (roundEndActions.RespawnOnRoundEnd) MapLoader.ForceRespawn();
                 }
             }
+            catch (Exception e)
+            {
+                Debug.Log("Error when triggering room events:");
+                Debug.Log(e);
+            }
+        }
+
+        static void TriggerRoundEndEvents()
+        {
+            RoundEndActions roundEndActions = RoundEndActions._instance;
+            if (roundEndActions.ObjectsToEnable != null)
+            {
+                foreach (GameObject objectToEnable in roundEndActions.ObjectsToEnable)
+                {
+                    if (objectToEnable != null)
+                    {
+                        objectToEnable.SetActive(false);
+                        objectToEnable.SetActive(true);
+                    }
+                }
+            }
+            if (roundEndActions.ObjectsToDisable != null)
+            {
+                foreach (GameObject objectToDisable in roundEndActions.ObjectsToDisable)
+                {
+                    if (objectToDisable != null)
+                    {
+                        objectToDisable.SetActive(true);
+                        objectToDisable.SetActive(false);
+                    }
+                }
+            }
+            if (roundEndActions.RespawnOnRoundEnd) MapLoader.ForceRespawn();
         }
     }
 }

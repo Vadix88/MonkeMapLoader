@@ -140,8 +140,7 @@ namespace VmodMonkeMapLoader.Behaviours
 
             foreach(GameObject gameObject in allObjects)
             {
-                Logger.LogText(gameObject.scene.name);
-                if (gameObject.scene.name != "GorillaTagNewVisuals")
+                if (gameObject.scene.name != "GorillaTagNewVisuals" && gameObject.scene.name != "DontDestroyOnLoad")
                 {
                     if(gameObject.transform.parent == null & gameObject.transform != descriptor.transform)
                     {
@@ -200,12 +199,20 @@ namespace VmodMonkeMapLoader.Behaviours
         private async Task ProcessAndInstantiateMap(GameObject map)
         {
             await Task.Factory.StartNew(() =>
-            {                
-                ProcessChildObjects(map);
-                
-                InstantiateMap(map);
+            {
+                UnloadMap();
 
-                _globalData.BigTreeTeleportToMap.GetComponent<Teleporter>().TeleportPoints = _mapInstance.transform.Find("SpawnPointContainer").GetComponentsInChildren<Transform>().ToList();
+                Logger.LogText("Instantiate map");
+
+                _mapInstance = map;
+                _descriptor = _mapInstance?.GetComponent<MapDescriptor>();
+
+                ProcessChildObjects(map);
+                foreach(Transform point in _descriptor.SpawnPoints)
+                {
+                    DontDestroyOnLoad(point);
+                }
+                _globalData.BigTreeTeleportToMap.GetComponent<Teleporter>().TeleportPoints = _descriptor.SpawnPoints.ToList();
 
                 Transform fakeSkybox = _mapInstance.transform.Find("FakeSkybox");
                 if (fakeSkybox != null)
@@ -226,7 +233,7 @@ namespace VmodMonkeMapLoader.Behaviours
                 FallEmergencyTeleport.transform.localPosition = new Vector3(0f, -300f, 0f);
 
                 Teleporter emergencyFallTeleporter = FallEmergencyTeleport.AddComponent<Teleporter>();
-                emergencyFallTeleporter.TeleportPoints = _mapInstance.transform.Find("SpawnPointContainer").GetComponentsInChildren<Transform>().ToList();
+                emergencyFallTeleporter.TeleportPoints = _mapInstance.GetComponent<MapDescriptor>().SpawnPoints.ToList();
                 emergencyFallTeleporter.TagOnTeleport = true;
             });
         }
@@ -297,20 +304,6 @@ namespace VmodMonkeMapLoader.Behaviours
             }
         }
 
-        private void InstantiateMap(GameObject map)
-        {
-            UnloadMap();
-
-            Logger.LogText("Instantiate map");
-
-            //_mapInstance = Instantiate(map, _globalData.CustomOrigin + new Vector3(0, 5000, 0), Quaternion.identity);
-            _mapInstance = map;
-            //_mapInstance.transform.position = new Vector3(0, 5000, 0);
-            //_mapInstance.transform.position += new Vector3(0, 5000, 0);
-
-            _descriptor = _mapInstance?.GetComponent<MapDescriptor>();
-        }
-
         private void InitializeGlobalData()
         {
             if(_globalData == null)
@@ -321,22 +314,37 @@ namespace VmodMonkeMapLoader.Behaviours
             _globalData.TreeOrigin = GameObject.Find("stool")?.transform.position ?? Vector3.zero;
             
             // Tree Teleport Stuff
-            if (_globalData.BigTreeTeleportToMap != null)
+            if (_globalData.BigTreeTeleportToMap == null)
             {
-                Destroy(_globalData.BigTreeTeleportToMap);
-                _globalData.BigTreeTeleportToMap = null;
+                var teleporterPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(typeof(MapFileUtils).Assembly.Location), Constants.MiscObjectsFolderName, "Teleporter");
+                AssetBundle bundle = MapFileUtils.GetAssetBundleFromZip(teleporterPath);
+                _globalData.BigTreeTeleportToMap = Object.Instantiate(bundle.LoadAsset<GameObject>("_Teleporter"));
+
+                _globalData.BigTreeTeleportToMap.layer = Constants.MaskLayerPlayerTrigger;
+                DontDestroyOnLoad(_globalData.BigTreeTeleportToMap);
             }
 
-            var teleporterPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(typeof(MapFileUtils).Assembly.Location), Constants.MiscObjectsFolderName, "Teleporter");
-            AssetBundle bundle = MapFileUtils.GetAssetBundleFromZip(teleporterPath);
-            _globalData.BigTreeTeleportToMap = Object.Instantiate(bundle.LoadAsset<GameObject>("_Teleporter"));
-
-            _globalData.BigTreeTeleportToMap.layer = Constants.MaskLayerPlayerTrigger;
 
             var orbPath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(typeof(MapFileUtils).Assembly.Location), Constants.MiscObjectsFolderName, "Orb");
             AssetBundle orbBundle = MapFileUtils.GetAssetBundleFromZip(orbPath);
+
             GameObject orb = Object.Instantiate(orbBundle.LoadAsset<GameObject>("_Orb"));
-            orb.AddComponent<PreviewOrb>();
+            GameObject orbVisuals = Object.Instantiate(orb);
+
+            orb.AddComponent<RotateByHand>();
+            orb.GetComponent<Renderer>().enabled = false;
+            Destroy(orb.GetComponent<Renderer>());
+            orb.layer = 18;
+
+            orbVisuals.transform.SetParent(orb.transform);
+            orbVisuals.transform.localPosition = Vector3.zero;
+            orbVisuals.transform.localScale = Vector3.one;
+            orbVisuals.transform.localRotation = Quaternion.identity;
+
+            orbVisuals.AddComponent<PreviewOrb>();
+            orbVisuals.GetComponent<Collider>().enabled = false;
+            Destroy(orbVisuals.GetComponent<Collider>());
+
             //orb.layer = Constants.MaskLayerPlayerTrigger;
 
             Teleporter treeTeleporter = _globalData.BigTreeTeleportToMap.GetComponent<Teleporter>();
@@ -345,9 +353,14 @@ namespace VmodMonkeMapLoader.Behaviours
             treeTeleporter.Delay = 2f;
             treeTeleporter.TouchType = GorillaTouchType.Head;
 
-            _globalData.BigTreePoint = new GameObject("TreeHomeTargetObject");
-            _globalData.BigTreePoint.transform.position = new Vector3(-66f, 12.3f, -83f);
-            _globalData.BigTreePoint.transform.rotation = Quaternion.Euler(0f, -90f, 0f);
+            DontDestroyOnLoad(treeTeleporter);
+            if(_globalData.BigTreePoint == null)
+            {
+                _globalData.BigTreePoint = new GameObject("TreeHomeTargetObject");
+                _globalData.BigTreePoint.transform.position = new Vector3(-66f, 12.3f, -83f);
+                _globalData.BigTreePoint.transform.rotation = Quaternion.Euler(0f, -90f, 0f);
+                DontDestroyOnLoad(_globalData.BigTreePoint);
+            }
             treeTeleporter.TeleportPoints.Add(_globalData.BigTreePoint.transform);
 
             ColorTreeTeleporter(new Color(0, 1, 0));
@@ -363,6 +376,7 @@ namespace VmodMonkeMapLoader.Behaviours
             _globalData.FallEmergencyTeleport.AddComponent<BoxCollider>().isTrigger = true;
             _globalData.FallEmergencyTeleport.transform.localScale = new Vector3(1000f, 1f, 1000f);
             _globalData.FallEmergencyTeleport.transform.position = _globalData.TreeOrigin + new Vector3(0f, -200f, 0f);
+            DontDestroyOnLoad(_globalData.FallEmergencyTeleport);
 
             Teleporter emergencyFallTeleporter = _globalData.FallEmergencyTeleport.AddComponent<Teleporter>();
             emergencyFallTeleporter.TeleportPoints = new List<Transform>() { _globalData.BigTreePoint.transform };

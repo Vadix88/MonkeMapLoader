@@ -41,6 +41,12 @@ namespace VmodMonkeMapLoader.Behaviours
         
         private IEnumerator TeleportPlayer(float time)
         {
+            foreach(var point in TeleportPoints)
+            {
+                if (point == null) continue;
+                Debug.Log("POINT");
+                Debug.Log(point.gameObject.name);
+            }
             yield return new WaitForSeconds(time);
 
             if (TeleportPoints == null || !TeleportPoints.HasAtLeast(0))
