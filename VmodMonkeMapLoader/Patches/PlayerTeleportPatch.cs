@@ -2,7 +2,6 @@
 using HarmonyLib;
 using System.Reflection;
 using UnityEngine;
-using VmodMonkeMapLoader.Models;
 
 namespace VmodMonkeMapLoader.Patches
 {

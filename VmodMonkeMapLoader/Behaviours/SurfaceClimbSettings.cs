@@ -1,7 +1,4 @@
 ﻿using GorillaLocomotion;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace VmodMonkeMapLoader.Behaviours
@@ -11,6 +8,9 @@ namespace VmodMonkeMapLoader.Behaviours
     {
         public bool Unclimbable = false;
         public float slipPercentage = 0.03f;
+
+#if PLUGIN
+
         void Start()
         {
             Surface surface = gameObject.GetComponent<Surface>();
@@ -27,5 +27,8 @@ namespace VmodMonkeMapLoader.Behaviours
                 surface.slipPercentage = slipPercentage;
             }
         }
+
+#endif
+
     }
 }

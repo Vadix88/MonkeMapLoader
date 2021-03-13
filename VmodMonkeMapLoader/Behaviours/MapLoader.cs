@@ -8,7 +8,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using VmodMonkeMapLoader.Helpers;
 using VmodMonkeMapLoader.Models;
-using Zenject;
 using Logger = VmodMonkeMapLoader.Helpers.Logger;
 using Object = UnityEngine.Object;
 

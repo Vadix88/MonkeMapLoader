@@ -1,16 +1,14 @@
 ﻿using ModestTree;
-using System;
+using Random = UnityEngine.Random;
 using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
-using Logger = VmodMonkeMapLoader.Helpers.Logger;
 using System.Collections;
 using System.Linq;
+using UnityEngine;
+
+#if PLUGIN
 using VmodMonkeMapLoader.Patches;
-using Random = UnityEngine.Random;
-using BepInEx;
-using GorillaLocomotion;
-using VmodMonkeMapLoader.Helpers;
+using Logger = VmodMonkeMapLoader.Helpers.Logger;
+#endif
 
 namespace VmodMonkeMapLoader.Behaviours
 {
@@ -19,6 +17,8 @@ namespace VmodMonkeMapLoader.Behaviours
     {
         public List<Transform> TeleportPoints;
         public bool TagOnTeleport = false;
+
+#if PLUGIN
 
         [HideInInspector]
         public bool JoinGameOnTeleport = false;
@@ -63,6 +63,9 @@ namespace VmodMonkeMapLoader.Behaviours
 
             _isTeleporting = false;
         }
+
+#endif
+
     }
 
     public enum TeleporterType

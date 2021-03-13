@@ -6,7 +6,6 @@ using System.Text;
 using VmodMonkeMapLoader.Behaviours;
 using VmodMonkeMapLoader.Helpers;
 using VmodMonkeMapLoader.Models;
-using Zenject;
 
 namespace VmodMonkeMapLoader.ComputerInterface
 {

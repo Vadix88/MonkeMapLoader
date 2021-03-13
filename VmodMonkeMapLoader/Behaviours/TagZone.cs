@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using Photon.Pun;
 
@@ -10,6 +7,9 @@ namespace VmodMonkeMapLoader.Behaviours
     [System.Serializable]
     public class TagZone : GorillaMapTriggerBase
     {
+
+#if PLUGIN
+
         static bool canBeTagged = true;
 
         public override void Trigger(Collider collider)
@@ -44,5 +44,8 @@ namespace VmodMonkeMapLoader.Behaviours
                 }
             }
         }
+
+#endif
+
     }
 }

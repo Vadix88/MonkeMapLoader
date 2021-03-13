@@ -4,6 +4,10 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;PLUGIN</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <Folder Include="Libs\" />
   </ItemGroup>
@@ -69,7 +73,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;C:\gry\Steam\steamapps\common\Gorilla Tag\BepInEx\plugins\MonkeMapLoader\$(TargetName).dll&quot;" />
+    <Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;F:\SteamLibrary\steamapps\common\Gorilla Tag\BepInEx\plugins\VmodMonkeMapLoader\$(TargetName).dll&quot;" />
   </Target>
 
 </Project>

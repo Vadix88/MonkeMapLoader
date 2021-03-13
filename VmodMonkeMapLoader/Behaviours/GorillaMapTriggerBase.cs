@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using GorillaLocomotion;
+
+#if PLUGIN
 using Logger = VmodMonkeMapLoader.Helpers.Logger;
+#endif
 
 namespace VmodMonkeMapLoader.Behaviours
 {
@@ -8,7 +11,8 @@ namespace VmodMonkeMapLoader.Behaviours
     {
         public GorillaTouchType TouchType = GorillaTouchType.Any;
         public float Delay = 0f;
-        //public float Cooldown = 1f;
+
+#if PLUGIN
 
         private float _touchedTime = 0f;
         private bool _isTriggering = false;
@@ -76,6 +80,9 @@ namespace VmodMonkeMapLoader.Behaviours
             // override this method to do stuff
             Logger.LogText("Triggered: " + collider.gameObject.name + "   Filter: " + TouchType);
         }
+
+#endif
+
     }
 
     public enum GorillaTouchType

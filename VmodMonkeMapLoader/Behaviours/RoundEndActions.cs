@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace VmodMonkeMapLoader.Behaviours
 {
@@ -11,6 +8,9 @@ namespace VmodMonkeMapLoader.Behaviours
         public bool RespawnOnRoundEnd = false;
         public GameObject[] ObjectsToEnable;
         public GameObject[] ObjectsToDisable;
+
+#if PLUGIN
+
         [HideInInspector]
         [System.NonSerialized]
         public static RoundEndActions _instance; // I'm sorry auros
@@ -19,5 +19,8 @@ namespace VmodMonkeMapLoader.Behaviours
         {
             _instance = this;
         }
+
+#endif
+
     }
 }

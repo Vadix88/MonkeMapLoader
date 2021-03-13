@@ -1,6 +1,6 @@
-﻿using System;
+﻿using ComputerInterface;
+using System;
 using System.Collections.Generic;
-using ComputerInterface;
 using Zenject;
 
 namespace VmodMonkeMapLoader.ComputerInterface

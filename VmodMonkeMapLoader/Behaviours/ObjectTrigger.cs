@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace VmodMonkeMapLoader.Behaviours
 {
@@ -11,6 +8,8 @@ namespace VmodMonkeMapLoader.Behaviours
         public GameObject ObjectToTrigger;
         public bool DisableObject = false;
         public bool OnlyTriggerOnce = false;
+
+#if PLUGIN
 
         private bool _triggered = false;
         void Start()
@@ -31,5 +30,8 @@ namespace VmodMonkeMapLoader.Behaviours
 
             base.Trigger(collider);
         }
+
+#endif
+
     }
 }
