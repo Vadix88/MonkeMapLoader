@@ -12,7 +12,8 @@ namespace VmodMonkeMapLoader
         void Awake()
         {
             Debug.Log("Monke Map Loader started");
-            
+
+            HarmonyPatches.ApplyHarmonyPatches();
             Zenjector.Install<MainInstaller>().OnProject();
         }
     }
