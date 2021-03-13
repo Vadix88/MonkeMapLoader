@@ -10,15 +10,20 @@ namespace VmodMonkeMapLoader.ComputerInterface
 {
     public class MapDetailsView : ComputerView
     {
-        [Inject]
-        public MapLoader MapLoader { get; set; }
+        private readonly MapLoader _mapLoader;
 
         private MapInfo _mapInfo;
-        private bool _isError = false;
+        private bool _isError;
+
+        public MapDetailsView(MapLoader mapLoader)
+        {
+            _mapLoader = mapLoader;
+        }
 
         public override void OnShow(object[] args)
         {
             base.OnShow(args);
+
             if (args == null || args.Length == 0)
             {
                 Text = "No map selected;";
@@ -26,11 +31,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
                 return;
             }
 
-            var mapInfo = args[0] as MapInfo;
-            if (mapInfo == null)
-            {
-                mapInfo = Constants.MapInfoError;
-            }
+            var mapInfo = args[0] as MapInfo ?? Constants.MapInfoError;
 
             _isError = false;
             _mapInfo = mapInfo;
@@ -42,7 +43,6 @@ namespace VmodMonkeMapLoader.ComputerInterface
             if (_isError)
             {
                 _isError = false;
-                //ReturnView();
                 ShowView<MapListView>();
                 return;
             }
@@ -50,7 +50,6 @@ namespace VmodMonkeMapLoader.ComputerInterface
             switch (key)
             {
                 case EKeyboardKey.Back:
-                    //ReturnView();
                     _mapInfo = null;
                     ShowView<MapListView>();
                     break;
@@ -59,7 +58,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
                     if (_isError)
                         break;
                     Text = "Loading map: " + _mapInfo.PackageInfo.Descriptor.Name;
-                    MapLoader.LoadMap(_mapInfo, b => OnMapLoaded());
+                    _mapLoader.LoadMap(_mapInfo, b => OnMapLoaded());
                     break;
             }
         }
@@ -72,9 +71,9 @@ namespace VmodMonkeMapLoader.ComputerInterface
                 .AppendLine()
                 .AppendLine("MAP DETAILS")
                 .AppendLine()
-                .Append("NAME:  <color=#00cc44>").Append(mapDescriptor.Name).AppendLine("</color>")
-                .Append("AUTHOR:  <color=#00cc44>").Append(mapDescriptor.Author).AppendLine("</color>")
-                .Append("DESCRIPTION:  <color=#00cc44>").Append(mapDescriptor.Description).AppendLine("</color>");
+                .Append("NAME:  ").AppendClr(mapDescriptor.Name, "00cc44").AppendLine()
+                .Append("AUTHOR:  ").AppendClr(mapDescriptor.Author, "00cc44").AppendLine()
+                .Append("DESCRIPTION:  ").AppendClr(mapDescriptor.Description, "00cc44").AppendLine();
 
             Text = sb.ToString();
         }
