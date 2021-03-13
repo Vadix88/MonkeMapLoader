@@ -89,6 +89,7 @@ namespace VmodMonkeMapLoader.Behaviours
 
             _isLoading = true;
 
+            UnloadMap();
             Logger.LogText("Loading map: " + mapInfo.FilePath + " -> " + mapInfo.PackageInfo.Descriptor.Name);
 
             var bundleDataStream = MapFileUtils.GetMapDataStreamFromZip(mapInfo);
@@ -201,8 +202,6 @@ namespace VmodMonkeMapLoader.Behaviours
         {
             await Task.Factory.StartNew(() =>
             {
-                UnloadMap();
-
                 Logger.LogText("Instantiate map");
 
                 _mapInstance = map;
@@ -237,13 +236,14 @@ namespace VmodMonkeMapLoader.Behaviours
 
         private void ProcessChildObjects(GameObject parent)
         {
-            Logger.LogText("Processing parent: " + parent.name + ", childs: " + parent.transform.childCount);
+            if (parent == null) return;
+            // Logger.LogText("Processing parent: " + parent.name + ", childs: " + parent.transform.childCount);
 
             for (var i = 0; i < parent.transform.childCount; i++)
             {
                 var child = parent.transform.GetChild(i).gameObject;
 
-                Logger.LogText("Processing object: " + child.name);
+                // Logger.LogText("Processing object: " + child.name);
 
                 //FixShader(child); <- this crashes for some reason.
 
@@ -265,26 +265,14 @@ namespace VmodMonkeMapLoader.Behaviours
             }
         }
 
-        private void FixShader(GameObject child)
-        {
-            var renderer = child.GetComponent<Renderer>();
-            if (renderer != null && renderer.material != null)
-            {
-                var shader = Shader.Find(renderer.material.shader.name);
-                if (shader == null)
-                {
-                    shader = Shader.Find(Constants.DefaultShaderName);
-                }
-
-                renderer.material.shader = shader;
-            }
-        }
-
         private void SetupCollisions(GameObject child)
         {
+            if (child == null) return;
             var colliders = child.GetComponents<Collider>();
+            if (colliders == null) return;
             foreach (var collider in colliders)
             {
+                if (collider == null) return;
                 if (collider.isTrigger)
                 {
                     child.layer = Constants.MaskLayerGorillaTrigger;

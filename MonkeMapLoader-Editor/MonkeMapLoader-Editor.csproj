@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>MonkeMapLoader_Editor</RootNamespace>
+    <AssemblyName>MonkeMapLoader</AssemblyName>
   </PropertyGroup>
   
   <ItemGroup>
