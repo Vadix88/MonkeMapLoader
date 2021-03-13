@@ -32,6 +32,8 @@ namespace VmodMonkeMapLoader.Behaviours
         {
             Teleporter treeTeleporter = _globalData.BigTreeTeleportToMap.GetComponent<Teleporter>();
 
+            treeTeleporter.TeleportPoints = GameObject.Find("SpawnPointContainer")?.GetComponentsInChildren<Transform>().ToList();
+
             var destination = treeTeleporter.TeleportPoints.Count > 1
             ? treeTeleporter.TeleportPoints[UnityEngine.Random.Range(0, treeTeleporter.TeleportPoints.Count)]
             : treeTeleporter.TeleportPoints[0];
@@ -208,11 +210,6 @@ namespace VmodMonkeMapLoader.Behaviours
                 _descriptor = _mapInstance?.GetComponent<MapDescriptor>();
 
                 ProcessChildObjects(map);
-                foreach(Transform point in _descriptor.SpawnPoints)
-                {
-                    DontDestroyOnLoad(point);
-                }
-                _globalData.BigTreeTeleportToMap.GetComponent<Teleporter>().TeleportPoints = _descriptor.SpawnPoints.ToList();
 
                 Transform fakeSkybox = _mapInstance.transform.Find("FakeSkybox");
                 if (fakeSkybox != null)
@@ -235,6 +232,7 @@ namespace VmodMonkeMapLoader.Behaviours
                 Teleporter emergencyFallTeleporter = FallEmergencyTeleport.AddComponent<Teleporter>();
                 emergencyFallTeleporter.TeleportPoints = _mapInstance.GetComponent<MapDescriptor>().SpawnPoints.ToList();
                 emergencyFallTeleporter.TagOnTeleport = true;
+                emergencyFallTeleporter.TeleporterType = TeleporterType.Map;
             });
         }
 
@@ -263,7 +261,7 @@ namespace VmodMonkeMapLoader.Behaviours
                 if (teleporter.TeleportPoints == null || teleporter.TeleportPoints.Count == 0)
                 {
                     teleporter.TeleportPoints = new List<Transform>() { _globalData.BigTreePoint.transform };
-                    teleporter.GoesToTreehouse = true;
+                    teleporter.TeleporterType = TeleporterType.Treehouse;
                 }
             }
         }
@@ -348,9 +346,10 @@ namespace VmodMonkeMapLoader.Behaviours
             //orb.layer = Constants.MaskLayerPlayerTrigger;
 
             Teleporter treeTeleporter = _globalData.BigTreeTeleportToMap.GetComponent<Teleporter>();
+            treeTeleporter.TeleporterType = TeleporterType.Map;
             treeTeleporter.JoinGameOnTeleport = true;
             treeTeleporter.TeleportPoints = new List<Transform>();
-            treeTeleporter.Delay = 2f;
+            treeTeleporter.Delay = 1.5f;
             treeTeleporter.TouchType = GorillaTouchType.Head;
 
             DontDestroyOnLoad(treeTeleporter);

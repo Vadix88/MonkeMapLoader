@@ -24,7 +24,7 @@ namespace VmodMonkeMapLoader.Behaviours
         public bool JoinGameOnTeleport = false;
 
         [HideInInspector]
-        public bool GoesToTreehouse = false;
+        public TeleporterType TeleporterType = TeleporterType.Normal;
 
         private bool _isTeleporting = false;
 
@@ -34,20 +34,17 @@ namespace VmodMonkeMapLoader.Behaviours
                 return;
 
             _isTeleporting = true;
-            StartCoroutine(TeleportPlayer(0f));
+            StartCoroutine(TeleportPlayer());
 
             base.Trigger(collider);
         }
         
-        private IEnumerator TeleportPlayer(float time)
+        private IEnumerator TeleportPlayer()
         {
-            foreach(var point in TeleportPoints)
+            if (TeleporterType == TeleporterType.Map)
             {
-                if (point == null) continue;
-                Debug.Log("POINT");
-                Debug.Log(point.gameObject.name);
+                TeleportPoints = GameObject.Find("SpawnPointContainer")?.GetComponentsInChildren<Transform>().ToList();
             }
-            yield return new WaitForSeconds(time);
 
             if (TeleportPoints == null || !TeleportPoints.HasAtLeast(0))
                 yield break;
@@ -62,9 +59,16 @@ namespace VmodMonkeMapLoader.Behaviours
 
             if (TagOnTeleport) TagZone.TagLocalPlayer();
             if (JoinGameOnTeleport) MapLoader.JoinGame();
-            if (GoesToTreehouse) MapLoader.ResetMapProperties();
+            if (TeleporterType == TeleporterType.Treehouse) MapLoader.ResetMapProperties();
 
             _isTeleporting = false;
         }
+    }
+
+    public enum TeleporterType
+    {
+        Normal,
+        Treehouse,
+        Map
     }
 }
