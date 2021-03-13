@@ -8,21 +8,30 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using VmodMonkeMapLoader.Helpers;
 using VmodMonkeMapLoader.Models;
+using Zenject;
 using Logger = VmodMonkeMapLoader.Helpers.Logger;
 using Object = UnityEngine.Object;
 
 namespace VmodMonkeMapLoader.Behaviours
 {
-    public class MapLoader : MonoBehaviour
+    public class MapLoader : IInitializable
     {
+        public static string _lobbyName;
+
         private static GameObject _mapInstance;
         private static bool _isLoading;
         private static GlobalData _globalData;
         private static MapDescriptor _descriptor;
 
-        public static string _lobbyName;
-        
-        private void Awake()
+        private SharedCoroutineStarter _couroutineStarter;
+
+        [Inject]
+        private void Construct(SharedCoroutineStarter coroutineStarter)
+        {
+            _couroutineStarter = coroutineStarter;
+        }
+
+        public void Initialize()
         {
             InitializeGlobalData();
         }
@@ -53,7 +62,7 @@ namespace VmodMonkeMapLoader.Behaviours
                 }
             }
         }
-        
+
         public static void JoinGame()
         {
             if (!_lobbyName.IsNullOrWhiteSpace())
@@ -73,13 +82,13 @@ namespace VmodMonkeMapLoader.Behaviours
 
         public void LoadMap(MapInfo mapInfo, Action<bool> isSuccess)
         {
-            StartCoroutine(LoadMapFromPackageFileAsync(mapInfo, b =>
+            _couroutineStarter.StartCoroutine(LoadMapFromPackageFileAsync(mapInfo, b =>
             {
                 Debug.Log("______ MAP LOADED");
                 isSuccess(b);
             }));
         }
-        
+
         public IEnumerator LoadMapFromPackageFileAsync(MapInfo mapInfo, Action<bool> isSuccess)
         {
             if (_isLoading)
@@ -137,8 +146,8 @@ namespace VmodMonkeMapLoader.Behaviours
             var scene = SceneManager.LoadSceneAsync(scenePath[0], LoadSceneMode.Additive);
             yield return scene;
 
-            GameObject[] allObjects = FindObjectsOfType<GameObject>();
-            MapDescriptor descriptor = FindObjectOfType<MapDescriptor>();
+            GameObject[] allObjects = Object.FindObjectsOfType<GameObject>();
+            MapDescriptor descriptor = Object.FindObjectOfType<MapDescriptor>();
 
             foreach(GameObject gameObject in allObjects)
             {
@@ -191,7 +200,7 @@ namespace VmodMonkeMapLoader.Behaviours
             {
                 Logger.LogText("Destroying old map");
 
-                Destroy(_mapInstance);
+                Object.Destroy(_mapInstance);
 
                 _mapInstance = null;
                 Resources.UnloadUnusedAssets();
@@ -306,7 +315,7 @@ namespace VmodMonkeMapLoader.Behaviours
                 _globalData.BigTreeTeleportToMap = Object.Instantiate(bundle.LoadAsset<GameObject>("_Teleporter"));
 
                 _globalData.BigTreeTeleportToMap.layer = Constants.MaskLayerPlayerTrigger;
-                DontDestroyOnLoad(_globalData.BigTreeTeleportToMap);
+                Object.DontDestroyOnLoad(_globalData.BigTreeTeleportToMap);
             }
 
 
@@ -318,7 +327,7 @@ namespace VmodMonkeMapLoader.Behaviours
 
             orb.AddComponent<RotateByHand>();
             orb.GetComponent<Renderer>().enabled = false;
-            Destroy(orb.GetComponent<Renderer>());
+            Object.Destroy(orb.GetComponent<Renderer>());
             orb.layer = 18;
 
             orbVisuals.transform.SetParent(orb.transform);
@@ -328,7 +337,7 @@ namespace VmodMonkeMapLoader.Behaviours
 
             orbVisuals.AddComponent<PreviewOrb>();
             orbVisuals.GetComponent<Collider>().enabled = false;
-            Destroy(orbVisuals.GetComponent<Collider>());
+            Object.Destroy(orbVisuals.GetComponent<Collider>());
 
             //orb.layer = Constants.MaskLayerPlayerTrigger;
 
@@ -339,13 +348,13 @@ namespace VmodMonkeMapLoader.Behaviours
             treeTeleporter.Delay = 1.5f;
             treeTeleporter.TouchType = GorillaTouchType.Head;
 
-            DontDestroyOnLoad(treeTeleporter);
+            Object.DontDestroyOnLoad(treeTeleporter);
             if(_globalData.BigTreePoint == null)
             {
                 _globalData.BigTreePoint = new GameObject("TreeHomeTargetObject");
                 _globalData.BigTreePoint.transform.position = new Vector3(-66f, 12.3f, -83f);
                 _globalData.BigTreePoint.transform.rotation = Quaternion.Euler(0f, -90f, 0f);
-                DontDestroyOnLoad(_globalData.BigTreePoint);
+                Object.DontDestroyOnLoad(_globalData.BigTreePoint);
             }
             treeTeleporter.TeleportPoints.Add(_globalData.BigTreePoint.transform);
 
@@ -354,7 +363,7 @@ namespace VmodMonkeMapLoader.Behaviours
             // Emergency Teleport Stuff
             if (_globalData.FallEmergencyTeleport != null)
             {
-                Destroy(_globalData.FallEmergencyTeleport);
+                Object.Destroy(_globalData.FallEmergencyTeleport);
                 _globalData.FallEmergencyTeleport = null;
             }
             _globalData.FallEmergencyTeleport = new GameObject("FallEmergencyTeleport");
@@ -362,7 +371,7 @@ namespace VmodMonkeMapLoader.Behaviours
             _globalData.FallEmergencyTeleport.AddComponent<BoxCollider>().isTrigger = true;
             _globalData.FallEmergencyTeleport.transform.localScale = new Vector3(1000f, 1f, 1000f);
             _globalData.FallEmergencyTeleport.transform.position = _globalData.TreeOrigin + new Vector3(0f, -200f, 0f);
-            DontDestroyOnLoad(_globalData.FallEmergencyTeleport);
+            Object.DontDestroyOnLoad(_globalData.FallEmergencyTeleport);
 
             Teleporter emergencyFallTeleporter = _globalData.FallEmergencyTeleport.AddComponent<Teleporter>();
             emergencyFallTeleporter.TeleportPoints = new List<Transform>() { _globalData.BigTreePoint.transform };

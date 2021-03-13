@@ -3,6 +3,7 @@ using ComputerInterface.ViewLib;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml;
 using VmodMonkeMapLoader.Behaviours;
 using VmodMonkeMapLoader.Helpers;
 using VmodMonkeMapLoader.Models;
@@ -11,20 +12,21 @@ namespace VmodMonkeMapLoader.ComputerInterface
 {
     public class MapListView : ComputerView
     {
-        //[Inject]
-        //public MapLoader MapLoader { get; set; }
-
         private List<MapInfo> _mapList = new List<MapInfo>();
         private bool _isFirstView = true;
-        private int _mapSelection = 0;
-        private int _selectedRow = 0;
-        private bool _isError = false;
+        private int _mapSelection;
+        private bool _isError;
         private int _currentPage = 1;
-        private int _maxRowOnPage = 0;
         private const int _pageSize = 9;
-        private int _mapCount = 0;
-        private int _totalPages = 0;
-        private bool _mapListLoaded = false;
+        private int _mapCount;
+        private int _totalPages;
+
+        private readonly UISelectionHandler _selectionHandler;
+
+        private MapListView()
+        {
+            _selectionHandler = new UISelectionHandler(EKeyboardKey.Up, EKeyboardKey.Down);
+        }
 
         public override void OnShow(object[] args)
         {
@@ -32,10 +34,12 @@ namespace VmodMonkeMapLoader.ComputerInterface
             
             if (_isFirstView)
             {
-                Text = "========================================\n"
-                +      "<align=\"center\">Monke Map Loader\n"
-                +      "<align=\"center\">by <color=#3fbc04>Vadix</color> & <color=#8dc2ef>Bobbie</color>\n"
-                +      "========================================";
+                var str = new StringBuilder();
+                str.Repeat("=", SCREEN_WIDTH).AppendLine();
+                str.BeginCenter().Append("Monke Map Loader").AppendLine();
+                str.Append("by ").AppendClr("Vadix", "3fbc04").Append(" & ").AppendClr("Bobbie", "8dc2ef").EndAlign().AppendLine();
+                str.Repeat("=", SCREEN_WIDTH);
+                Text = str.ToString();
             }
             else
             {
@@ -55,15 +59,19 @@ namespace VmodMonkeMapLoader.ComputerInterface
             if (_isError)
             {
                 _isError = false;
-                //ReturnView();
                 ReturnToMainMenu();
+                return;
+            }
+
+            if (_selectionHandler.HandleKeypress(key))
+            {
+                DrawList();
                 return;
             }
 
             switch (key)
             {
                 case EKeyboardKey.Back:
-                    //ReturnView();
                     ReturnToMainMenu();
                     break;
 
@@ -72,22 +80,21 @@ namespace VmodMonkeMapLoader.ComputerInterface
                         break;
                     ShowView<MapDetailsView>(_mapList[_mapSelection]);
                     return;
-                    break;
 
                 case EKeyboardKey.Left:
-                    if (_currentPage > 1) _currentPage--;
+                    if (_currentPage > 1)
+                    {
+                        _selectionHandler.CurrentSelectionIndex = 0;
+                        _currentPage--;
+                    }
                     break;
 
                 case EKeyboardKey.Right:
-                    if (_currentPage < _totalPages) _currentPage++;
-                    break;
-
-                case EKeyboardKey.Up:
-                    if (_selectedRow > 0) _selectedRow--;
-                    break;
-
-                case EKeyboardKey.Down:
-                    if (_selectedRow < _maxRowOnPage) _selectedRow++;
+                    if (_currentPage < _totalPages)
+                    {
+                        _selectionHandler.CurrentSelectionIndex = 0;
+                        _currentPage++;
+                    }
                     break;
             }
 
@@ -98,12 +105,9 @@ namespace VmodMonkeMapLoader.ComputerInterface
         {
             _mapList = MapFileUtils.GetMapList();
             _mapSelection = 0;
-            _selectedRow = 0;
             _currentPage = 1;
-            _maxRowOnPage = 0;
             _mapCount = _mapList.Count;
             _totalPages = (int)Math.Ceiling((decimal)_mapCount / (decimal)_pageSize);
-            _mapListLoaded = false;
             _isError = false;
             DrawList();
             PreviewOrb.ChangeOrb(_mapList[0]);
@@ -111,9 +115,15 @@ namespace VmodMonkeMapLoader.ComputerInterface
 
         private void DrawList()
         {
+            var str = new StringBuilder();
+
             if (_mapCount == 0)
             {
-                Text = "NO CUSTOM MAPS FOUND.\n\nIf you have map files in the folder make sure they are in the right format.\n\nPRESS ANY BUTTON TO CONTINUE...";
+                str.Append("NO CUSTOM MAPS FOUND.").Repeat("\n", 2);
+                str.Append("If you have map files in the folder").AppendLine();
+                str.Append(" make sure they are in the right format.").Repeat("\n", 2);
+                str.Append("PRESS ANY BUTTON TO CONTINUE...");
+                Text = str.ToString();
                 _isError = true;
                 return;
             }
@@ -123,41 +133,38 @@ namespace VmodMonkeMapLoader.ComputerInterface
                 return;
             }
             
-            var mapText = new StringBuilder()
-                .Append("SELECT MAP WITH ARROWS, LOAD WITH ENTER:")
-                .AppendLine();
+            str.Append("SELECT MAP WITH ARROWS, LOAD WITH ENTER:").AppendLine();
             
             var startIndex = (_currentPage - 1) * _pageSize;
             var endIndex = Math.Min(startIndex + _pageSize - 1, _mapCount - 1);
-            _maxRowOnPage = endIndex - startIndex;
-            _selectedRow = Math.Min(_selectedRow, _maxRowOnPage);
+            _selectionHandler.Max = endIndex - startIndex;
+            var selectedIdx = _selectionHandler.CurrentSelectionIndex;
             var line = 0;
             for (var i = startIndex; i <= endIndex; i++)
             {
                 var mapName = _mapList[i].PackageInfo.Descriptor.Name.Length > 31
                     ? _mapList[i].PackageInfo.Descriptor.Name.Substring(0, 30) + ".."
                     : _mapList[i].PackageInfo.Descriptor.Name;
-                mapText.AppendLine($"{(line == _selectedRow ? "<color=#00cc44>>" : "  ")} {mapName}{(line == _selectedRow ? "</color>" : "")}");
+
+                str.Append(line == selectedIdx ? "<color=#00cc44>> " : "   ");
+                str.Append(mapName);
+                if (line == selectedIdx) str.Append("</color>");
+                if(i!=endIndex) str.AppendLine();
+
                 line++;
-                _mapSelection = startIndex + _selectedRow;
+                _mapSelection = startIndex + selectedIdx;
             }
 
-            for (int j = 0; j < _pageSize - (endIndex - startIndex + 1); j++)
-                mapText.AppendLine();
+            str.Repeat("\n", _pageSize - (_selectionHandler.Max + 1));
 
 
-            mapText.Append(_currentPage > 1 ? "<noparse><<      </noparse>" : "         ");
-            mapText.Append($"<noparse>{_currentPage,3} : {_totalPages,-4}</noparse>");
-            mapText.Append(_currentPage < _totalPages ? "<noparse>      >></noparse>" : "        ");
+            str.Append(_currentPage > 1 ? "<noparse><<      </noparse>" : "         ");
+            str.Append($"<noparse>{_currentPage,3} : {_totalPages,-4}</noparse>");
+            str.Append(_currentPage < _totalPages ? "<noparse>      >></noparse>" : "        ");
             //"  [ ^/v - selection   </> - change page ]"   {i + 1,2}.
-            Text = mapText.ToString();
-            int selectedMap = ((_currentPage - 1) * _pageSize) + _selectedRow;
+            Text = str.ToString();
+            int selectedMap = ((_currentPage - 1) * _pageSize) + selectedIdx;
             PreviewOrb.ChangeOrb(_mapList[selectedMap]);
         }
-
-        //private void OnMapLoaded()
-        //{
-        //    Text = "Map loaded";
-        //}
     }
 }
