@@ -41,13 +41,16 @@ namespace VmodMonkeMapLoader.Behaviours
         
         private IEnumerator TeleportPlayer()
         {
-            if (TeleporterType == TeleporterType.Map)
+            if (TeleporterType == TeleporterType.Map) 
             {
                 TeleportPoints = GameObject.Find("SpawnPointContainer")?.GetComponentsInChildren<Transform>().Where(e => e != null && e.gameObject.name != "SpawnPointContainer").ToList();
             }
 
             if (TeleportPoints == null || !TeleportPoints.HasAtLeast(0))
-                yield break;
+            {
+                if (TeleporterType == TeleporterType.Map) TeleportPoints = new List<Transform>() { GameObject.Find("TreeHomeTargetObject").transform };
+                else yield break;
+            }
 
             var destination = TeleportPoints.Count > 1
                 ? TeleportPoints[Random.Range(0, TeleportPoints.Count)]
