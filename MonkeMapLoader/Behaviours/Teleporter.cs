@@ -55,9 +55,7 @@ namespace VmodMonkeMapLoader.Behaviours
             var destination = TeleportPoints.Count > 1
                 ? TeleportPoints[Random.Range(0, TeleportPoints.Count)]
                 : TeleportPoints[0];
-
-            Logger.LogText("Teleporting player to: " + destination.position);
-
+            
             PlayerTeleportPatch.TeleportPlayer(destination);
 
             if (TagOnTeleport) TagZone.TagLocalPlayer();

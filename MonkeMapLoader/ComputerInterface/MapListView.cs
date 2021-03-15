@@ -133,7 +133,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
                 return;
             }
             
-            str.Append("SELECT MAP WITH ARROWS, LOAD WITH ENTER:").AppendLine();
+            str.AppendClr("[^ / v] SELECT MAP          [ENTER]  DETAILS", "8dc2ef").AppendLine();
             
             var startIndex = (_currentPage - 1) * _pageSize;
             var endIndex = Math.Min(startIndex + _pageSize - 1, _mapCount - 1);

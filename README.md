@@ -2,7 +2,7 @@
 
 A PC mod that loads custom maps for Gorilla Tag.
 
-Monke Map Loader initially started as a solo project to try to load a custom map into the game. Eventually, it became a group effort to provide a complex solution with:
+**Monke Map Loader** initially started as a solo project to try to load a custom map into the game. Eventually, it became a group effort to provide a complex solution with:
 - A nice in-game interface for selecting maps
 - Fake "public lobby" matchmaking to play with others on custom maps
 - Sets of tools for map makers to use in their creations to add gameplay variety
@@ -13,6 +13,7 @@ Main contributors beside me:
 - [Bobbie](https://github.com/legoandmars)
 - [Steven](https://github.com/DeadlyKitten)
 - [RedBrumbler](https://github.com/RedBrumbler)
+- [ToniMacaroni](https://github.com/ToniMacaroni)
 
 You can find all of us, as well as other mods, on the [Gorilla Tag Modding Discord](http://discord.gg/b2MhDBAzTv)
 

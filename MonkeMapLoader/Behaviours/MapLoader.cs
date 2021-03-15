@@ -84,7 +84,7 @@ namespace VmodMonkeMapLoader.Behaviours
         {
             _couroutineStarter.StartCoroutine(LoadMapFromPackageFileAsync(mapInfo, b =>
             {
-                Debug.Log("______ MAP LOADED");
+                Logger.LogText("______ MAP LOADED");
                 isSuccess(b);
             }));
         }

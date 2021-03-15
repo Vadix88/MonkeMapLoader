@@ -2,6 +2,7 @@
 using HarmonyLib;
 using UnityEngine;
 using VmodMonkeMapLoader.Behaviours;
+using Logger = VmodMonkeMapLoader.Helpers.Logger;
 
 namespace VmodMonkeMapLoader.Patches
 {
@@ -28,8 +29,8 @@ namespace VmodMonkeMapLoader.Patches
             }
             catch (Exception e)
             {
-                Debug.Log("Error when triggering room events:");
-                Debug.Log(e);
+                Logger.LogText("Error when triggering room events:");
+                Logger.LogException(e);
             }
         }
 

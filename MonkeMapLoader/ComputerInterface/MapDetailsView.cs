@@ -1,6 +1,8 @@
-﻿using System.Text;
+﻿using System.Collections;
+using System.Text;
 using ComputerInterface;
 using ComputerInterface.ViewLib;
+using UnityEngine;
 using VmodMonkeMapLoader.Behaviours;
 using VmodMonkeMapLoader.Helpers;
 using VmodMonkeMapLoader.Models;
@@ -13,11 +15,14 @@ namespace VmodMonkeMapLoader.ComputerInterface
         private readonly MapLoader _mapLoader;
 
         private MapInfo _mapInfo;
+        private SharedCoroutineStarter _coroutineStarter;
         private bool _isError;
+        private bool _isMapLoaded;
 
-        public MapDetailsView(MapLoader mapLoader)
+        public MapDetailsView(MapLoader mapLoader, SharedCoroutineStarter coroutineStarter)
         {
             _mapLoader = mapLoader;
+            _coroutineStarter = coroutineStarter;
         }
 
         public override void OnShow(object[] args)
@@ -34,6 +39,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
             var mapInfo = args[0] as MapInfo ?? Constants.MapInfoError;
 
             _isError = false;
+            _isMapLoaded = false;
             _mapInfo = mapInfo;
             PrintMapInfo();
         }
@@ -47,6 +53,13 @@ namespace VmodMonkeMapLoader.ComputerInterface
                 return;
             }
 
+            if (_isMapLoaded)
+            {
+                _isMapLoaded = false;
+                PrintMapInfo();
+                return;
+            }
+
             switch (key)
             {
                 case EKeyboardKey.Back:
@@ -55,7 +68,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
                     break;
 
                 case EKeyboardKey.Enter:
-                    if (_isError)
+                    if (_isMapLoaded)
                         break;
                     Text = "Loading map: " + _mapInfo.PackageInfo.Descriptor.Name;
                     _mapLoader.LoadMap(_mapInfo, b => OnMapLoaded());
@@ -67,7 +80,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
         {
             var mapDescriptor = _mapInfo.PackageInfo.Descriptor;
             var sb = new StringBuilder()
-                .AppendLine("<noparse> << BACK            ENTER - LOAD MAP</noparse>")
+                .AppendClr("<noparse> << [BACK]            [ENTER]  LOAD MAP</noparse>", "8dc2ef").AppendLine()
                 .AppendLine()
                 .AppendLine("MAP DETAILS")
                 .AppendLine()
@@ -81,7 +94,21 @@ namespace VmodMonkeMapLoader.ComputerInterface
         private void OnMapLoaded()
         {
             Text = "\n\n\n<align=\"center\">Map loaded!";
-            _isError = true;
+            _isMapLoaded = true;
+
+            _coroutineStarter.StopCoroutine(HideMapLoaderText());
+            _coroutineStarter.StartCoroutine(HideMapLoaderText());
+        }
+
+        private IEnumerator HideMapLoaderText()
+        {
+            yield return new WaitForSeconds(5f);
+
+            if (_isMapLoaded)
+            {
+                _isMapLoaded = false;
+                PrintMapInfo();
+            }
         }
     }
 }

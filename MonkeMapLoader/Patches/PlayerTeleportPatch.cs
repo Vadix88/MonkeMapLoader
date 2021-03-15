@@ -2,6 +2,7 @@
 using HarmonyLib;
 using System.Reflection;
 using UnityEngine;
+using Logger = VmodMonkeMapLoader.Helpers.Logger;
 
 namespace VmodMonkeMapLoader.Patches
 {
@@ -41,7 +42,7 @@ namespace VmodMonkeMapLoader.Patches
                     ___denormalizedVelocityAverage = Vector3.zero;
                     playerRigidBody.isKinematic = false;
                 }
-                Debug.Log("_______====== Tepppp");
+                Logger.LogText("Teleported player to: " + _teleportDestination.position);
                 _isTeleporting = false;
                 return false;
             }
