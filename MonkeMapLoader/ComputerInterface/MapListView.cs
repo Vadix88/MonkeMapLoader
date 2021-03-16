@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
 using UnityEngine;
 using VmodMonkeMapLoader.Behaviours;
@@ -19,7 +20,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
         private int _mapSelection;
         private bool _isError;
         private int _currentPage = 1;
-        private const int _pageSize = 9;
+        private const int _pageSize = 8;
         private int _mapCount;
         private int _totalPages;
 
@@ -113,7 +114,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
             _mapSelection = 0;
             _currentPage = 1;
             _mapCount = _mapList.Count;
-            _totalPages = (int)Math.Ceiling((decimal)_mapCount / (decimal)_pageSize);
+            _totalPages = (int) Math.Ceiling((decimal) _mapCount / (decimal) _pageSize);
             _isError = false;
             DrawList();
             if (_mapCount > 0)
@@ -156,16 +157,15 @@ namespace VmodMonkeMapLoader.ComputerInterface
                 str.Append(line == selectedIdx ? "<color=#00cc44>> " : "   ");
                 str.Append(mapName);
                 if (line == selectedIdx) str.Append("</color>");
-                if(i!=endIndex) str.AppendLine();
+                str.AppendLine();
 
                 line++;
                 _mapSelection = startIndex + selectedIdx;
             }
 
             str.Repeat("\n", _pageSize - (_selectionHandler.Max + 1));
-
-
-            str.Append(_currentPage > 1 ? "<noparse><<      </noparse>" : "         ");
+            
+            str.Append(_currentPage > 1 ? "<noparse><<      </noparse>" : "          ");
             str.Append($"<noparse>{_currentPage,3} : {_totalPages,-4}</noparse>");
             str.Append(_currentPage < _totalPages ? "<noparse>      >></noparse>" : "        ");
             Text = str.ToString();
