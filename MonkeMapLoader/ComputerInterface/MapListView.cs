@@ -1,9 +1,11 @@
 ﻿using ComputerInterface;
 using ComputerInterface.ViewLib;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using UnityEngine;
 using VmodMonkeMapLoader.Behaviours;
 using VmodMonkeMapLoader.Helpers;
 using VmodMonkeMapLoader.Models;
@@ -22,10 +24,12 @@ namespace VmodMonkeMapLoader.ComputerInterface
         private int _totalPages;
 
         private readonly UISelectionHandler _selectionHandler;
+        private SharedCoroutineStarter _coroutineStarter;
 
-        private MapListView()
+        private MapListView(SharedCoroutineStarter coroutineStarter)
         {
             _selectionHandler = new UISelectionHandler(EKeyboardKey.Up, EKeyboardKey.Down);
+            _coroutineStarter = coroutineStarter;
         }
 
         public override void OnShow(object[] args)
@@ -40,6 +44,8 @@ namespace VmodMonkeMapLoader.ComputerInterface
                 str.Append("by ").AppendClr("Vadix", "3fbc04").Append(" & ").AppendClr("Bobbie", "8dc2ef").EndAlign().AppendLine();
                 str.Repeat("=", SCREEN_WIDTH);
                 Text = str.ToString();
+                
+                _coroutineStarter.StartCoroutine(HideSplashScreen());
             }
             else
             {
@@ -110,7 +116,8 @@ namespace VmodMonkeMapLoader.ComputerInterface
             _totalPages = (int)Math.Ceiling((decimal)_mapCount / (decimal)_pageSize);
             _isError = false;
             DrawList();
-            PreviewOrb.ChangeOrb(_mapList[0]);
+            if (_mapCount > 0)
+                PreviewOrb.ChangeOrb(_mapList[0]);
         }
 
         private void DrawList()
@@ -161,10 +168,20 @@ namespace VmodMonkeMapLoader.ComputerInterface
             str.Append(_currentPage > 1 ? "<noparse><<      </noparse>" : "         ");
             str.Append($"<noparse>{_currentPage,3} : {_totalPages,-4}</noparse>");
             str.Append(_currentPage < _totalPages ? "<noparse>      >></noparse>" : "        ");
-            //"  [ ^/v - selection   </> - change page ]"   {i + 1,2}.
             Text = str.ToString();
             int selectedMap = ((_currentPage - 1) * _pageSize) + selectedIdx;
             PreviewOrb.ChangeOrb(_mapList[selectedMap]);
+        }
+
+        private IEnumerator HideSplashScreen()
+        {
+            yield return new WaitForSeconds(5f);
+
+            if (_isFirstView)
+            {
+                _isFirstView = false;
+                RefreshMapList();
+            }
         }
     }
 }
