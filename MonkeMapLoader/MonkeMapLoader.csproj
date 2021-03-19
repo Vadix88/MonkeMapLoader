@@ -27,17 +27,11 @@
     <Reference Include="BepInEx">
       <HintPath>Libs\BepInEx.dll</HintPath>
     </Reference>
-    <Reference Include="BepInEx.Harmony">
-      <HintPath>Libs\BepInEx.Harmony.dll</HintPath>
-    </Reference>
     <Reference Include="Bepinject">
       <HintPath>Libs\Bepinject.dll</HintPath>
     </Reference>
     <Reference Include="ComputerInterface">
       <HintPath>Libs\ComputerInterface.dll</HintPath>
-    </Reference>
-    <Reference Include="ComputerInterface.Commands">
-      <HintPath>Libs\ComputerInterface.Commands.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>Libs\Newtonsoft.Json.dll</HintPath>
@@ -59,9 +53,6 @@
     </Reference>
     <Reference Include="UnityEngine.ImageConversionModule">
       <HintPath>Libs\UnityEngine.ImageConversionModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.InputLegacyModule">
-      <HintPath>Libs\UnityEngine.InputLegacyModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.PhysicsModule">
       <HintPath>Libs\UnityEngine.PhysicsModule.dll</HintPath>
