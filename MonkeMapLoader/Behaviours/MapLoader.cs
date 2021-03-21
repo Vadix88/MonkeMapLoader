@@ -72,12 +72,22 @@ namespace VmodMonkeMapLoader.Behaviours
                 {
                     Physics.gravity = new Vector3(0, _descriptor.GravitySpeed, 0);
                 }
+
+                foreach (var go in Resources.FindObjectsOfTypeAll<GameObject>().Where(x => x.transform.parent == null))
+                {
+                    go.transform.position -= new Vector3(0, 5000, 0);
+                }
             }
         }
 
         public static void ResetMapProperties()
         {
             if (Physics.gravity.y != -9.8f) Physics.gravity = new Vector3(0, -9.8f, 0);
+
+            foreach (var go in Resources.FindObjectsOfTypeAll<GameObject>().Where(x => x.transform.parent == null))
+            {
+                go.transform.position += new Vector3(0, 5000, 0);
+            }
         }
 
         public void LoadMap(MapInfo mapInfo, Action<bool> isSuccess)
