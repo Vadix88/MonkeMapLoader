@@ -5,9 +5,9 @@ namespace VmodMonkeMapLoader.Helpers
 {
     public class Constants
     {
-        public const int MaskLayerGorillaTrigger = 15;
+        public const int MaskLayerHeadTrigger = 15;
         public const int MaskLayerHandTrigger = 18;
-        public const int MaskLayerPlayerTrigger = 7;
+        public const int MaskLayerPlayerTrigger = 20;
         public const string DefaultShaderName = "Standard";
         public const string CustomMapsFolderName = "CustomMaps";
         public const string MiscObjectsFolderName = "Misc";

@@ -284,16 +284,18 @@ namespace VmodMonkeMapLoader.Behaviours
                 if (collider == null) return;
                 if (collider.isTrigger)
                 {
-                    child.layer = Constants.MaskLayerGorillaTrigger;
+                    child.layer = Constants.MaskLayerPlayerTrigger;
                     break;
-                }else if(child != null && child.layer == 0)
+                }else if(child.layer == 0)
                 {
                     child.layer = 9;
                 }
-                if (child.GetComponent<Teleporter>() != null || child.GetComponent<TagZone>() != null)
+                if (child.GetComponent<Teleporter>() != null
+                    || child.GetComponent<TagZone>() != null
+                    || child.GetComponent<ObjectTrigger>() != null)
                 {
                     collider.isTrigger = true;
-                    child.layer = Constants.MaskLayerHandTrigger;
+                    child.layer = Constants.MaskLayerPlayerTrigger;
                 }
             }
         }

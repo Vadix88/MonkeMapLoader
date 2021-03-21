@@ -7,7 +7,6 @@ using UnityEngine;
 
 #if PLUGIN
 using VmodMonkeMapLoader.Patches;
-using Logger = VmodMonkeMapLoader.Helpers.Logger;
 #endif
 
 namespace VmodMonkeMapLoader.Behaviours
