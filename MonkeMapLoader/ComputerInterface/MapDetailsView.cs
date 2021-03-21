@@ -1,5 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using ComputerInterface;
 using ComputerInterface.ViewLib;
 using UnityEngine;
@@ -15,14 +18,13 @@ namespace VmodMonkeMapLoader.ComputerInterface
         private readonly MapLoader _mapLoader;
 
         private MapInfo _mapInfo;
-        private SharedCoroutineStarter _coroutineStarter;
         private bool _isError;
         private bool _isMapLoaded;
+        private CancellationTokenSource _loaderCancelToken;
 
-        public MapDetailsView(MapLoader mapLoader, SharedCoroutineStarter coroutineStarter)
+        public MapDetailsView(MapLoader mapLoader)
         {
             _mapLoader = mapLoader;
-            _coroutineStarter = coroutineStarter;
         }
 
         public override void OnShow(object[] args)
@@ -91,24 +93,35 @@ namespace VmodMonkeMapLoader.ComputerInterface
             Text = sb.ToString();
         }
 
-        private void OnMapLoaded()
+        private async void OnMapLoaded()
         {
-            Text = "\n\n\n<align=\"center\">Map loaded!";
+            SetText(str =>
+            {
+                str.BeginCenter().Append("Map Loaded!").EndAlign();
+            });
+
             _isMapLoaded = true;
 
-            _coroutineStarter.StopCoroutine(HideMapLoaderText());
-            _coroutineStarter.StartCoroutine(HideMapLoaderText());
+            _loaderCancelToken?.Cancel();
+            _loaderCancelToken?.Dispose();
+            _loaderCancelToken = new CancellationTokenSource();
+
+            await HideMapLoaderText(_loaderCancelToken.Token);
         }
 
-        private IEnumerator HideMapLoaderText()
+        private async Task HideMapLoaderText(CancellationToken token)
         {
-            yield return new WaitForSeconds(5f);
-
-            if (_isMapLoaded)
+            try
             {
-                _isMapLoaded = false;
-                PrintMapInfo();
+                await Task.Delay(5000, token);
+
+                if (_isMapLoaded)
+                {
+                    _isMapLoaded = false;
+                    PrintMapInfo();
+                }
             }
+            catch (OperationCanceledException) { }
         }
     }
 }

@@ -27,17 +27,11 @@
     <Reference Include="BepInEx">
       <HintPath>Libs\BepInEx.dll</HintPath>
     </Reference>
-    <Reference Include="BepInEx.Harmony">
-      <HintPath>Libs\BepInEx.Harmony.dll</HintPath>
-    </Reference>
     <Reference Include="Bepinject">
       <HintPath>Libs\Bepinject.dll</HintPath>
     </Reference>
     <Reference Include="ComputerInterface">
       <HintPath>Libs\ComputerInterface.dll</HintPath>
-    </Reference>
-    <Reference Include="ComputerInterface.Commands">
-      <HintPath>Libs\ComputerInterface.Commands.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>Libs\Newtonsoft.Json.dll</HintPath>
@@ -63,9 +57,6 @@
     <Reference Include="UnityEngine.ImageConversionModule">
       <HintPath>Libs\UnityEngine.ImageConversionModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.InputLegacyModule">
-      <HintPath>Libs\UnityEngine.InputLegacyModule.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.PhysicsModule">
       <HintPath>Libs\UnityEngine.PhysicsModule.dll</HintPath>
     </Reference>
@@ -81,7 +72,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;C:\gry\Steam\steamapps\common\Gorilla Tag\BepInEx\plugins\MonkeMapLoader\$(TargetName).dll&quot;" />
+    <Exec Command="copy /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;D:\SteamLibrary\steamapps\common\Gorilla Tag\BepInEx\plugins\MonkeMapLoader\$(TargetName).dll&quot;" />
   </Target>
 
 </Project>
