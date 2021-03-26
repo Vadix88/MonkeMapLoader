@@ -16,5 +16,11 @@ namespace VmodMonkeMapLoader.Models
 
         [JsonProperty(PropertyName = "mapColor")]
         public Color MapColor { get; set; }
+
+        [JsonProperty(PropertyName = "guid")]
+        public string GUID { get; set; }
+
+        [JsonProperty(PropertyName = "version")]
+        public int Version { get; set; }
     }
 }

@@ -181,6 +181,10 @@ namespace VmodMonkeMapLoader.Behaviours
 
             Logger.LogText("Map asset loaded: " + map.name);
             _lobbyName = mapInfo.PackageInfo.Descriptor.Author + "_" + mapInfo.PackageInfo.Descriptor.Name;
+            if(!String.IsNullOrWhiteSpace(mapInfo.PackageInfo.Config.GUID))
+            {
+                _lobbyName = mapInfo.PackageInfo.Config.GUID + "_" + mapInfo.PackageInfo.Config.Version;
+            }
 
             Exception ex = null;
 
