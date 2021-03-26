@@ -19,7 +19,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
         private readonly UIElementPageHandler<MapInfo> _pageHandler;
         private readonly UISelectionHandler _selectionHandler;
 
-        private List<MapInfo> _mapList = new List<MapInfo>();
+        private static List<MapInfo> _mapList = new List<MapInfo>();
         private MapInfo _selectedMap;
 
         private bool _isFirstView = true;
@@ -62,18 +62,24 @@ namespace VmodMonkeMapLoader.ComputerInterface
             RefreshMapList();
         }
 
-        private void RefreshMapList()
+        private void RefreshMapList(bool force = false)
         {
-            _mapList = MapFileUtils.GetMapList();
-
-            _pageHandler.SetElements(_mapList.ToArray());
-
-            _selectionHandler.CurrentSelectionIndex = 0;
+            if((_mapList == null || _mapList.Count == 0) || force) LoadMaps();
 
             _isError = false;
             DrawList();
+
+            var selectedIdx = _pageHandler.GetAbsoluteIndex(_selectionHandler.CurrentSelectionIndex);
+
             if (_mapList.Count > 0)
-                PreviewOrb.ChangeOrb(_mapList[0]);
+                PreviewOrb.ChangeOrb(_mapList[selectedIdx]);
+        }
+
+        private void LoadMaps()
+        {
+            _mapList = MapFileUtils.GetMapList();
+            _pageHandler.SetElements(_mapList.ToArray());
+            _selectionHandler.CurrentSelectionIndex = 0;
         }
 
         private void DrawList()
@@ -168,6 +174,9 @@ namespace VmodMonkeMapLoader.ComputerInterface
             {
                 case EKeyboardKey.Back:
                     ReturnToMainMenu();
+                    break;
+                case EKeyboardKey.Option1:
+                    RefreshMapList(true);
                     break;
             }
         }

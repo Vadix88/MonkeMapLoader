@@ -97,7 +97,11 @@ namespace VmodMonkeMapLoader.ComputerInterface
         {
             SetText(str =>
             {
-                str.BeginCenter().Append("Map Loaded!").EndAlign();
+                str.BeginCenter().Append("Map Loaded!").EndAlign()
+                .AppendLine()
+                .AppendLine()
+                .AppendLine()
+                .BeginCenter().Append("Get more maps at MonkeMapHub.com").EndAlign();
             });
 
             _isMapLoaded = true;

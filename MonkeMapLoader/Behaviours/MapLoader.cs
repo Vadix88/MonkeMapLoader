@@ -22,6 +22,7 @@ namespace VmodMonkeMapLoader.Behaviours
         private static bool _isLoading;
         private static GlobalData _globalData;
         private static MapDescriptor _descriptor;
+        private static bool isMoved = false;
 
         private SharedCoroutineStarter _couroutineStarter;
 
@@ -72,10 +73,13 @@ namespace VmodMonkeMapLoader.Behaviours
                 {
                     Physics.gravity = new Vector3(0, _descriptor.GravitySpeed, 0);
                 }
-
-                foreach (var go in Resources.FindObjectsOfTypeAll<GameObject>().Where(x => x.transform.parent == null))
+                if (!isMoved)
                 {
-                    go.transform.position -= new Vector3(0, 5000, 0);
+                    isMoved = true;
+                    foreach (var go in Resources.FindObjectsOfTypeAll<GameObject>().Where(x => x.transform.parent == null))
+                    {
+                        go.transform.position -= new Vector3(0, 5000, 0);
+                    }
                 }
             }
         }
@@ -84,9 +88,14 @@ namespace VmodMonkeMapLoader.Behaviours
         {
             if (Physics.gravity.y != -9.8f) Physics.gravity = new Vector3(0, -9.8f, 0);
 
-            foreach (var go in Resources.FindObjectsOfTypeAll<GameObject>().Where(x => x.transform.parent == null))
+            if (isMoved)
             {
-                go.transform.position += new Vector3(0, 5000, 0);
+                isMoved = false;
+                foreach (var go in Resources.FindObjectsOfTypeAll<GameObject>().Where(x => x.transform.parent == null))
+                {
+                    go.transform.position += new Vector3(0, 5000, 0);
+                }
+
             }
         }
 
