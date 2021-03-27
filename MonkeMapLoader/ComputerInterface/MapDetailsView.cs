@@ -82,10 +82,10 @@ namespace VmodMonkeMapLoader.ComputerInterface
         {
             var mapDescriptor = _mapInfo.PackageInfo.Descriptor;
             var sb = new StringBuilder()
-                .AppendClr("<noparse> << [BACK]            [ENTER]  LOAD MAP</noparse>", "8dc2ef").AppendLine()
+                .AppendClr("<noparse> << [BACK]              [ENTER]  LOAD MAP</noparse>", "8dc2ef").AppendLine()
                 .AppendLine()
                 .AppendLine("MAP DETAILS")
-                .AppendLine()
+                .AppendLines(2)
                 .Append("NAME:  ").AppendClr(mapDescriptor.Name, "00cc44").AppendLine()
                 .Append("AUTHOR:  ").AppendClr(mapDescriptor.Author, "00cc44").AppendLine()
                 .Append("DESCRIPTION:  ").AppendClr(mapDescriptor.Description, "00cc44").AppendLine();
