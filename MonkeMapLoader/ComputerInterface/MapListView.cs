@@ -131,7 +131,9 @@ namespace VmodMonkeMapLoader.ComputerInterface
             str.Append("NO CUSTOM MAPS FOUND.").Repeat("\n", 2);
             str.Append("If you have map files in the folder").AppendLine();
             str.Append(" make sure they are in the right format.").Repeat("\n", 2);
-            str.Append("PRESS ANY BUTTON TO CONTINUE...");
+            str.Append("You can find maps on the website:").AppendLine();
+            str.BeginCenter().AppendClr("MonkeMapHub.com", "8dc2ef").EndAlign().Repeat("\n", 2);
+            str.BeginCenter().Append("PRESS ANY BUTTON TO CONTINUE...").EndAlign();
         }
 
         private void OnMapSelected(int _)

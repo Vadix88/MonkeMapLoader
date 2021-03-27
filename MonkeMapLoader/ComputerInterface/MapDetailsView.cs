@@ -101,7 +101,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
                 .AppendLine()
                 .AppendLine()
                 .AppendLine()
-                .BeginCenter().Append("Get more maps at MonkeMapHub.com").EndAlign();
+                .BeginCenter().Append("Get more maps at ").AppendClr("MonkeMapHub.com", "8dc2ef").EndAlign();
             });
 
             _isMapLoaded = true;
