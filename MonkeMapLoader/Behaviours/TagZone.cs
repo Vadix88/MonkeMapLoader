@@ -35,13 +35,10 @@ namespace VmodMonkeMapLoader.Behaviours
         {
             if (PhotonNetwork.InRoom)
             {
-                foreach (var ply in PhotonNetwork.PlayerList)
+                PhotonView.Get(GorillaTagManager.instance.GetComponent<GorillaGameManager>()).RPC("ReportTagRPC", RpcTarget.MasterClient, new object[]
                 {
-                    PhotonView.Get(GorillaTagManager.instance.GetComponent<GorillaGameManager>()).RPC("ReportTagRPC", RpcTarget.MasterClient, new object[]{
-                        ply,
-                        PhotonNetwork.LocalPlayer
-                    });
-                }
+                    PhotonNetwork.LocalPlayer
+                });
             }
         }
 

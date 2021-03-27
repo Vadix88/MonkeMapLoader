@@ -20,21 +20,27 @@ namespace VmodMonkeMapLoader.Patches
                 var playerRigidBody = __instance.GetComponent<Rigidbody>();
                 if (playerRigidBody != null)
                 {
+                    Vector3 correctedPosition = _teleportDestination.position - __instance.bodyCollider.transform.position + __instance.transform.position;
+
                     playerRigidBody.velocity = Vector3.zero;
                     playerRigidBody.isKinematic = true;
-                    __instance.transform.position = _teleportDestination.position;
+                    __instance.transform.position = correctedPosition;
+                    Debug.Log(__instance.bodyCollider.transform.position);
+
                     //__instance.transform.rotation = _teleportDestination.rotation;
 
-                    __instance.transform.rotation = Quaternion.Euler(__instance.transform.rotation.eulerAngles.x, _teleportDestination.rotation.eulerAngles.y,
-                        __instance.transform.rotation.eulerAngles.z);
+                    //__instance.transform.rotation = Quaternion.Euler(__instance.transform.rotation.eulerAngles.x, _teleportDestination.rotation.eulerAngles.y,
+                    //    __instance.transform.rotation.eulerAngles.z);
+                    __instance.Turn(_teleportDestination.rotation.eulerAngles.y - __instance.headCollider.transform.rotation.eulerAngles.y);
 
-                    ___lastPosition = _teleportDestination.position;
+                    ___lastPosition = correctedPosition;
                     ___velocityHistory = new Vector3[__instance.velocityHistorySize];
 
                     ___lastHeadPosition = __instance.headCollider.transform.position;
                     var leftHandMethod = typeof(Player).GetMethod("CurrentLeftHandPosition",
                         BindingFlags.NonPublic | BindingFlags.Instance);
                     ___lastLeftHandPosition = (Vector3)leftHandMethod.Invoke(__instance, new object[] { });
+
                     var rightHandMethod = typeof(Player).GetMethod("CurrentRightHandPosition",
                         BindingFlags.NonPublic | BindingFlags.Instance);
                     ___lastRightHandPosition = (Vector3)rightHandMethod.Invoke(__instance, new object[] { });

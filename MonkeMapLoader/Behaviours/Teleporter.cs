@@ -56,11 +56,11 @@ namespace VmodMonkeMapLoader.Behaviours
                 ? TeleportPoints[Random.Range(0, TeleportPoints.Count)]
                 : TeleportPoints[0];
             
-            PlayerTeleportPatch.TeleportPlayer(destination);
-
             if (TagOnTeleport) TagZone.TagLocalPlayer();
             if (JoinGameOnTeleport) MapLoader.JoinGame();
             if (TeleporterType == TeleporterType.Treehouse) MapLoader.ResetMapProperties();
+
+            PlayerTeleportPatch.TeleportPlayer(destination);
 
             _isTeleporting = false;
         }
