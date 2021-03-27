@@ -34,7 +34,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
 
             _pageHandler = new UIElementPageHandler<MapInfo>(EKeyboardKey.Left, EKeyboardKey.Right);
             _pageHandler.Footer = "    {2}:{3}  {0} {1}";
-            _pageHandler.EntriesPerPage = 6;
+            _pageHandler.EntriesPerPage = 9;
         }
 
         public override async void OnShow(object[] args)
@@ -91,7 +91,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
             }
 
             var str = new StringBuilder();
-            str.AppendClr("[^ / v] SELECT MAP      [ENTER] DETAILS", "8dc2ef").AppendLines(2);
+            str.AppendClr("[^ / v] SELECT MAP        [ENTER] DETAILS", "8dc2ef").AppendLines(2);
 
             _selectionHandler.MaxIdx = _pageHandler.ItemsOnScreen - 1;
 
