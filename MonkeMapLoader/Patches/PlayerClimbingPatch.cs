@@ -1,6 +1,7 @@
 ﻿using GorillaLocomotion;
 using HarmonyLib;
 using UnityEngine;
+using VmodMonkeMapLoader.Behaviours;
 
 namespace VmodMonkeMapLoader.Patches
 {
@@ -15,6 +16,8 @@ namespace VmodMonkeMapLoader.Patches
 			if (surface != null)
 			{
 				__result = surface.slipPercentage;
+				SurfaceClimbSettings surfaceClimbSettings = raycastHit.collider.GetComponent<SurfaceClimbSettings>();
+				if (surfaceClimbSettings != null && surfaceClimbSettings.Unclimbable == true) __result = 1;
 				return false;
 			}
 
