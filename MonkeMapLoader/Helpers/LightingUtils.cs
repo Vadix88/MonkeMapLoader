@@ -37,28 +37,24 @@ namespace VmodMonkeMapLoader.Helpers
             Texture map = material.GetTexture("_OcclusionMap"); // Get the occlusion map 
             Texture2D duplicatedTexture = new Texture2D(map.width, map.height);
             duplicatedTexture.name = map.name + "_adjustedByLoader";
+            Color[] pixels = (map as Texture2D).GetPixels();
             Graphics.CopyTexture(map, duplicatedTexture);
 
             // Iterate through each pixel and set them.
-            // Dunno how efficient this is but performance impact seems minimal and it's only done on load
-            for(int i = 0; i < duplicatedTexture.width; i++)
+            for(int i = 0; i < pixels.Length; i++)
             {
-                for(int j = 0; j < duplicatedTexture.height; j++)
-                {
-                    Color pixel = duplicatedTexture.GetPixel(i, j);
+                Color pixel = pixels[i];
 
-                    Color updatedPixel = new Color(
-                        StrengthFromExistingColorFloat(pixel.r, strength),
-                        StrengthFromExistingColorFloat(pixel.g, strength),
-                        StrengthFromExistingColorFloat(pixel.b, strength),
-                        1
-                    );
-
-                    duplicatedTexture.SetPixel(i, j, updatedPixel);
-                }
+                Color updatedPixel = new Color(
+                    StrengthFromExistingColorFloat(pixel.r, strength),
+                    StrengthFromExistingColorFloat(pixel.g, strength),
+                    StrengthFromExistingColorFloat(pixel.b, strength),
+                    1
+                );
+                pixels[i] = updatedPixel;
             }
 
-            duplicatedTexture.Apply();
+            duplicatedTexture.SetPixels(pixels);
             material.SetTexture("_OcclusionMap", duplicatedTexture);
         }
 
