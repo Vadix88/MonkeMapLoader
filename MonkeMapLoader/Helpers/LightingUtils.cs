@@ -55,6 +55,7 @@ namespace VmodMonkeMapLoader.Helpers
             }
 
             duplicatedTexture.SetPixels(pixels);
+            duplicatedTexture.Apply();
             material.SetTexture("_OcclusionMap", duplicatedTexture);
         }
 
