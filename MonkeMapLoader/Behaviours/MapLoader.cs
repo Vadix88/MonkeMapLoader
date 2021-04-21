@@ -365,6 +365,8 @@ namespace VmodMonkeMapLoader.Behaviours
 
                 _globalData.BigTreeTeleportToMap.layer = Constants.MaskLayerPlayerTrigger;
                 Object.DontDestroyOnLoad(_globalData.BigTreeTeleportToMap);
+                _globalData.BigTreeTeleportToMap.transform.position += new Vector3(0, -0.05f, 2.9f);
+                _globalData.BigTreeTeleportToMap.transform.Rotate(new Vector3(0, 20, 0));
             }
 
 
