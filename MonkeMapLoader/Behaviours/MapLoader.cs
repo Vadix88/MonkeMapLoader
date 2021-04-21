@@ -66,6 +66,16 @@ namespace VmodMonkeMapLoader.Behaviours
 
         public static void JoinGame()
         {
+            try
+            {
+                //AdjustLighting(_mapInstance);
+            }
+            catch (Exception e)
+            {
+                Debug.Log("ERROR LOADING TEXTURES");
+                Debug.Log(e);
+            }
+
             if (!_lobbyName.IsNullOrWhiteSpace())
             {
                 Utilla.Utils.RoomUtils.JoinModdedLobby(_lobbyName);
@@ -275,10 +285,6 @@ namespace VmodMonkeMapLoader.Behaviours
             {
                 var child = parent.transform.GetChild(i).gameObject;
 
-                // Logger.LogText("Processing object: " + child.name);
-
-                //FixShader(child); <- this crashes for some reason.
-
                 SetupCollisions(child);
 
                 if (child.transform.childCount > 0)
@@ -293,6 +299,24 @@ namespace VmodMonkeMapLoader.Behaviours
                 {
                     teleporter.TeleportPoints = new List<Transform>() { _globalData.BigTreePoint.transform };
                     teleporter.TeleporterType = TeleporterType.Treehouse;
+                }
+            }
+        }
+
+        private static void AdjustLighting(GameObject child)
+        {
+            if(child != null)
+            {
+                var renderers = child.GetComponentsInChildren<Renderer>();
+                if (renderers == null) return;
+                foreach(var renderer in renderers)
+                {
+                    if (renderer == null) return;
+                    foreach(var material in renderer.materials)
+                    {
+                        if (material == null) return;
+                        LightingUtils.SetLightingStrength(material, 1f);
+                    }
                 }
             }
         }
