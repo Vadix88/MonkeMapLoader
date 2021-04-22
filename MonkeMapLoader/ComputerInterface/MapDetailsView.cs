@@ -20,6 +20,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
         private MapInfo _mapInfo;
         private bool _isError;
         private bool _isMapLoaded;
+        private bool _isUpdated;
         private CancellationTokenSource _loaderCancelToken;
 
         public MapDetailsView(MapLoader mapLoader)
@@ -70,7 +71,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
                     break;
 
                 case EKeyboardKey.Enter:
-                    if (_isMapLoaded)
+                    if (_isMapLoaded || !_isUpdated)
                         break;
                     Text = "Loading map: " + _mapInfo.PackageInfo.Descriptor.Name;
                     _mapLoader.LoadMap(_mapInfo, b => OnMapLoaded());
@@ -80,13 +81,29 @@ namespace VmodMonkeMapLoader.ComputerInterface
 
         private void PrintMapInfo()
         {
+            var pluginVersion = new Version(Constants.PluginVersion);
+
             var mapDescriptor = _mapInfo.PackageInfo.Descriptor;
+
+            Version mapRequiredVersion;
+            if (!Version.TryParse(mapDescriptor.PcRequiredVersion, out mapRequiredVersion)) mapRequiredVersion = pluginVersion; // AndroidRequiredVersion for quest
+            _isUpdated = pluginVersion.CompareTo(mapRequiredVersion) >= 0;
+
             var sb = new StringBuilder()
                 .AppendClr("<noparse> << [BACK]              [ENTER]  LOAD MAP</noparse>", "8dc2ef").AppendLine()
                 .AppendLine()
                 .AppendLine("MAP DETAILS")
-                .AppendLines(2)
-                .Append("NAME:  ").AppendClr(mapDescriptor.Name, "00cc44").AppendLine()
+                .AppendLine();
+            
+            if (!_isUpdated)
+			{
+                sb.AppendClr($"YOU MUST UPDATE MONKEMAPlOADER TO AT LEAST v{mapRequiredVersion} TO PLAY THIS MAP!", "ff0000").AppendLine();
+			} else
+			{
+                sb.AppendLine();
+			}
+
+            sb.Append("NAME:  ").AppendClr(mapDescriptor.Name, "00cc44").AppendLine()
                 .Append("AUTHOR:  ").AppendClr(mapDescriptor.Author, "00cc44").AppendLine()
                 .Append("DESCRIPTION:  ").AppendClr(mapDescriptor.Description, "00cc44").AppendLine();
 
