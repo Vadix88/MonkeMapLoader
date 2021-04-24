@@ -1,0 +1,93 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>MonkeMapLoader_Editor</RootNamespace>
+    <AssemblyName>MonkeMapLoader</AssemblyName>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>..\MonkeMapLoader\Libs\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\MonkeMapLoader\Libs\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="BepInEx">
+      <HintPath>..\MonkeMapLoader\Libs\BepInEx.dll</HintPath>
+    </Reference>
+    <Reference Include="BepInEx.Harmony">
+      <HintPath>..\MonkeMapLoader\Libs\BepInEx.Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="Bepinject">
+      <HintPath>..\MonkeMapLoader\Libs\Bepinject.dll</HintPath>
+    </Reference>
+    <Reference Include="ComputerInterface">
+      <HintPath>..\MonkeMapLoader\Libs\ComputerInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="ComputerInterface.Commands">
+      <HintPath>..\MonkeMapLoader\Libs\ComputerInterface.Commands.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\MonkeMapLoader\Libs\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PhotonRealtime">
+      <HintPath>..\MonkeMapLoader\Libs\PhotonRealtime.dll</HintPath>
+    </Reference>
+    <Reference Include="PhotonUnityNetworking">
+      <HintPath>..\MonkeMapLoader\Libs\PhotonUnityNetworking.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\MonkeMapLoader\Libs\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AssetBundleModule">
+      <HintPath>..\MonkeMapLoader\Libs\UnityEngine.AssetBundleModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\MonkeMapLoader\Libs\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>..\MonkeMapLoader\Libs\UnityEngine.ImageConversionModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>..\MonkeMapLoader\Libs\UnityEngine.InputLegacyModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>..\MonkeMapLoader\Libs\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="Utilla">
+      <HintPath>..\MonkeMapLoader\Libs\Utilla.dll</HintPath>
+    </Reference>
+    <Reference Include="Zenject">
+      <HintPath>..\MonkeMapLoader\Libs\Zenject.dll</HintPath>
+    </Reference>
+    <Reference Include="Zenject-usage">
+      <HintPath>..\MonkeMapLoader\Libs\Zenject-usage.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\MonkeMapLoader\Behaviours\MapDescriptor.cs">
+      <Link>Behaviours\MapDescriptor.cs</Link>
+    </Compile>
+    <Compile Include="..\MonkeMapLoader\Behaviours\ObjectTrigger.cs">
+      <Link>Behaviours\ObjectTrigger.cs</Link>
+    </Compile>
+    <Compile Include="..\MonkeMapLoader\Behaviours\RoundEndActions.cs">
+      <Link>Behaviours\RoundEndActions.cs</Link>
+    </Compile>
+    <Compile Include="..\MonkeMapLoader\Behaviours\SurfaceClimbSettings.cs">
+      <Link>Behaviours\SurfaceClimbSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\MonkeMapLoader\Behaviours\TagZone.cs">
+      <Link>Behaviours\TagZone.cs</Link>
+    </Compile>
+    <Compile Include="..\MonkeMapLoader\Behaviours\Teleporter.cs">
+      <Link>Behaviours\Teleporter.cs</Link>
+    </Compile>
+    <Compile Include="..\MonkeMapLoader\Behaviours\GorillaMapTriggerBase.cs">
+      <Link>Behaviours\GorillaMapTriggerBase.cs</Link>
+    </Compile>
+  </ItemGroup>
+  
+</Project>
