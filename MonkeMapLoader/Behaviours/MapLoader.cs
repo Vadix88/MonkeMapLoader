@@ -16,7 +16,7 @@ namespace VmodMonkeMapLoader.Behaviours
 {
     public class MapLoader : IInitializable
     {
-        public static string _lobbyName = string.Empty;
+        public static string _lobbyName;
 
         private static GameObject _mapInstance;
         private static bool _isLoading;
@@ -126,6 +126,7 @@ namespace VmodMonkeMapLoader.Behaviours
             }
 
             _isLoading = true;
+            _lobbyName = "";
 
             UnloadMap();
             Logger.LogText("Loading map: " + mapInfo.FilePath + " -> " + mapInfo.PackageInfo.Descriptor.Name);
