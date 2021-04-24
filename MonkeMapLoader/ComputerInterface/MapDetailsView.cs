@@ -97,7 +97,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
             
             if (!_isUpdated)
 			{
-                sb.AppendClr($"YOU MUST UPDATE MONKEMAPlOADER TO AT LEAST v{mapRequiredVersion} TO PLAY THIS MAP!", "ff0000").AppendLine();
+                sb.AppendClr($"YOU MUST UPDATE MONKE MAP LOADER TO AT LEAST v{mapRequiredVersion} TO PLAY THIS MAP!", "ff0000").AppendLine();
 			} else
 			{
                 sb.AppendLine();
