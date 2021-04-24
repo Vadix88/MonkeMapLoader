@@ -22,16 +22,14 @@ namespace VmodMonkeMapLoader.Patches
                     if(__instance.currentIt != taggedPlayer)
                     {
                         __instance.ChangeCurrentIt(taggedPlayer);
-                        Hashtable hashtable = new Hashtable();
-                        hashtable.Add("lastTag", PhotonNetwork.Time);
-                        __instance.currentRoom.SetCustomProperties(hashtable, null, null);
-                        __instance.lastTag = PhotonNetwork.Time;
+                        __instance.lastTag = UnityEngine.Time.time;
 
                         object[] eventContent = new object[]
                         {
-                        taggingPlayer.UserId,
-                        taggedPlayer.UserId
+                            taggingPlayer.UserId,
+                            taggedPlayer.UserId
                         };
+
                         PhotonNetwork.RaiseEvent(1, eventContent, raiseEventOptions, SendOptions.SendReliable);
                     }
                 }
@@ -42,9 +40,9 @@ namespace VmodMonkeMapLoader.Patches
                         __instance.AddInfectedPlayer(taggedPlayer);
                         object[] eventContent2 = new object[]
                         {
-                        taggingPlayer.UserId,
-                        taggedPlayer.UserId,
-                        __instance.currentInfected.Count
+                            taggingPlayer.UserId,
+                            taggedPlayer.UserId,
+                            __instance.currentInfected.Count
                         };
                         PhotonNetwork.RaiseEvent(2, eventContent2, raiseEventOptions, SendOptions.SendReliable);
                     }

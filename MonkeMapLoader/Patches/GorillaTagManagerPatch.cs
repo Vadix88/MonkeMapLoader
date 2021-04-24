@@ -18,8 +18,15 @@ namespace VmodMonkeMapLoader.Patches
                 if (PhotonNetworkController.instance?.currentGameType != null && MapLoader._lobbyName != null && PhotonNetworkController.instance.currentGameType.Contains(MapLoader._lobbyName))
                 {
                     GorillaTagManager __instance = GorillaTagManager.instance;
-                    if (__instance.isCurrentlyTag) TriggerRoundEndEvents();
-                    if (RoundEndActions._instance != null && __instance.timeInfectedGameEnded > lastGameEnd)
+
+                    object currentlyTag;
+                    __instance.currentRoom.CustomProperties.TryGetValue("isCurrentlyTag", out currentlyTag);
+
+                    object gameEnded;
+                    __instance.currentRoom.CustomProperties.TryGetValue("timeInfectedGameEnded", out gameEnded);
+
+                    if ((bool)currentlyTag) TriggerRoundEndEvents();
+                    if (RoundEndActions._instance != null && gameEnded != null && (double)gameEnded > lastGameEnd)
                     {
                         //it's proper. do whatever with the Room Settings.
                         lastGameEnd = __instance.timeInfectedGameEnded;

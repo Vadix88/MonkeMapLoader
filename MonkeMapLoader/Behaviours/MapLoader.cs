@@ -68,7 +68,7 @@ namespace VmodMonkeMapLoader.Behaviours
         {
             try
             {
-                //AdjustLighting(_mapInstance);
+                AdjustLighting(_mapInstance);
             }
             catch (Exception e)
             {
@@ -126,6 +126,7 @@ namespace VmodMonkeMapLoader.Behaviours
             }
 
             _isLoading = true;
+            _lobbyName = "";
 
             UnloadMap();
             Logger.LogText("Loading map: " + mapInfo.FilePath + " -> " + mapInfo.PackageInfo.Descriptor.Name);
@@ -315,7 +316,7 @@ namespace VmodMonkeMapLoader.Behaviours
                     foreach(var material in renderer.materials)
                     {
                         if (material == null) return;
-                        LightingUtils.SetLightingStrength(material, 1f);
+                        LightingUtils.SetLightingStrength(material, 0.9f);
                     }
                 }
             }
