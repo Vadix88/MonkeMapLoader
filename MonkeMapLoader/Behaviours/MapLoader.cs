@@ -16,7 +16,7 @@ namespace VmodMonkeMapLoader.Behaviours
 {
     public class MapLoader : IInitializable
     {
-        public static string _lobbyName;
+        public static string _lobbyName = string.Empty;
 
         private static GameObject _mapInstance;
         private static bool _isLoading;
@@ -68,7 +68,7 @@ namespace VmodMonkeMapLoader.Behaviours
         {
             try
             {
-                //AdjustLighting(_mapInstance);
+                AdjustLighting(_mapInstance);
             }
             catch (Exception e)
             {
@@ -315,7 +315,7 @@ namespace VmodMonkeMapLoader.Behaviours
                     foreach(var material in renderer.materials)
                     {
                         if (material == null) return;
-                        LightingUtils.SetLightingStrength(material, 1f);
+                        LightingUtils.SetLightingStrength(material, 0.9f);
                     }
                 }
             }
