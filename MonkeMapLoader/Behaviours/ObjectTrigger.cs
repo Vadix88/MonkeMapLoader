@@ -22,6 +22,8 @@ namespace VmodMonkeMapLoader.Behaviours
         {
             if (!DisableObject) ObjectToTrigger.SetActive(false);
             else ObjectToTrigger.SetActive(true);
+            
+            _triggered = false;
         }
 
         public override void Trigger(Collider collider)
