@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -23,6 +24,7 @@ namespace VmodMonkeMapLoader.Behaviours
         private static GlobalData _globalData;
         private static MapDescriptor _descriptor;
         private static bool isMoved = false;
+        private static string _mapFileName;
 
         private SharedCoroutineStarter _couroutineStarter;
 
@@ -109,11 +111,22 @@ namespace VmodMonkeMapLoader.Behaviours
             }
         }
 
+        public static string GetMapName()
+        {
+            return _descriptor != null ? _descriptor.MapName : null;
+        }
+
+        public static string GetMapFileName()
+        {
+            return _mapFileName;
+        }
+
         public void LoadMap(MapInfo mapInfo, Action<bool> isSuccess)
         {
             _couroutineStarter.StartCoroutine(LoadMapFromPackageFileAsync(mapInfo, b =>
             {
                 Logger.LogText("______ MAP LOADED");
+                _mapFileName = Path.GetFileName(mapInfo.FilePath);
                 isSuccess(b);
             }));
         }
@@ -127,6 +140,7 @@ namespace VmodMonkeMapLoader.Behaviours
 
             _isLoading = true;
             _lobbyName = "";
+            _mapFileName = null;
 
             UnloadMap();
             Logger.LogText("Loading map: " + mapInfo.FilePath + " -> " + mapInfo.PackageInfo.Descriptor.Name);
