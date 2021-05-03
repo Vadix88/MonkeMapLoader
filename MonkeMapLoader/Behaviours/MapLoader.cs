@@ -28,6 +28,8 @@ namespace VmodMonkeMapLoader.Behaviours
 
         private SharedCoroutineStarter _couroutineStarter;
 
+        public static Action<bool> OnMapChange { get; set; }
+
         [Inject]
         private void Construct(SharedCoroutineStarter coroutineStarter)
         {
@@ -126,8 +128,11 @@ namespace VmodMonkeMapLoader.Behaviours
             _couroutineStarter.StartCoroutine(LoadMapFromPackageFileAsync(mapInfo, b =>
             {
                 Logger.LogText("______ MAP LOADED");
-                _mapFileName = Path.GetFileName(mapInfo.FilePath);
+                _mapFileName = Path.GetFileNameWithoutExtension(mapInfo.FilePath);
                 isSuccess(b);
+
+                if (OnMapChange != null)
+                    OnMapChange(true);
             }));
         }
 
@@ -251,6 +256,10 @@ namespace VmodMonkeMapLoader.Behaviours
                 Object.Destroy(_mapInstance);
 
                 _mapInstance = null;
+
+                if (OnMapChange != null)
+                    OnMapChange(false);
+
                 Resources.UnloadUnusedAssets();
             }
         }
