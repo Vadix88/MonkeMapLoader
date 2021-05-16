@@ -22,5 +22,17 @@ namespace VmodMonkeMapLoader.Models
 
         [JsonProperty(PropertyName = "version")]
         public int Version { get; set; }
+
+        [JsonProperty(PropertyName = "slowJumpLimit")]
+        public float SlowJumpLimit = 6.5f;
+
+        [JsonProperty(PropertyName = "fastJumpLimit")]
+        public float FastJumpLimit = 8.5f;
+
+		[JsonProperty(PropertyName = "slowJumpMultiplier")]
+        public float SlowJumpMultiplier = 1.1f;
+
+		[JsonProperty(PropertyName = "fastJumpMultiplier")]
+        public float FastJumpMultiplier = 1.3f;
     }
 }

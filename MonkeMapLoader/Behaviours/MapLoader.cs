@@ -30,6 +30,7 @@ namespace VmodMonkeMapLoader.Behaviours
         private void Construct(SharedCoroutineStarter coroutineStarter)
         {
             _couroutineStarter = coroutineStarter;
+
         }
 
         public void Initialize()
@@ -78,11 +79,24 @@ namespace VmodMonkeMapLoader.Behaviours
 
             if (!_lobbyName.IsNullOrWhiteSpace())
             {
-                Utilla.Utils.RoomUtils.JoinModdedLobby(_lobbyName);
-                if(_descriptor != null && _descriptor.GravitySpeed != -9.8f)
-                {
-                    Physics.gravity = new Vector3(0, _descriptor.GravitySpeed, 0);
-                }
+                string lobbyVarient = "";
+                if (_descriptor.GameMode.ToLower() == "casual")
+				{
+                    lobbyVarient = "CASUAL";
+				}
+
+                Utilla.Utils.RoomUtils.JoinModdedLobby(_lobbyName + lobbyVarient);
+                if (_descriptor != null)
+				{
+					if(_descriptor.GravitySpeed != -9.8f)
+					{
+						Physics.gravity = new Vector3(0, _descriptor.GravitySpeed, 0);
+					}
+
+                    // We need to wait for GorillaTagManager to be instanciated,
+                    // which is after we connect to a server.
+                    Patches.PlayerMoveSpeedPatch.SetSpeed(_descriptor);
+				}
                 if (!isMoved)
                 {
                     isMoved = true;
@@ -96,7 +110,19 @@ namespace VmodMonkeMapLoader.Behaviours
 
         public static void ResetMapProperties()
         {
+            // These should probally be in a constants class
             if (Physics.gravity.y != -9.8f) Physics.gravity = new Vector3(0, -9.8f, 0);
+
+            if (GorillaTagManager.instance != null)
+			{
+				GorillaTagManager.instance.slowJumpLimit = 6.5f;
+				GorillaTagManager.instance.slowJumpMultiplier = 1.1f;
+				GorillaTagManager.instance.fastJumpLimit = 8.5f;
+				GorillaTagManager.instance.fastJumpMultiplier = 1.3f;
+			}
+
+            GorillaLocomotion.Player.Instance.maxJumpSpeed = 6.5f;
+            GorillaLocomotion.Player.Instance.jumpMultiplier = 1.1f;
 
             if (isMoved)
             {
