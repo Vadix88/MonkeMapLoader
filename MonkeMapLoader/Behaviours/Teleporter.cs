@@ -3,6 +3,7 @@ using Random = UnityEngine.Random;
 using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
+using System;
 using UnityEngine;
 
 #if PLUGIN
@@ -26,6 +27,10 @@ namespace VmodMonkeMapLoader.Behaviours
         public TeleporterType TeleporterType = TeleporterType.Normal;
 
         private bool _isTeleporting = false;
+
+        //attach functions to this so monkeswim doesn't need to hook/patch mod functions
+        [NonSerialized]
+        public static Action<TeleportLocationTypes> OnMapTeleport;
 
         public override void Trigger(Collider collider)
         {
@@ -56,10 +61,23 @@ namespace VmodMonkeMapLoader.Behaviours
                 : TeleportPoints[0];
             
             if (TagOnTeleport) TagZone.TagLocalPlayer();
-            if (JoinGameOnTeleport) MapLoader.JoinGame();
-            if (TeleporterType == TeleporterType.Treehouse) MapLoader.ResetMapProperties();
+
+            TeleportLocationTypes toLocation = TeleportLocationTypes.CurrentMap;
+            if (JoinGameOnTeleport) 
+            { 
+                MapLoader.JoinGame();
+                toLocation = TeleportLocationTypes.ToMap;
+            }
+
+            if (TeleporterType == TeleporterType.Treehouse) 
+            {
+                MapLoader.ResetMapProperties();
+                toLocation = TeleportLocationTypes.ToTreehouse;
+            }
 
             PlayerTeleportPatch.TeleportPlayer(destination);
+
+            OnMapTeleport(toLocation);
 
             _isTeleporting = false;
         }
@@ -73,5 +91,13 @@ namespace VmodMonkeMapLoader.Behaviours
         Normal,
         Treehouse,
         Map
+    }
+
+    public enum TeleportLocationTypes
+    {
+        ToMap,
+        ToTreehouse,
+        CurrentMap
+        //could add more types to expand on functionality in the future?
     }
 }
