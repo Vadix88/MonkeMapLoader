@@ -30,7 +30,7 @@ namespace VmodMonkeMapLoader.Behaviours
 
         //attach functions to this so monkeswim doesn't need to hook/patch mod functions
         [NonSerialized]
-        public static Action<TeleportLocationTypes> OnMapTeleport;
+        public static Action<bool> OnMapEnter;
 
         public override void Trigger(Collider collider)
         {
@@ -42,16 +42,14 @@ namespace VmodMonkeMapLoader.Behaviours
 
             base.Trigger(collider);
         }
-        
+
         private IEnumerator TeleportPlayer()
         {
-            if (TeleporterType == TeleporterType.Map) 
-            {
+            if (TeleporterType == TeleporterType.Map) {
                 TeleportPoints = GameObject.Find("SpawnPointContainer")?.GetComponentsInChildren<Transform>().Where(e => e != null && e.gameObject.name != "SpawnPointContainer").ToList();
             }
 
-            if (TeleportPoints == null || !TeleportPoints.HasAtLeast(0))
-            {
+            if (TeleportPoints == null || !TeleportPoints.HasAtLeast(0)) {
                 if (TeleporterType == TeleporterType.Map) TeleportPoints = new List<Transform>() { GameObject.Find("TreeHomeTargetObject").transform };
                 else yield break;
             }
@@ -59,27 +57,17 @@ namespace VmodMonkeMapLoader.Behaviours
             var destination = TeleportPoints.Count > 1
                 ? TeleportPoints[Random.Range(0, TeleportPoints.Count)]
                 : TeleportPoints[0];
-            
+
             if (TagOnTeleport) TagZone.TagLocalPlayer();
-
-            TeleportLocationTypes toLocation = TeleportLocationTypes.CurrentMap;
-            if (JoinGameOnTeleport) 
-            { 
-                MapLoader.JoinGame();
-                toLocation = TeleportLocationTypes.ToMap;
-            }
-
-            if (TeleporterType == TeleporterType.Treehouse) 
-            {
-                MapLoader.ResetMapProperties();
-                toLocation = TeleportLocationTypes.ToTreehouse;
-            }
+            if (JoinGameOnTeleport) MapLoader.JoinGame();
+            if (TeleporterType == TeleporterType.Treehouse) MapLoader.ResetMapProperties();
 
             PlayerTeleportPatch.TeleportPlayer(destination);
 
-            OnMapTeleport(toLocation);
-
             _isTeleporting = false;
+
+            if (JoinGameOnTeleport) OnMapEnter(true);
+            else if (TeleporterType == TeleporterType.Treehouse) OnMapEnter(false);
         }
 
 #endif
@@ -91,13 +79,5 @@ namespace VmodMonkeMapLoader.Behaviours
         Normal,
         Treehouse,
         Map
-    }
-
-    public enum TeleportLocationTypes
-    {
-        ToMap,
-        ToTreehouse,
-        CurrentMap
-        //could add more types to expand on functionality in the future?
     }
 }
