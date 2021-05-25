@@ -88,7 +88,7 @@ namespace VmodMonkeMapLoader.Behaviours
                 Utilla.Utils.RoomUtils.JoinModdedLobby(_lobbyName + lobbyVarient);
                 if (_descriptor != null)
 				{
-					if(_descriptor.GravitySpeed != -9.8f)
+					if(_descriptor.GravitySpeed != SharedConstants.Gravity)
 					{
 						Physics.gravity = new Vector3(0, _descriptor.GravitySpeed, 0);
 					}
@@ -110,19 +110,18 @@ namespace VmodMonkeMapLoader.Behaviours
 
         public static void ResetMapProperties()
         {
-            // These should probally be in a constants class
-            if (Physics.gravity.y != -9.8f) Physics.gravity = new Vector3(0, -9.8f, 0);
+            if (Physics.gravity.y != SharedConstants.Gravity) Physics.gravity = new Vector3(0, SharedConstants.Gravity, 0);
 
-            if (GorillaTagManager.instance != null)
-			{
-				GorillaTagManager.instance.slowJumpLimit = 6.5f;
-				GorillaTagManager.instance.slowJumpMultiplier = 1.1f;
-				GorillaTagManager.instance.fastJumpLimit = 8.5f;
-				GorillaTagManager.instance.fastJumpMultiplier = 1.3f;
-			}
+            //if (GorillaTagManager.instance != null)
+			//{
+			//	GorillaTagManager.instance.slowJumpLimit = SharedConstants.SlowJumpLimit;
+			//	GorillaTagManager.instance.slowJumpMultiplier = SharedConstants.SlowJumpMultiplier;
+			//	GorillaTagManager.instance.fastJumpLimit = SharedConstants.FastJumpLimit;
+			//	GorillaTagManager.instance.fastJumpMultiplier = SharedConstants.FastJumpMultiplier;
+			//}
 
-            GorillaLocomotion.Player.Instance.maxJumpSpeed = 6.5f;
-            GorillaLocomotion.Player.Instance.jumpMultiplier = 1.1f;
+            //GorillaLocomotion.Player.Instance.maxJumpSpeed = SharedConstants.SlowJumpLimit;
+            //GorillaLocomotion.Player.Instance.jumpMultiplier = SharedConstants.SlowJumpMultiplier;
 
             if (isMoved)
             {

@@ -24,15 +24,18 @@ namespace VmodMonkeMapLoader.Models
         public int Version { get; set; }
 
         [JsonProperty(PropertyName = "slowJumpLimit")]
-        public float SlowJumpLimit = 6.5f;
+        public float SlowJumpLimit = Helpers.SharedConstants.SlowJumpLimit;
 
         [JsonProperty(PropertyName = "fastJumpLimit")]
-        public float FastJumpLimit = 8.5f;
+        public float FastJumpLimit = Helpers.SharedConstants.FastJumpLimit;
 
 		[JsonProperty(PropertyName = "slowJumpMultiplier")]
-        public float SlowJumpMultiplier = 1.1f;
+        public float SlowJumpMultiplier = Helpers.SharedConstants.SlowJumpMultiplier;
 
 		[JsonProperty(PropertyName = "fastJumpMultiplier")]
-        public float FastJumpMultiplier = 1.3f;
+        public float FastJumpMultiplier = Helpers.SharedConstants.FastJumpMultiplier;
+
+        [JsonProperty(PropertyName = "gameMode")]
+        public string gameMode = "";
     }
 }

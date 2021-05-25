@@ -9,13 +9,13 @@ namespace VmodMonkeMapLoader.Behaviours
         public string Description = string.Empty;
         public Transform[] SpawnPoints;
         public Cubemap CustomSkybox;
-        public float GravitySpeed = -9.8f;
+        public float GravitySpeed = Helpers.SharedConstants.Gravity;
         public bool ExportLighting = true;
 
-        public float SlowJumpLimit = 6.5f;
-        public float FastJumpLimit = 8.5f;
-        public float SlowJumpMultiplier = 1.1f;
-        public float FastJumpMultiplier = 1.3f;
+        public float SlowJumpLimit = Helpers.SharedConstants.SlowJumpLimit;
+        public float FastJumpLimit = Helpers.SharedConstants.FastJumpLimit;
+        public float SlowJumpMultiplier = Helpers.SharedConstants.SlowJumpMultiplier;
+        public float FastJumpMultiplier = Helpers.SharedConstants.FastJumpMultiplier;
 
         public string GameMode = "";
     }

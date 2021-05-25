@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using HarmonyLib;
 using VmodMonkeMapLoader.Behaviours;
+using GorillaLocomotion;
 
 namespace VmodMonkeMapLoader.Patches
 {
@@ -10,10 +11,6 @@ namespace VmodMonkeMapLoader.Patches
 	[HarmonyPatch("Awake", MethodType.Normal)]
 	internal class PlayerMoveSpeedPatch
 	{
-		// If a player goes into a teleport, leaves the map, and hits disconnect
-		// before they connect to a lobby, this could accidnetally set the wrong value.
-		// Oh well!
-
 		static bool _needToSet = false;
 		static MapDescriptor _descriptor;
 
@@ -27,6 +24,9 @@ namespace VmodMonkeMapLoader.Patches
 				GorillaTagManager.instance.fastJumpLimit = _descriptor.FastJumpLimit;
 				GorillaTagManager.instance.fastJumpMultiplier = _descriptor.FastJumpMultiplier;
 			}
+
+			Player.Instance.maxJumpSpeed = GorillaTagManager.instance.slowJumpLimit;
+			Player.Instance.jumpMultiplier = GorillaTagManager.instance.slowJumpMultiplier;
 		}
 
 		public static void SetSpeed(MapDescriptor descriptor)
