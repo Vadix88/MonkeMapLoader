@@ -22,13 +22,11 @@ namespace VmodMonkeMapLoader.Behaviours
         private static GameObject _mapInstance;
         private static bool _isLoading;
         private static GlobalData _globalData;
-        private static MapDescriptor _descriptor;
+        internal static MapDescriptor _descriptor;
         private static bool isMoved = false;
-        private static string _mapFileName;
+        internal static string _mapFileName;
 
         private SharedCoroutineStarter _couroutineStarter;
-
-        public static Action<bool> OnMapChange { get; set; }
 
         [Inject]
         private void Construct(SharedCoroutineStarter coroutineStarter)
@@ -138,16 +136,6 @@ namespace VmodMonkeMapLoader.Behaviours
             }
         }
 
-        public static string GetMapName()
-        {
-            return _descriptor != null ? _descriptor.MapName : null;
-        }
-
-        public static string GetMapFileName()
-        {
-            return _mapFileName;
-        }
-
         public void LoadMap(MapInfo mapInfo, Action<bool> isSuccess)
         {
             _couroutineStarter.StartCoroutine(LoadMapFromPackageFileAsync(mapInfo, b =>
@@ -156,8 +144,8 @@ namespace VmodMonkeMapLoader.Behaviours
                 _mapFileName = Path.GetFileNameWithoutExtension(mapInfo.FilePath);
                 isSuccess(b);
 
-                if (OnMapChange != null)
-                    OnMapChange(true);
+                if (Events.OnMapChange != null)
+                    Events.OnMapChange(true);
             }));
         }
 
@@ -282,8 +270,8 @@ namespace VmodMonkeMapLoader.Behaviours
 
                 _mapInstance = null;
 
-                if (OnMapChange != null)
-                    OnMapChange(false);
+                if (Events.OnMapChange != null)
+                    Events.OnMapChange(false);
 
                 Resources.UnloadUnusedAssets();
             }

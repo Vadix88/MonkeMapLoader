@@ -28,10 +28,6 @@ namespace VmodMonkeMapLoader.Behaviours
 
         private bool _isTeleporting = false;
 
-        //attach functions to this so monkeswim doesn't need to hook/patch mod functions
-        [NonSerialized]
-        public static Action<bool> OnMapEnter;
-
         public override void Trigger(Collider collider)
         {
             if (_isTeleporting || TeleportPoints == null || !TeleportPoints.HasAtLeast(0))
@@ -66,8 +62,8 @@ namespace VmodMonkeMapLoader.Behaviours
 
             _isTeleporting = false;
 
-            if (JoinGameOnTeleport) OnMapEnter(true);
-            else if (TeleporterType == TeleporterType.Treehouse) OnMapEnter(false);
+            if (JoinGameOnTeleport) Events.OnMapEnter(true);
+            else if (TeleporterType == TeleporterType.Treehouse) Events.OnMapEnter(false);
         }
 
 #endif
