@@ -1,5 +1,7 @@
 # Monke Map Loader
 
+<img src="https://user-images.githubusercontent.com/34404266/115944749-8cc3d680-a46c-11eb-9298-61d866b687fb.png" data-canonical-src="https://user-images.githubusercontent.com/34404266/115944749-8cc3d680-a46c-11eb-9298-61d866b687fb.png" width="500"/>
+
 A PC mod that loads custom maps for Gorilla Tag.
 
 **Monke Map Loader** initially started as a solo project to try to load a custom map into the game. Eventually, it became a group effort to provide a complex solution with:
@@ -14,6 +16,7 @@ Main contributors beside me:
 - [Steven](https://github.com/DeadlyKitten)
 - [RedBrumbler](https://github.com/RedBrumbler)
 - [ToniMacaroni](https://github.com/ToniMacaroni)
+- [Graic](https://github.com/Graicc)
 
 You can find all of us, as well as other mods, on the [Gorilla Tag Modding Discord](http://discord.gg/b2MhDBAzTv)
 
@@ -51,12 +54,14 @@ Download the **Monke Map Loader** from the latest [release](https://github.com/V
 
 ## Custom maps
 
+You can download custom maps from our website: [Monke Map Hub](https://monkemaphub.com/).
+
 To install a custom map, place it in the following folder:
 > *BepInEx\\plugins\\MonkeMapLoader\\CustomMaps*
 
 **Monke Map Loader** uses a custom **Gorilla Tag Map** file format (*.gtmap*), which contains a package of a descriptor file, map thumbnails and map files for both platforms: Windows and Android (Quest)
 
-Therefore, `.gtmap` files should be compatible with a future Quest map loader when it releases.
+Therefore, `.gtmap` files are also compatible with Quest map loader.
 
 ## Loading a map
 
@@ -86,5 +91,7 @@ Custom maps are loaded in different location from the original map, so it stays 
 The easiest and recommended way of making the map in the right format is to use the [Gorilla Tag Map Project](https://github.com/legoandmars/GorillaTagMapProject), an pre-setup Unity project with map tools, prefabs, and an export script that automates the making of the map package and saves it in the right format. 
 
 On that page you can also find an in-depth guide on how to use to its full potential and what tools and objects are available to use on your map. **MAKE SURE TO FOLLOW THE GUIDE IN THE README!**
+
+You can also get more help on map making on the [Discord server](http://discord.gg/b2MhDBAzTv).
 
 Have fun making you own custom map for this awesome game and make sure to share it with others! ;)
