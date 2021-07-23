@@ -88,6 +88,8 @@
     <Compile Include="..\MonkeMapLoader\Behaviours\GorillaMapTriggerBase.cs">
       <Link>Behaviours\GorillaMapTriggerBase.cs</Link>
     </Compile>
+    <Compile Include="..\MonkeMapLoader\Helpers\SharedConstants.cs" Link="SharedConstants.cs" />
+    <Compile Include="..\MonkeMapLoader\Helpers\SerializableDictionary.cs" Link="SerializableDictionary.cs" />
   </ItemGroup>
   
 </Project>

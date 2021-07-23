@@ -22,18 +22,17 @@ namespace VmodMonkeMapLoader.Behaviours
         private static GameObject _mapInstance;
         private static bool _isLoading;
         private static GlobalData _globalData;
-        private static MapDescriptor _descriptor;
+        internal static MapDescriptor _descriptor;
         private static bool isMoved = false;
-        private static string _mapFileName;
+        internal static string _mapFileName;
 
         private SharedCoroutineStarter _couroutineStarter;
-
-        public static Action<bool> OnMapChange { get; set; }
 
         [Inject]
         private void Construct(SharedCoroutineStarter coroutineStarter)
         {
             _couroutineStarter = coroutineStarter;
+
         }
 
         public void Initialize()
@@ -82,11 +81,24 @@ namespace VmodMonkeMapLoader.Behaviours
 
             if (!_lobbyName.IsNullOrWhiteSpace())
             {
-                Utilla.Utils.RoomUtils.JoinModdedLobby(_lobbyName);
-                if(_descriptor != null && _descriptor.GravitySpeed != -9.8f)
-                {
-                    Physics.gravity = new Vector3(0, _descriptor.GravitySpeed, 0);
-                }
+                string lobbyVarient = "";
+                if (_descriptor.GameMode.ToLower() == "casual")
+				{
+                    lobbyVarient = "CASUAL";
+				}
+
+                Utilla.Utils.RoomUtils.JoinModdedLobby(_lobbyName + lobbyVarient);
+                if (_descriptor != null)
+				{
+					if(_descriptor.GravitySpeed != SharedConstants.Gravity)
+					{
+						Physics.gravity = new Vector3(0, _descriptor.GravitySpeed, 0);
+					}
+
+                    // We need to wait for GorillaTagManager to be instanciated,
+                    // which is after we connect to a server.
+                    Patches.PlayerMoveSpeedPatch.SetSpeed(_descriptor);
+				}
                 if (!isMoved)
                 {
                     isMoved = true;
@@ -100,7 +112,18 @@ namespace VmodMonkeMapLoader.Behaviours
 
         public static void ResetMapProperties()
         {
-            if (Physics.gravity.y != -9.8f) Physics.gravity = new Vector3(0, -9.8f, 0);
+            if (Physics.gravity.y != SharedConstants.Gravity) Physics.gravity = new Vector3(0, SharedConstants.Gravity, 0);
+
+            //if (GorillaTagManager.instance != null)
+			//{
+			//	GorillaTagManager.instance.slowJumpLimit = SharedConstants.SlowJumpLimit;
+			//	GorillaTagManager.instance.slowJumpMultiplier = SharedConstants.SlowJumpMultiplier;
+			//	GorillaTagManager.instance.fastJumpLimit = SharedConstants.FastJumpLimit;
+			//	GorillaTagManager.instance.fastJumpMultiplier = SharedConstants.FastJumpMultiplier;
+			//}
+
+            //GorillaLocomotion.Player.Instance.maxJumpSpeed = SharedConstants.SlowJumpLimit;
+            //GorillaLocomotion.Player.Instance.jumpMultiplier = SharedConstants.SlowJumpMultiplier;
 
             if (isMoved)
             {
@@ -113,16 +136,6 @@ namespace VmodMonkeMapLoader.Behaviours
             }
         }
 
-        public static string GetMapName()
-        {
-            return _descriptor != null ? _descriptor.MapName : null;
-        }
-
-        public static string GetMapFileName()
-        {
-            return _mapFileName;
-        }
-
         public void LoadMap(MapInfo mapInfo, Action<bool> isSuccess)
         {
             _couroutineStarter.StartCoroutine(LoadMapFromPackageFileAsync(mapInfo, b =>
@@ -131,8 +144,8 @@ namespace VmodMonkeMapLoader.Behaviours
                 _mapFileName = Path.GetFileNameWithoutExtension(mapInfo.FilePath);
                 isSuccess(b);
 
-                if (OnMapChange != null)
-                    OnMapChange(true);
+                if (Events.OnMapChange != null)
+                    Events.OnMapChange(true);
             }));
         }
 
@@ -257,8 +270,8 @@ namespace VmodMonkeMapLoader.Behaviours
 
                 _mapInstance = null;
 
-                if (OnMapChange != null)
-                    OnMapChange(false);
+                if (Events.OnMapChange != null)
+                    Events.OnMapChange(false);
 
                 Resources.UnloadUnusedAssets();
             }
