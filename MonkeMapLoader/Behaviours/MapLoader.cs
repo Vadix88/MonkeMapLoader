@@ -81,13 +81,7 @@ namespace VmodMonkeMapLoader.Behaviours
 
             if (!_lobbyName.IsNullOrWhiteSpace())
             {
-                string lobbyVarient = "";
-                if (_descriptor.GameMode.ToLower() == "casual")
-				{
-                    lobbyVarient = "CASUAL";
-				}
-
-                Utilla.Utils.RoomUtils.JoinModdedLobby(_lobbyName + lobbyVarient);
+                Utilla.Utils.RoomUtils.JoinModdedLobby(_lobbyName, _descriptor.GameMode.ToLower() == "casual");
                 if (_descriptor != null)
 				{
 					if(_descriptor.GravitySpeed != SharedConstants.Gravity)
