@@ -23,6 +23,7 @@ namespace VmodMonkeMapLoader.Behaviours
         private static bool _isLoading;
         private static GlobalData _globalData;
         internal static MapDescriptor _descriptor;
+        internal static MapInfo _mapInfo;
         private static bool isMoved = false;
         internal static string _mapFileName;
 
@@ -135,6 +136,7 @@ namespace VmodMonkeMapLoader.Behaviours
             _couroutineStarter.StartCoroutine(LoadMapFromPackageFileAsync(mapInfo, b =>
             {
                 Logger.LogText("______ MAP LOADED");
+                _mapInfo = mapInfo;
                 _mapFileName = Path.GetFileNameWithoutExtension(mapInfo.FilePath);
                 isSuccess(b);
 

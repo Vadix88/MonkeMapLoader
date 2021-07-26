@@ -22,5 +22,11 @@ namespace VmodMonkeMapLoader.Models
 
         [JsonProperty(PropertyName = "version")]
         public int Version { get; set; }
+
+        [JsonProperty(PropertyName = "requiredPCModIDs")]
+        public string[] RequiredPCModIDs { get; set; }
+
+        [JsonProperty(PropertyName = "requiredModIDs")]
+        public string[] RequiredQuestModIDs { get; set; }
     }
 }
