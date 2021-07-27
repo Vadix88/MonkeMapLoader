@@ -134,3 +134,5 @@ public class MyMod : MonoBehaviour {
   }
 }
 ```
+
+Documentation for adding custom data to a map can be found in the [Gorilla Tag Map Project](https://github.com/legoandmars/GorillaTagMapProject#for-developers) readme.
