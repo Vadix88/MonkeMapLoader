@@ -20,18 +20,11 @@ namespace VmodMonkeMapLoader.Behaviours
 
         public string GameMode = "";
 
-        public Dictionary<string, string> CustomData = new Dictionary<string, string>();
-        public List<string> CustomDataKeys = new List<string>();
-        public List<string> CustomDataValues = new List<string>();
-
-        void Awake()
-        {
-            if (CustomDataKeys.Count != CustomDataValues.Count) return;
-            CustomData = new Dictionary<string, string>();
-            for (int i = 0; i < CustomDataKeys.Count; i++)
-            {
-                CustomData.Add(CustomDataKeys[i], CustomDataValues[i]);
-            }
-        }
+#if !PLUGIN
+        // Only interact with this in Unity, it isn't in maps. For that, use Events.PackageInfo.Config.CustomData
+        public Dictionary<string, object> CustomData = new Dictionary<string, object>();
+        public List<string> RequiredPCModsId;
+        public List<string> RequiredQuestModsId;
+#endif
     }
 }
