@@ -62,8 +62,28 @@ namespace VmodMonkeMapLoader.Behaviours
 
             _isTeleporting = false;
 
-            if (JoinGameOnTeleport) Events.OnMapEnter(true);
-            else if (TeleporterType == TeleporterType.Treehouse) Events.OnMapEnter(false);
+            if (JoinGameOnTeleport && Events.OnMapEnter != null && destination != MapLoader._globalData.BigTreePoint.transform)
+			{
+                try
+				{
+                    Events.OnMapEnter(true);
+				}
+                catch (Exception e)
+				{
+                    Debug.LogError(e);
+				}
+			}
+            else if (TeleporterType == TeleporterType.Treehouse && Events.OnMapEnter != null)
+			{
+                try
+				{
+                    Events.OnMapEnter(false);
+				}
+                catch (Exception e)
+				{
+                    Debug.LogError(e);
+				}
+			}
         }
 
 #endif

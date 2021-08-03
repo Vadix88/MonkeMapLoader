@@ -21,7 +21,7 @@ namespace VmodMonkeMapLoader.Behaviours
 
         private static GameObject _mapInstance;
         private static bool _isLoading;
-        private static GlobalData _globalData;
+        internal static GlobalData _globalData;
         internal static MapDescriptor _descriptor;
         internal static MapInfo _mapInfo;
         private static bool isMoved = false;
@@ -141,7 +141,16 @@ namespace VmodMonkeMapLoader.Behaviours
                 isSuccess(b);
 
                 if (Events.OnMapChange != null)
-                    Events.OnMapChange(true);
+				{
+                    try
+					{
+                        Events.OnMapChange(true);
+					}
+                    catch (Exception e)
+					{
+                        Debug.LogError(e);
+					}
+				}
             }));
         }
 
@@ -267,7 +276,16 @@ namespace VmodMonkeMapLoader.Behaviours
                 _mapInstance = null;
 
                 if (Events.OnMapChange != null)
-                    Events.OnMapChange(false);
+				{
+                    try
+					{
+                        Events.OnMapChange(false);
+					}
+                    catch (Exception e)
+					{
+                        Debug.LogError(e);
+					}
+				}
 
                 Resources.UnloadUnusedAssets();
             }
