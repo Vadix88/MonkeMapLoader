@@ -29,6 +29,8 @@ namespace VmodMonkeMapLoader.Behaviours
 
         private SharedCoroutineStarter _couroutineStarter;
 
+        static GorillaGeoHideShowTrigger _enteringCosmetics;
+
         [Inject]
         private void Construct(SharedCoroutineStarter coroutineStarter)
         {
@@ -102,6 +104,13 @@ namespace VmodMonkeMapLoader.Behaviours
                         go.transform.position -= new Vector3(0, 5000, 0);
                     }
                 }
+
+                // Disable forest
+                _enteringCosmetics = _enteringCosmetics ?? GameObject.Find("EnteringCosmetics").GetComponent<GorillaGeoHideShowTrigger>();
+                foreach (GameObject go in _enteringCosmetics.makeSureThisIsDisabled)
+				{
+                    go.SetActive(false);
+				}
             }
         }
 
@@ -110,15 +119,22 @@ namespace VmodMonkeMapLoader.Behaviours
             if (Physics.gravity.y != SharedConstants.Gravity) Physics.gravity = new Vector3(0, SharedConstants.Gravity, 0);
 
             //if (GorillaTagManager.instance != null)
-			//{
-			//	GorillaTagManager.instance.slowJumpLimit = SharedConstants.SlowJumpLimit;
-			//	GorillaTagManager.instance.slowJumpMultiplier = SharedConstants.SlowJumpMultiplier;
-			//	GorillaTagManager.instance.fastJumpLimit = SharedConstants.FastJumpLimit;
-			//	GorillaTagManager.instance.fastJumpMultiplier = SharedConstants.FastJumpMultiplier;
-			//}
+            //{
+            //	GorillaTagManager.instance.slowJumpLimit = SharedConstants.SlowJumpLimit;
+            //	GorillaTagManager.instance.slowJumpMultiplier = SharedConstants.SlowJumpMultiplier;
+            //	GorillaTagManager.instance.fastJumpLimit = SharedConstants.FastJumpLimit;
+            //	GorillaTagManager.instance.fastJumpMultiplier = SharedConstants.FastJumpMultiplier;
+            //}
 
             //GorillaLocomotion.Player.Instance.maxJumpSpeed = SharedConstants.SlowJumpLimit;
             //GorillaLocomotion.Player.Instance.jumpMultiplier = SharedConstants.SlowJumpMultiplier;
+
+            // Enable forest
+            _enteringCosmetics = _enteringCosmetics ?? GameObject.Find("EnteringCosmetics").GetComponent<GorillaGeoHideShowTrigger>();
+			foreach (GameObject go in _enteringCosmetics.makeSureThisIsDisabled)
+			{
+				go.SetActive(true);
+			}
 
             if (isMoved)
             {
