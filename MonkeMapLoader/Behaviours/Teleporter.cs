@@ -41,6 +41,7 @@ namespace VmodMonkeMapLoader.Behaviours
 
         private IEnumerator TeleportPlayer()
         {
+            if (_isTeleporting || TeleportPoints == null || !TeleportPoints.HasAtLeast(0))
             if (TeleporterType == TeleporterType.Map) {
                 TeleportPoints = GameObject.Find("SpawnPointContainer")?.GetComponentsInChildren<Transform>().Where(e => e != null && e.gameObject.name != "SpawnPointContainer").ToList();
             }

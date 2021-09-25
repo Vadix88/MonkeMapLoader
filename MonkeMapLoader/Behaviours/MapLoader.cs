@@ -29,7 +29,7 @@ namespace VmodMonkeMapLoader.Behaviours
 
         private SharedCoroutineStarter _couroutineStarter;
 
-        static GorillaGeoHideShowTrigger _enteringCosmetics;
+        private static GameObject _forest;
 
         [Inject]
         private void Construct(SharedCoroutineStarter coroutineStarter)
@@ -106,11 +106,8 @@ namespace VmodMonkeMapLoader.Behaviours
                 }
 
                 // Disable forest
-                _enteringCosmetics = _enteringCosmetics ?? GameObject.Find("EnteringCosmetics").GetComponent<GorillaGeoHideShowTrigger>();
-                foreach (GameObject go in _enteringCosmetics.makeSureThisIsDisabled)
-				{
-                    go.SetActive(false);
-				}
+                _forest = _forest ?? GameObject.Find("Level/Forest");
+				_forest.SetActive(false);
             }
         }
 
@@ -130,11 +127,8 @@ namespace VmodMonkeMapLoader.Behaviours
             //GorillaLocomotion.Player.Instance.jumpMultiplier = SharedConstants.SlowJumpMultiplier;
 
             // Enable forest
-            _enteringCosmetics = _enteringCosmetics ?? GameObject.Find("EnteringCosmetics").GetComponent<GorillaGeoHideShowTrigger>();
-			foreach (GameObject go in _enteringCosmetics.makeSureThisIsDisabled)
-			{
-				go.SetActive(true);
-			}
+			_forest = _forest ?? GameObject.Find("Level/Forest");
+			_forest.SetActive(true);
 
             if (isMoved)
             {
@@ -226,7 +220,12 @@ namespace VmodMonkeMapLoader.Behaviours
                 yield break;
             }
 
-            var scene = SceneManager.LoadSceneAsync(scenePath[0], LoadSceneMode.Additive);
+            LoadSceneParameters loadSceneParams = new LoadSceneParameters
+            {
+                loadSceneMode = LoadSceneMode.Additive,
+                localPhysicsMode = LocalPhysicsMode.None
+            };
+            var scene = SceneManager.LoadSceneAsync(scenePath[0], loadSceneParams);
             yield return scene;
 
             GameObject[] allObjects = Object.FindObjectsOfType<GameObject>();
@@ -234,7 +233,7 @@ namespace VmodMonkeMapLoader.Behaviours
 
             foreach(GameObject gameObject in allObjects)
             {
-                if (gameObject.scene.name != "GorillaTagNewVisuals" && gameObject.scene.name != "DontDestroyOnLoad")
+                if (gameObject.scene.name != "GorillaTagNewVisualsCosmetics" && gameObject.scene.name != "DontDestroyOnLoad")
                 {
                     if(gameObject.transform.parent == null & gameObject.transform != descriptor.transform)
                     {
