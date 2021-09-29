@@ -41,6 +41,8 @@ namespace VmodMonkeMapLoader.Behaviours
         public void Initialize()
         {
             InitializeGlobalData();
+
+            GorillaComputer.instance.gameObject.AddComponent<MonkeRoomManager>();
         }
 
         public static void ForceRespawn()
@@ -252,11 +254,7 @@ namespace VmodMonkeMapLoader.Behaviours
             }
 
             Logger.LogText("Map asset loaded: " + map.name);
-            _lobbyName = mapInfo.PackageInfo.Descriptor.Author + "_" + mapInfo.PackageInfo.Descriptor.Name;
-            if(!String.IsNullOrWhiteSpace(mapInfo.PackageInfo.Config.GUID))
-            {
-                _lobbyName = mapInfo.PackageInfo.Config.GUID + "_" + mapInfo.PackageInfo.Config.Version;
-            }
+            _lobbyName = mapInfo.GetLobbyName();
 
             Exception ex = null;
 
@@ -381,7 +379,13 @@ namespace VmodMonkeMapLoader.Behaviours
                     foreach(var material in renderer.materials)
                     {
                         if (material == null) return;
-                        LightingUtils.SetLightingStrength(material, 0.9f);
+                        try
+						{
+                            LightingUtils.SetLightingStrength(material, 0.9f);
+						} catch (Exception e)
+						{
+                            Helpers.Logger.LogException(e);
+						}
                     }
                 }
             }
