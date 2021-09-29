@@ -13,12 +13,9 @@ namespace VmodMonkeMapLoader.Patches
 
 		internal static void Postfix(ref string __result)
 		{
-			Helpers.Logger.LogText($"GetRegionWithLowestPing: setting region to \"{patchForcedRegion}\"");
-
 			// if we have a region we want to force and the region is not different, then return that
 			if (patchForcedRegion != "" && __result != patchForcedRegion)
 			{
-				Helpers.Logger.LogText($"Actually set the region to patchForcedRegion");
 				__result = patchForcedRegion;
 				patchForcedRegion = "";
 			}
