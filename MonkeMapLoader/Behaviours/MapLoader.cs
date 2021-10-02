@@ -396,6 +396,15 @@ namespace VmodMonkeMapLoader.Behaviours
             if (child == null) return;
             var colliders = child.GetComponents<Collider>();
             if (colliders == null) return;
+
+            // Fix material sound
+            var surfaceOverride = child.GetComponent<GorillaSurfaceOverride>();
+            if (surfaceOverride == null)
+			{
+                surfaceOverride = child.AddComponent<GorillaSurfaceOverride>();
+                surfaceOverride.overrideIndex = 0;
+			}
+
             foreach (var collider in colliders)
             {
                 if (collider == null) return;
