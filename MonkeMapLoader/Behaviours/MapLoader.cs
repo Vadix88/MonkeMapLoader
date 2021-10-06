@@ -107,6 +107,9 @@ namespace VmodMonkeMapLoader.Behaviours
                     }
                 }
 
+                // Increase the clipping plane
+                Camera.main.farClipPlane += 500;
+
                 // Disable forest
                 _forest = _forest ?? GameObject.Find("Level/Forest");
 				_forest.SetActive(false);
@@ -127,6 +130,9 @@ namespace VmodMonkeMapLoader.Behaviours
 
             //GorillaLocomotion.Player.Instance.maxJumpSpeed = SharedConstants.SlowJumpLimit;
             //GorillaLocomotion.Player.Instance.jumpMultiplier = SharedConstants.SlowJumpMultiplier;
+
+			// Decrease the clipping plane
+			Camera.main.farClipPlane -= 500;
 
             // Enable forest
 			_forest = _forest ?? GameObject.Find("Level/Forest");
