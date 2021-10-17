@@ -6,7 +6,7 @@ namespace VmodMonkeMapLoader
 {
     [BepInPlugin("vadix.gorillatag.maploader", "Monke Map Loader", Helpers.Constants.PluginVersion)]
     [BepInDependency("tonimacaroni.computerinterface", "1.4.0")]
-    [BepInDependency("org.legoandmars.gorillatag.utilla", "1.3.2")]
+    [BepInDependency("org.legoandmars.gorillatag.utilla", "1.4.0")]
     public class MonkeMapLoaderPlugin : BaseUnityPlugin
     {
         void Awake()

@@ -27,6 +27,7 @@ You can find all of us, as well as other mods, on the [Gorilla Tag Modding Disco
   - [Loading a map](#loading-a-map)
   - [Troubleshooting](#troubleshooting)
   - [Map making](#map-making)
+  - [For Developers](#for-developers)
 
 ## Installation
 
@@ -95,3 +96,43 @@ On that page you can also find an in-depth guide on how to use to its full poten
 You can also get more help on map making on the [Discord server](http://discord.gg/b2MhDBAzTv).
 
 Have fun making you own custom map for this awesome game and make sure to share it with others! ;)
+
+## For Developers
+
+The map loader allows other mods to access some info about the current map (including arbitrary custom data) and subscribe to actions for map load/unload and map join/leave. All public events are under the [Events class](/MonkeMapLoader/Events.cs).
+
+```cs
+public class MyMod : MonoBehaviour {
+  public void Awake() {
+    Events.OnMapEnter += OnMapEnter;
+    Events.OnMapChange += OnMapChange;
+  }
+
+  // Going through the teleporter
+  public void OnMapEnter(bool enter) {
+    if (enter) {
+      // Get the custom map data
+      var customData = Events.PackageInfo.Config.CustomData;
+
+      // Check if the gamemode is "mygamemode"
+      if (customData.TryGetValue("gamemode", out var gamemode) && gamemode as string == "myGameMode") {
+        // Get instance of MyClass from custom data
+        MyClass myData = (customData["mydata"] as Newtonsoft.Json.Linq.JObject).ToObject<MyClass>();
+      }
+
+      // Get other data
+      Debug.Log($"Map name is: {Events.MapName}");
+      Debug.Log($"Gravity speed is: {Events.Descriptor.GravitySpeed}");
+    }
+  }
+
+  // Map creation / destruction
+  public void OnMapChange(bool enter) {
+    if (!enter) {
+      RemoveMyObjects();
+    }
+  }
+}
+```
+
+Documentation for adding custom data to a map can be found in the [Gorilla Tag Map Project](https://github.com/legoandmars/GorillaTagMapProject#for-developers) readme.

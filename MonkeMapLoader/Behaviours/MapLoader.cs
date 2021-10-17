@@ -21,12 +21,15 @@ namespace VmodMonkeMapLoader.Behaviours
 
         private static GameObject _mapInstance;
         private static bool _isLoading;
-        private static GlobalData _globalData;
+        internal static GlobalData _globalData;
         internal static MapDescriptor _descriptor;
+        internal static MapInfo _mapInfo;
         private static bool isMoved = false;
         internal static string _mapFileName;
 
         private SharedCoroutineStarter _couroutineStarter;
+
+        private static GameObject _forest;
 
         [Inject]
         private void Construct(SharedCoroutineStarter coroutineStarter)
@@ -38,6 +41,8 @@ namespace VmodMonkeMapLoader.Behaviours
         public void Initialize()
         {
             InitializeGlobalData();
+
+            GorillaComputer.instance.gameObject.AddComponent<MonkeRoomManager>();
         }
 
         public static void ForceRespawn()
@@ -81,13 +86,7 @@ namespace VmodMonkeMapLoader.Behaviours
 
             if (!_lobbyName.IsNullOrWhiteSpace())
             {
-                string lobbyVarient = "";
-                if (_descriptor.GameMode.ToLower() == "casual")
-				{
-                    lobbyVarient = "CASUAL";
-				}
-
-                Utilla.Utils.RoomUtils.JoinModdedLobby(_lobbyName + lobbyVarient);
+                Utilla.Utils.RoomUtils.JoinModdedLobby(_lobbyName, _descriptor.GameMode.ToLower() == "casual");
                 if (_descriptor != null)
 				{
 					if(_descriptor.GravitySpeed != SharedConstants.Gravity)
@@ -107,6 +106,13 @@ namespace VmodMonkeMapLoader.Behaviours
                         go.transform.position -= new Vector3(0, 5000, 0);
                     }
                 }
+
+                // Increase the clipping plane
+                Camera.main.farClipPlane += 500;
+
+                // Disable forest
+                _forest = _forest ?? GameObject.Find("Level/Forest");
+				_forest.SetActive(false);
             }
         }
 
@@ -115,15 +121,22 @@ namespace VmodMonkeMapLoader.Behaviours
             if (Physics.gravity.y != SharedConstants.Gravity) Physics.gravity = new Vector3(0, SharedConstants.Gravity, 0);
 
             //if (GorillaTagManager.instance != null)
-			//{
-			//	GorillaTagManager.instance.slowJumpLimit = SharedConstants.SlowJumpLimit;
-			//	GorillaTagManager.instance.slowJumpMultiplier = SharedConstants.SlowJumpMultiplier;
-			//	GorillaTagManager.instance.fastJumpLimit = SharedConstants.FastJumpLimit;
-			//	GorillaTagManager.instance.fastJumpMultiplier = SharedConstants.FastJumpMultiplier;
-			//}
+            //{
+            //	GorillaTagManager.instance.slowJumpLimit = SharedConstants.SlowJumpLimit;
+            //	GorillaTagManager.instance.slowJumpMultiplier = SharedConstants.SlowJumpMultiplier;
+            //	GorillaTagManager.instance.fastJumpLimit = SharedConstants.FastJumpLimit;
+            //	GorillaTagManager.instance.fastJumpMultiplier = SharedConstants.FastJumpMultiplier;
+            //}
 
             //GorillaLocomotion.Player.Instance.maxJumpSpeed = SharedConstants.SlowJumpLimit;
             //GorillaLocomotion.Player.Instance.jumpMultiplier = SharedConstants.SlowJumpMultiplier;
+
+			// Decrease the clipping plane
+			Camera.main.farClipPlane -= 500;
+
+            // Enable forest
+			_forest = _forest ?? GameObject.Find("Level/Forest");
+			_forest.SetActive(true);
 
             if (isMoved)
             {
@@ -141,11 +154,21 @@ namespace VmodMonkeMapLoader.Behaviours
             _couroutineStarter.StartCoroutine(LoadMapFromPackageFileAsync(mapInfo, b =>
             {
                 Logger.LogText("______ MAP LOADED");
+                _mapInfo = mapInfo;
                 _mapFileName = Path.GetFileNameWithoutExtension(mapInfo.FilePath);
                 isSuccess(b);
 
                 if (Events.OnMapChange != null)
-                    Events.OnMapChange(true);
+				{
+                    try
+					{
+                        Events.OnMapChange(true);
+					}
+                    catch (Exception e)
+					{
+                        Debug.LogError(e);
+					}
+				}
             }));
         }
 
@@ -205,7 +228,12 @@ namespace VmodMonkeMapLoader.Behaviours
                 yield break;
             }
 
-            var scene = SceneManager.LoadSceneAsync(scenePath[0], LoadSceneMode.Additive);
+            LoadSceneParameters loadSceneParams = new LoadSceneParameters
+            {
+                loadSceneMode = LoadSceneMode.Additive,
+                localPhysicsMode = LocalPhysicsMode.None
+            };
+            var scene = SceneManager.LoadSceneAsync(scenePath[0], loadSceneParams);
             yield return scene;
 
             GameObject[] allObjects = Object.FindObjectsOfType<GameObject>();
@@ -213,7 +241,7 @@ namespace VmodMonkeMapLoader.Behaviours
 
             foreach(GameObject gameObject in allObjects)
             {
-                if (gameObject.scene.name != "GorillaTagNewVisuals" && gameObject.scene.name != "DontDestroyOnLoad")
+                if (gameObject.scene.name != "GorillaTagNewVisualsCosmetics" && gameObject.scene.name != "DontDestroyOnLoad")
                 {
                     if(gameObject.transform.parent == null & gameObject.transform != descriptor.transform)
                     {
@@ -232,11 +260,7 @@ namespace VmodMonkeMapLoader.Behaviours
             }
 
             Logger.LogText("Map asset loaded: " + map.name);
-            _lobbyName = mapInfo.PackageInfo.Descriptor.Author + "_" + mapInfo.PackageInfo.Descriptor.Name;
-            if(!String.IsNullOrWhiteSpace(mapInfo.PackageInfo.Config.GUID))
-            {
-                _lobbyName = mapInfo.PackageInfo.Config.GUID + "_" + mapInfo.PackageInfo.Config.Version;
-            }
+            _lobbyName = mapInfo.GetLobbyName();
 
             Exception ex = null;
 
@@ -271,7 +295,16 @@ namespace VmodMonkeMapLoader.Behaviours
                 _mapInstance = null;
 
                 if (Events.OnMapChange != null)
-                    Events.OnMapChange(false);
+				{
+                    try
+					{
+                        Events.OnMapChange(false);
+					}
+                    catch (Exception e)
+					{
+                        Debug.LogError(e);
+					}
+				}
 
                 Resources.UnloadUnusedAssets();
             }
@@ -352,7 +385,13 @@ namespace VmodMonkeMapLoader.Behaviours
                     foreach(var material in renderer.materials)
                     {
                         if (material == null) return;
-                        LightingUtils.SetLightingStrength(material, 0.9f);
+                        try
+						{
+                            LightingUtils.SetLightingStrength(material, 0.9f);
+						} catch (Exception e)
+						{
+                            Helpers.Logger.LogException(e);
+						}
                     }
                 }
             }
@@ -363,6 +402,15 @@ namespace VmodMonkeMapLoader.Behaviours
             if (child == null) return;
             var colliders = child.GetComponents<Collider>();
             if (colliders == null) return;
+
+            // Fix material sound
+            var surfaceOverride = child.GetComponent<GorillaSurfaceOverride>();
+            if (surfaceOverride == null)
+			{
+                surfaceOverride = child.AddComponent<GorillaSurfaceOverride>();
+                surfaceOverride.overrideIndex = 0;
+			}
+
             foreach (var collider in colliders)
             {
                 if (collider == null) return;

@@ -13,6 +13,7 @@ namespace VmodMonkeMapLoader.Patches
             {
                 if(MapLoader._lobbyName != null)
                 {
+                    if (__instance.currentGameType == "") return;
                     if (__instance.currentGameType.Contains(MapLoader._lobbyName) == false) MapLoader.ResetMapProperties();
                 }
             }

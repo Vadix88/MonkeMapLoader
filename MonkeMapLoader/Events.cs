@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using VmodMonkeMapLoader.Behaviours;
+using VmodMonkeMapLoader.Models;
 
 namespace VmodMonkeMapLoader
 {
@@ -29,6 +30,14 @@ namespace VmodMonkeMapLoader
 			get
 			{
 				return MapLoader._descriptor;
+			}
+		}
+
+		public static MapPackageInfo PackageInfo
+		{
+			get
+			{
+				return MapLoader._mapInfo.PackageInfo;
 			}
 		}
 
