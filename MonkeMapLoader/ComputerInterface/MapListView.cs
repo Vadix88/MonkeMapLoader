@@ -40,7 +40,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
         public override async void OnShow(object[] args)
         {
             base.OnShow(args);
-            
+
             if (_isFirstView)
             {
                 SetText(str =>
@@ -108,9 +108,12 @@ namespace VmodMonkeMapLoader.ComputerInterface
                 if (isSelected) str.BeginColor("8dc2ef").Append("> ");
                 else str.Append("  ");
 
-                str.Append(map.PackageInfo.Descriptor.Name.Clamp(30));
+                str.Append(map.PackageInfo.Descriptor.Name.Clamp(32).PadRight(32));
 
                 if (isSelected) str.EndColor();
+
+                int userCount = MonkeRoomManager.Instance.PlayersOnMap(map.GetLobbyName());
+                str.Append(userCount >= 1000 ? " >1k" : userCount.ToString().PadLeft(4));
 
                 str.AppendLine();
             });

@@ -23,7 +23,8 @@ namespace VmodMonkeMapLoader.Helpers
                     Directory.CreateDirectory(dirPath);
                 }
                 var files = Directory.GetFiles(dirPath, "*.gtmap", SearchOption.TopDirectoryOnly);
-                Logger.LogText("Files found: " + string.Join(" | ", files));
+                // Don't log this for perf reasons
+                //Logger.LogText("Files found: " + string.Join(" | ", files));
                 var mapPackagesInfo = files
                     .Select(f => new MapInfo
                     {

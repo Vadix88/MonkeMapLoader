@@ -3,6 +3,7 @@ using System.Collections;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 using ComputerInterface;
 using ComputerInterface.ViewLib;
 using UnityEngine;
@@ -21,6 +22,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
         private bool _isError;
         private bool _isMapLoaded;
         private bool _isUpdated;
+        private bool _hasRequiredMods;
         private CancellationTokenSource _loaderCancelToken;
 
         public MapDetailsView(MapLoader mapLoader)
@@ -71,7 +73,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
                     break;
 
                 case EKeyboardKey.Enter:
-                    if (_isMapLoaded || !_isUpdated)
+                    if (_isMapLoaded || !_isUpdated || !_hasRequiredMods)
                         break;
                     Text = "Loading map: " + _mapInfo.PackageInfo.Descriptor.Name;
                     _mapLoader.LoadMap(_mapInfo, b => OnMapLoaded());
@@ -88,6 +90,14 @@ namespace VmodMonkeMapLoader.ComputerInterface
             Version mapRequiredVersion;
             if (!Version.TryParse(mapDescriptor.PcRequiredVersion, out mapRequiredVersion)) mapRequiredVersion = pluginVersion; // AndroidRequiredVersion for quest
             _isUpdated = pluginVersion.CompareTo(mapRequiredVersion) >= 0;
+            var infos = BepInEx.Bootstrap.Chainloader.PluginInfos.Select(x => x.Value.Metadata.GUID);
+            if (_mapInfo.PackageInfo.Config.RequiredPCModIDs != null)
+			{
+                _hasRequiredMods = !_mapInfo.PackageInfo.Config.RequiredPCModIDs.Except(infos).Any();
+			} else
+			{
+                _hasRequiredMods = true;
+			}
 
             var sb = new StringBuilder()
                 .AppendClr("<noparse> << [BACK]              [ENTER]  LOAD MAP</noparse>", "8dc2ef").AppendLine()
@@ -98,6 +108,9 @@ namespace VmodMonkeMapLoader.ComputerInterface
             if (!_isUpdated)
 			{
                 sb.AppendClr($"YOU MUST UPDATE MONKE MAP LOADER TO AT LEAST v{mapRequiredVersion} TO PLAY THIS MAP!", "ff0000").AppendLine();
+			} else if (!_hasRequiredMods)
+			{
+                sb.AppendClr($"YOU ARE MISSING REQUIRED MODS: {string.Join(", ", _mapInfo.PackageInfo.Config.RequiredPCModIDs.Where(x => !infos.Contains(x)))}", "ff0000").AppendLine();
 			} else
 			{
                 sb.AppendLine();
