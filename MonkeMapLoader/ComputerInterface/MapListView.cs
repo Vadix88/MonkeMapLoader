@@ -64,6 +64,8 @@ namespace VmodMonkeMapLoader.ComputerInterface
 
         private void RefreshMapList(bool force = false)
         {
+            MapLoader.ShowTreeTeleporter();
+
             if((_mapList == null || _mapList.Count == 0) || force) LoadMaps();
 
             _isError = false;
@@ -178,6 +180,8 @@ namespace VmodMonkeMapLoader.ComputerInterface
             switch (key)
             {
                 case EKeyboardKey.Back:
+                    PreviewOrb.HideOrb();
+                    MapLoader.HideTreeTeleporter();
                     ReturnToMainMenu();
                     break;
                 case EKeyboardKey.Option1:
