@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using GorillaNetworking;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -71,6 +72,16 @@ namespace VmodMonkeMapLoader.Behaviours
                 }
             }
         }
+
+        public static void ShowTreeTeleporter()
+		{
+            _globalData.BigTreeTeleportToMap.SetActive(true);
+		}
+
+        public static void HideTreeTeleporter()
+		{
+            _globalData.BigTreeTeleportToMap.SetActive(false);
+		}
 
         public static void JoinGame()
         {
@@ -450,7 +461,7 @@ namespace VmodMonkeMapLoader.Behaviours
 
                 _globalData.BigTreeTeleportToMap.layer = Constants.MaskLayerPlayerTrigger;
                 Object.DontDestroyOnLoad(_globalData.BigTreeTeleportToMap);
-                _globalData.BigTreeTeleportToMap.transform.position += new Vector3(0, -0.05f, 2.9f);
+                _globalData.BigTreeTeleportToMap.transform.position += new Vector3(0, -0.05f, 2.4f);
                 _globalData.BigTreeTeleportToMap.transform.Rotate(new Vector3(0, 20, 0));
             }
 
@@ -459,6 +470,7 @@ namespace VmodMonkeMapLoader.Behaviours
             AssetBundle orbBundle = MapFileUtils.GetAssetBundleFromZip(orbPath);
 
             GameObject orb = Object.Instantiate(orbBundle.LoadAsset<GameObject>("_Orb"));
+            orb.transform.position += new Vector3(-.5f, 0.5f, -1.95f) / 4;
             GameObject orbVisuals = Object.Instantiate(orb);
 
             orb.AddComponent<RotateByHand>();
@@ -495,6 +507,7 @@ namespace VmodMonkeMapLoader.Behaviours
             treeTeleporter.TeleportPoints.Add(_globalData.BigTreePoint.transform);
 
             ColorTreeTeleporter(new Color(0, 1, 0));
+            HideTreeTeleporter();
 
             // Emergency Teleport Stuff
             if (_globalData.FallEmergencyTeleport != null)

@@ -6,6 +6,7 @@ using Photon.Realtime;
 using Photon.Pun;
 using ExitGames.Client.Photon;
 using UnityEngine;
+using GorillaNetworking;
 
 namespace VmodMonkeMapLoader.Behaviours
 {

@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using GorillaNetworking;
 using VmodMonkeMapLoader.Behaviours;
 
 namespace VmodMonkeMapLoader.Patches

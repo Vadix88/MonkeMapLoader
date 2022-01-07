@@ -1,6 +1,7 @@
 ﻿using System;
 using HarmonyLib;
 using UnityEngine;
+using GorillaNetworking;
 using VmodMonkeMapLoader.Behaviours;
 using Logger = VmodMonkeMapLoader.Helpers.Logger;
 
@@ -17,7 +18,7 @@ namespace VmodMonkeMapLoader.Patches
             {
                 if (PhotonNetworkController.instance?.currentGameType != null && MapLoader._lobbyName != null && PhotonNetworkController.instance.currentGameType.Contains(MapLoader._lobbyName))
                 {
-                    GorillaTagManager __instance = GorillaTagManager.instance;
+                    GorillaTagManager __instance = (GorillaTagManager)GorillaTagManager.instance;
 
                     object currentlyTag;
                     __instance.currentRoom.CustomProperties.TryGetValue("isCurrentlyTag", out currentlyTag);
