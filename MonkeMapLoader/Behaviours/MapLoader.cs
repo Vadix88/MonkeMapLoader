@@ -18,7 +18,7 @@ namespace VmodMonkeMapLoader.Behaviours
 {
     public class MapLoader : IInitializable
     {
-        public static string _lobbyName;
+		public static string _lobbyName;
 
         private static GameObject _mapInstance;
         private static bool _isLoading;
@@ -122,10 +122,10 @@ namespace VmodMonkeMapLoader.Behaviours
                 Camera.main.farClipPlane += 500;
 
                 // Disable forest
-                _forest = _forest ?? GameObject.Find("Level/Forest");
-				_forest.SetActive(false);
+                _forest = _forest ?? GameObject.Find(Constants.ForestPath);
+				_forest?.SetActive(false);
             }
-        }
+		}
 
         public static void ResetMapProperties()
         {
@@ -146,8 +146,8 @@ namespace VmodMonkeMapLoader.Behaviours
 			Camera.main.farClipPlane -= 500;
 
             // Enable forest
-			_forest = _forest ?? GameObject.Find("Level/Forest");
-			_forest.SetActive(true);
+			_forest = _forest ?? GameObject.Find(Constants.ForestPath);
+			_forest?.SetActive(true);
 
             if (isMoved)
             {

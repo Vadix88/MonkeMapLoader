@@ -24,5 +24,6 @@ namespace VmodMonkeMapLoader.Helpers
                 }
             }
         };
+		public const string ForestPath = "Level/forest";
     }
 }
