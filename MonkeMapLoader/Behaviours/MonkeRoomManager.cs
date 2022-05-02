@@ -44,7 +44,7 @@ namespace VmodMonkeMapLoader.Behaviours
 			{
 				checkedRegions = new List<string>();
 				forcedRegion = currentRegion;
-				string[] regions = PhotonNetworkController.instance.serverRegions;
+				string[] regions = PhotonNetworkController.Instance.serverRegions;
 				foreach (string region in regions)
 				{
 					// we want a list of all regions except current region
@@ -164,12 +164,12 @@ namespace VmodMonkeMapLoader.Behaviours
 					Patches.ForceRegionPatch.patchForcedRegion = newRegion;
 
 					// disconnect makes it reconnect to master
-					PhotonNetworkController.instance.AttemptDisconnect();
+					PhotonNetworkController.Instance.AttemptDisconnect();
 				} else if (checkedRegions.Count == 0 && forcedRegion != "none")
 				{
 					// set back to best ping region
 					Patches.ForceRegionPatch.patchForcedRegion = forcedRegion;
-					PhotonNetworkController.instance.AttemptDisconnect();
+					PhotonNetworkController.Instance.AttemptDisconnect();
 					forcedRegion = "none";
 				}
 			}
@@ -188,7 +188,7 @@ namespace VmodMonkeMapLoader.Behaviours
 				checkedRegions = null;
 				forcedRegion = "none";
 
-				PhotonNetworkController.instance.AttemptDisconnect();
+				PhotonNetworkController.Instance.AttemptDisconnect();
 			}
 		}
 
