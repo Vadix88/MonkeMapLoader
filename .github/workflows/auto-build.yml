@@ -80,6 +80,17 @@ jobs:
         Expand-Archive Extenject*.zip Temp
         cp Temp\Extenject ${{steps.wd.outputs.dir}}\Libs -Recurse
         rm Temp -Recurse
+    - name: Download Computer Interface
+      uses: robinraju/release-downloader@v1.2
+      with:
+        repository: "ToniMacaroni/ComputerInterface"
+        latest: true
+        fileName: "*"
+    - name: Extract Computer Interface
+      run: |
+        Expand-Archive Utilla*.zip Temp
+        cp Temp\BepInEx\plugins\ComputerInterface ${{steps.wd.outputs.dir}}\Libs -Recurse
+        rm Temp -Recurse
 
     # Build the mod
     - name: Setup dotnet
