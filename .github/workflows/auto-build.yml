@@ -55,6 +55,32 @@ jobs:
         Expand-Archive Utilla*.zip Temp
         cp Temp\BepInEx\plugins\Utilla ${{steps.wd.outputs.dir}}\Libs -Recurse
         rm Temp -Recurse
+    - name: Download Newtonsoft
+      uses: robinraju/release-downloader@v1.2
+      with:
+        repository: "legoandmars/Newtonsoft.Json"
+        latest: true
+        fileName: "*"
+    - name: Extract Newtonsoft
+      run: |
+        Expand-Archive Newtonsoft*.zip Temp
+        cp Temp\BepInEx\core ${{steps.wd.outputs.dir}}\Libs -Recurse
+        rm Temp -Recurse
+    - name: Download Bepinject
+      uses: robinraju/release-downloader@v1.2
+      with:
+        repository: "Auros/Bepinject"
+        latest: true
+        fileName: "*"
+    - name: Extract Bepinject
+      run: |
+        Expand-Archive Bepinject*.zip Temp
+        cp Temp\Bepinject-Auros ${{steps.wd.outputs.dir}}\Libs -Recurse
+        rm Temp -Recurse
+        Expand-Archive Extenject*.zip Temp
+        cp Temp\Extenject ${{steps.wd.outputs.dir}}\Libs -Recurse
+        rm Temp -Recurse
+
     # Build the mod
     - name: Setup dotnet
       uses: actions/setup-dotnet@v1
