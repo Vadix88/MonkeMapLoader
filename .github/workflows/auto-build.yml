@@ -88,7 +88,7 @@ jobs:
         fileName: "*"
     - name: Extract Computer Interface
       run: |
-        Expand-Archive Utilla*.zip Temp
+        Expand-Archive ComputerInterface*.zip Temp
         cp Temp\BepInEx\plugins\ComputerInterface ${{steps.wd.outputs.dir}}\Libs -Recurse
         rm Temp -Recurse
 
