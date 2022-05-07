@@ -22,7 +22,7 @@ jobs:
     - uses: actions/checkout@v1
     - name: Get working directory
       id: wd
-      run: echo "::set-output name=dir::$((ls . -filter *.csproj -recurse).DirectoryName)"
+      run: echo "::set-output name=dir::$(((ls . -filter *.csproj -recurse | sort).DirectoryName) | select -last 1)"
 
     # Download required libraries
     - name: Download Stripped Libs
