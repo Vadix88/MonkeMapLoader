@@ -16,7 +16,7 @@ namespace VmodMonkeMapLoader.Patches
         {
             try
             {
-                if (PhotonNetworkController.instance?.currentGameType != null && MapLoader._lobbyName != null && PhotonNetworkController.instance.currentGameType.Contains(MapLoader._lobbyName))
+                if (PhotonNetworkController.Instance?.currentGameType != null && MapLoader._lobbyName != null && PhotonNetworkController.Instance.currentGameType.Contains(MapLoader._lobbyName))
                 {
                     GorillaTagManager __instance = (GorillaTagManager)GorillaTagManager.instance;
 

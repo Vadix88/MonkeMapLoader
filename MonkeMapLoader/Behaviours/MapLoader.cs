@@ -11,6 +11,7 @@ using UnityEngine.SceneManagement;
 using VmodMonkeMapLoader.Helpers;
 using VmodMonkeMapLoader.Models;
 using Zenject;
+using UnityEngine.SceneManagement;
 using Logger = VmodMonkeMapLoader.Helpers.Logger;
 using Object = UnityEngine.Object;
 
@@ -252,7 +253,7 @@ namespace VmodMonkeMapLoader.Behaviours
 
             foreach(GameObject gameObject in allObjects)
             {
-                if (gameObject.scene.name != "GorillaTagNewVisualsCosmetics" && gameObject.scene.name != "DontDestroyOnLoad")
+                if (gameObject.scene.name != SceneManager.GetActiveScene().name && gameObject.scene.name != "DontDestroyOnLoad")
                 {
                     if(gameObject.transform.parent == null & gameObject.transform != descriptor.transform)
                     {
@@ -338,7 +339,7 @@ namespace VmodMonkeMapLoader.Behaviours
                     Material oldMat = fakeSkybox.GetComponent<Renderer>().material; 
                     if (oldMat.HasProperty("_Tex"))
                     {
-                        oldMat.SetTexture("_Tex", Resources.Load<Texture2D>("objects/forest/materials/sky"));
+                        oldMat.SetTexture("_Tex", Resources.Load<Texture2D>("objects/newsky/materials/day"));
                         oldMat.SetColor("_Color", new Color(1, 1, 1, 1));
                     }
                 }

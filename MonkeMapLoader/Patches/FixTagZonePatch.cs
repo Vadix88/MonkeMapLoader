@@ -11,7 +11,7 @@ namespace VmodMonkeMapLoader.Patches
     {
         internal static void Postfix(GorillaTagManager __instance, Player taggedPlayer, Player taggingPlayer)
         {
-            if (__instance.photonView.IsMine && taggedPlayer == taggingPlayer)
+            if (__instance.photonView.IsMine && taggedPlayer == taggingPlayer && __instance.IsGameModeTag())
             {
                 RaiseEventOptions raiseEventOptions = new RaiseEventOptions();
                 WebFlags flags = new WebFlags(1);
