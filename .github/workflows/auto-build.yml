@@ -101,7 +101,7 @@ jobs:
       run: ${{steps.wd.outputs.dir}}\MakeRelease.ps1
     - name: Prepare build for upload
       run: |
-        $dir = (ls . -filter *.csproj -recurse).BaseName
+        $dir = ((ls . -filter *.csproj -recurse | sort).BaseName) | select -last 1
         mv $dir\$dir-v.zip Build.zip
         Expand-Archive Build.zip Build
     # Upload the mod
