@@ -343,7 +343,6 @@ namespace VmodMonkeMapLoader.Behaviours
             try
 			{
 				var path = Path.Combine(Path.GetDirectoryName(typeof(MapFileUtils).Assembly.Location), Constants.CustomMapsFolderName, map.MapFileName);
-                Debug.LogWarning(path);
 				if (File.Exists(path))
 				{
 					Logger.LogText("Map already downloaded");

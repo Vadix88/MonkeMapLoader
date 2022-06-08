@@ -31,6 +31,8 @@ namespace VmodMonkeMapLoader.ComputerInterface
 
 		private MapsRoot _mapResponse;
 
+		private MapBrowseOptions _options = new MapBrowseOptions();
+
 		private MapBrowseView(HttpClient client)
 		{
 			_selectionHandler = new UISelectionHandler(EKeyboardKey.Up, EKeyboardKey.Down, EKeyboardKey.Enter);
@@ -47,7 +49,16 @@ namespace VmodMonkeMapLoader.ComputerInterface
 		{
 			base.OnShow(args);
 
-			if (_mapResponse == null)
+			bool forceRefresh = false;
+			if (args.Length > 0)
+			{
+				if (args[0] is bool b)
+				{
+					forceRefresh = b;
+				}
+			}
+
+			if (_mapResponse == null || forceRefresh)
 			{
 				SetText(str =>
 				{
@@ -61,7 +72,16 @@ namespace VmodMonkeMapLoader.ComputerInterface
 				_mapResponse = await GetMapsAsync(PageSize, 0);
 			}
 
-			RefreshMapList();
+			if (_mapList == null || _mapList.Count == 0 || forceRefresh)
+			{
+				_mapList = _mapResponse.Data.Maps;
+				_mapList.Add(null);
+				_pageHandler.SetElements(_mapList.ToArray());
+				_selectionHandler.CurrentSelectionIndex = 0;
+			}
+
+			_isError = false;
+			DrawList();
 		}
 
 		private async Task<MapsRoot> GetMapsAsync(int pageSize, int pageNumber)
@@ -72,8 +92,8 @@ namespace VmodMonkeMapLoader.ComputerInterface
 				{
 					pageSize = pageSize,
 					pageNumber = pageNumber,
-					orderBy = 3,
-					isDescending = true
+					orderBy = _options.OrderBy,
+					isDescending = _options.IsDescending
 				}
 			};
 
@@ -81,25 +101,6 @@ namespace VmodMonkeMapLoader.ComputerInterface
 
 			var response = await _client.PostAsync($"{Constants.MonkeMapHubBase}api/maps", bodyContent);
 			return JsonConvert.DeserializeObject<MapsRoot>(await response.Content.ReadAsStringAsync());
-		}
-
-		private void RefreshMapList()
-		{
-			if (_mapList == null || _mapList.Count == 0)
-			{
-				_mapList = _mapResponse.Data.Maps;
-				_mapList.Add(null);
-				_pageHandler.SetElements(_mapList.ToArray());
-				_selectionHandler.CurrentSelectionIndex = 0;
-			}
-
-			_isError = false;
-			DrawList();
-
-			var selectedIdx = _pageHandler.GetAbsoluteIndex(_selectionHandler.CurrentSelectionIndex);
-
-			if (_mapList.Count > 0)
-				PreviewOrb.ChangeOrb(_mapList[selectedIdx]);
 		}
 
 		private void DrawList()
@@ -118,8 +119,8 @@ namespace VmodMonkeMapLoader.ComputerInterface
 
 			var str = new StringBuilder();
 			str.AppendClr("[^ / v] SELECT MAP        [ENTER] DETAILS", Constants.Blue).AppendLine();
-			//str.AppendClr("[OPT 1] OPTIONS".PadLeft(SCREEN_WIDTH), Constants.Blue).AppendLine();
-			str.AppendLine();
+			str.AppendClr("[OPT 1] OPTIONS".PadLeft(SCREEN_WIDTH), Constants.Blue).AppendLine();
+			//str.AppendLine();
 
 			_selectionHandler.MaxIdx = _pageHandler.ItemsOnScreen - 1;
 
@@ -219,6 +220,9 @@ namespace VmodMonkeMapLoader.ComputerInterface
 
 			switch (key)
 			{
+				case EKeyboardKey.Option1:
+					ShowView<MapBrowseOptionsView>(_options);
+					break;
 				case EKeyboardKey.Back:
 					PreviewOrb.HideOrb();
 					ReturnToMainMenu();

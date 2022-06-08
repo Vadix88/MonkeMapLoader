@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Linq;
 using ComputerInterface;
 using ComputerInterface.ViewLib;
 using UnityEngine;
 using VmodMonkeMapLoader.Behaviours;
 using VmodMonkeMapLoader.Helpers;
-using VmodMonkeMapLoader.Models;
-using Zenject;
 using System.Net.Http;
-using static VmodMonkeMapLoader.Models.MonkeMapHubResponse;
 using Newtonsoft.Json;
+using static VmodMonkeMapLoader.Models.MonkeMapHubResponse;
 
 namespace VmodMonkeMapLoader.ComputerInterface
 {
@@ -56,13 +52,10 @@ namespace VmodMonkeMapLoader.ComputerInterface
 
 			_isDownloaded = _mapLoader.IsMapDownloaded(_map);
 
-            Debug.Log("MAP GUID: " + _map.MapGuid);
 			string requestUri = $"{Constants.MonkeMapHubBase}api/maps/{_map.MapGuid}";
-			Debug.Log("MAP URI: " + requestUri);
 			var response = await _client.GetAsync(requestUri);
 
 			string obj = await response.Content.ReadAsStringAsync();
-            Debug.Log(obj);
 			_mapData = JsonConvert.DeserializeObject<MapRoot>(obj).Data;
 
 			PrintMapInfo();
@@ -95,6 +88,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
 
         private void PrintMapInfo()
 		{
+            // TODO: Have enter load the map if downloaded
             var sb = new StringBuilder()
                 .AppendClr("<noparse> << [BACK]          [ENTER]  DOWNLOAD MAP</noparse>", Constants.Blue).AppendLine()
                 .AppendLine()

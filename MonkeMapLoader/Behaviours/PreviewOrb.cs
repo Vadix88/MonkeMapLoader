@@ -32,9 +32,7 @@ namespace VmodMonkeMapLoader.Behaviours
 
 		public static void ChangeOrb(MonkeMapHubResponse.Map selectedMap)
 		{
-            Debug.Log(selectedMap.MapThumbnailFileUrl);
 			string url = Helpers.Constants.MonkeMapHubBase + selectedMap.MapThumbnailFileUrl.Replace("preview", "preview_cubemap");
-            Debug.Log(url);
 			ChangeOrb(url);
 		}
 

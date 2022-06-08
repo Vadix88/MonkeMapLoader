@@ -16,7 +16,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
 {
     public class MapDetailsView : ComputerView
     {
-        private readonly MapLoader _mapLoader;
+		private readonly MapLoader _mapLoader;
 
         private MapInfo _mapInfo;
         private bool _isError;
@@ -116,9 +116,9 @@ namespace VmodMonkeMapLoader.ComputerInterface
                 sb.AppendLine();
 			}
 
-            sb.Append("NAME:  ").AppendClr(mapDescriptor.Name, "00cc44").AppendLine()
-                .Append("AUTHOR:  ").AppendClr(mapDescriptor.Author, "00cc44").AppendLine()
-                .Append("DESCRIPTION:  ").AppendClr(mapDescriptor.Description, "00cc44").AppendLine();
+            sb.Append("NAME:  ").AppendClr(mapDescriptor.Name, Constants.Green).AppendLine()
+                .Append("AUTHOR:  ").AppendClr(mapDescriptor.Author, Constants.Green).AppendLine()
+                .Append("DESCRIPTION:  ").AppendClr(mapDescriptor.Description, Constants.Green).AppendLine();
 
             Text = sb.ToString();
         }
