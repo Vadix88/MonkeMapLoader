@@ -44,7 +44,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
                 {
                     str.Repeat("=", SCREEN_WIDTH).AppendLine();
                     str.BeginCenter().Append("Monke Map Loader").AppendLine();
-                    str.Append("by ").AppendClr("Vadix", "3fbc04").Append(" & ").AppendClr("Bobbie", "8dc2ef").EndAlign().AppendLine();
+                    str.Append("by ").AppendClr("Vadix", "3fbc04").Append(" & ").AppendClr("Bobbie", Constants.Blue).EndAlign().AppendLine();
                     str.Repeat("=", SCREEN_WIDTH);
                 });
 
@@ -96,7 +96,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
             }
 
             var str = new StringBuilder();
-            str.AppendClr("[^ / v] SELECT MAP        [ENTER] DETAILS", "8dc2ef").AppendLines(2);
+            str.AppendClr("[^ / v] SELECT MAP        [ENTER] DETAILS", Constants.Blue).AppendLines(2);
 
             _selectionHandler.MaxIdx = _pageHandler.ItemsOnScreen - 1;
 
@@ -104,7 +104,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
             {
                 var isSelected = idx == _selectionHandler.CurrentSelectionIndex;
 
-                if (isSelected) str.BeginColor("8dc2ef").Append("> ");
+                if (isSelected) str.BeginColor(Constants.Blue).Append("> ");
                 else str.Append("  ");
 
                 str.Append(map.PackageInfo.Descriptor.Name.Clamp(32).PadRight(32));
@@ -134,7 +134,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
             str.Append("If you have map files in the folder").AppendLine();
             str.Append(" make sure they are in the right format.").Repeat("\n", 2);
             str.Append("You can find maps on the website:").AppendLine();
-            str.BeginCenter().AppendClr("MonkeMapHub.com", "8dc2ef").EndAlign().Repeat("\n", 2);
+            str.BeginCenter().AppendClr("MonkeMapHub.com", Constants.Blue).EndAlign().Repeat("\n", 2);
             str.BeginCenter().Append("PRESS ANY BUTTON TO CONTINUE...").EndAlign();
         }
 

@@ -100,7 +100,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
 			}
 
             var sb = new StringBuilder()
-                .AppendClr("<noparse> << [BACK]              [ENTER]  LOAD MAP</noparse>", "8dc2ef").AppendLine()
+                .AppendClr("<noparse> << [BACK]              [ENTER]  LOAD MAP</noparse>", Constants.Blue).AppendLine()
                 .AppendLine()
                 .AppendLine("MAP DETAILS")
                 .AppendLine();
@@ -131,7 +131,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
                 .AppendLine()
                 .AppendLine()
                 .AppendLine()
-                .BeginCenter().Append("Get more maps at ").AppendClr("MonkeMapHub.com", "8dc2ef").EndAlign()
+                .BeginCenter().Append("Get more maps at ").AppendClr("MonkeMapHub.com", Constants.Blue).EndAlign().AppendLine()
                 .BeginCenter().Append("Or in the Monke Map Hub Browser view").EndAlign();
             });
 

@@ -96,7 +96,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
         private void PrintMapInfo()
 		{
             var sb = new StringBuilder()
-                .AppendClr("<noparse> << [BACK]          [ENTER]  DOWNLOAD MAP</noparse>", "8dc2ef").AppendLine()
+                .AppendClr("<noparse> << [BACK]          [ENTER]  DOWNLOAD MAP</noparse>", Constants.Blue).AppendLine()
                 .AppendLine()
                 .AppendLine();
 
@@ -107,7 +107,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
                 nameWidth = SCREEN_WIDTH - 13;
 			}
 
-            sb.AppendClr(_map.MapName.Clamp(nameWidth).PadRight(nameWidth), "00cc44");
+            sb.AppendClr(_map.MapName.Clamp(nameWidth).PadRight(nameWidth), Constants.Green);
 			if (_isDownloaded)
 			{
 				sb.AppendLine(" [DOWNLOADED]");
@@ -116,10 +116,10 @@ namespace VmodMonkeMapLoader.ComputerInterface
 				sb.AppendLine();
 			}
 
-			sb.Append("BY: ").AppendClr(_map.AuthorName, "00cc44").AppendLine($" ({_map.AuthorName}#{_map.AuthorDiscriminator})");
+			sb.Append("BY: ").AppendClr(_map.AuthorName, Constants.Green).AppendLine($" ({_map.AuthorName}#{_map.AuthorDiscriminator})");
 
-			sb.AppendClr(NumberFormatUtils.FormatCount(_map.MapDownloadCount), "00cc44").Append(" DOWNLOADS")
-                .Append($"  {NumberFormatUtils.FormatSize(_map.MapFileSize, "00cc44")}")
+			sb.AppendClr(NumberFormatUtils.FormatCount(_map.MapDownloadCount), Constants.Green).Append(" DOWNLOADS")
+                .Append($"  {NumberFormatUtils.FormatSize(_map.MapFileSize, Constants.Green)}")
 				.AppendLine($"  {_map.MapDateUpdated:yyyy-mm-dd}");
 
             sb.AppendLine();
