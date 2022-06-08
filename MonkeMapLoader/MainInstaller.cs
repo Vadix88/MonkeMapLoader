@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Net.Http;
 using ComputerInterface.Interfaces;
 using Photon.Pun;
 using UnityEngine;
@@ -13,10 +14,13 @@ namespace VmodMonkeMapLoader
     {
         public override void InstallBindings()
         {
+            Container.BindInterfacesAndSelfTo<HttpClient>().AsSingle();
+
             Container.Bind<SharedCoroutineStarter>().FromNewComponentOnNewGameObject().AsSingle();
             Container.BindInterfacesAndSelfTo<MapLoader>().AsSingle();
 
             Container.Bind<IComputerModEntry>().To<MapListEntry>().AsSingle();
+            Container.Bind<IComputerModEntry>().To<MapBrowseEntry>().AsSingle();
         }
     }
 }

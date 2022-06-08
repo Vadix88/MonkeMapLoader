@@ -12,6 +12,13 @@ namespace VmodMonkeMapLoader.Helpers
 {
     public static class MapFileUtils
     {
+        static List<MapInfo> mapListCache;
+
+		public static List<MapInfo> GetMapListCached()
+		{
+            return mapListCache ?? GetMapList();
+		}
+
         public static List<MapInfo> GetMapList()
         {
             try
@@ -34,8 +41,10 @@ namespace VmodMonkeMapLoader.Helpers
                     .Where(pi => pi.PackageInfo != null)
                     .ToList();
 
-                Logger.LogText("Maps found: " + string.Join(" | " , mapPackagesInfo.Select(mp => mp.PackageInfo.Descriptor.Name).ToList()));
+                //Logger.LogText("Maps found: " + string.Join(" | " , mapPackagesInfo.Select(mp => mp.PackageInfo.Descriptor.Name).ToList()));
+                Logger.LogText($"{mapPackagesInfo.Count} Maps found");
 
+                mapListCache = mapPackagesInfo;
                 return mapPackagesInfo;
             }
             catch (Exception ex)

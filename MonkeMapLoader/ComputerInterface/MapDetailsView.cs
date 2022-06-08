@@ -131,7 +131,8 @@ namespace VmodMonkeMapLoader.ComputerInterface
                 .AppendLine()
                 .AppendLine()
                 .AppendLine()
-                .BeginCenter().Append("Get more maps at ").AppendClr("MonkeMapHub.com", "8dc2ef").EndAlign();
+                .BeginCenter().Append("Get more maps at ").AppendClr("MonkeMapHub.com", "8dc2ef").EndAlign()
+                .BeginCenter().Append("Or in the Monke Map Hub Browser view").EndAlign();
             });
 
             _isMapLoaded = true;
