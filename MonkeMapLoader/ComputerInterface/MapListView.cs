@@ -96,7 +96,8 @@ namespace VmodMonkeMapLoader.ComputerInterface
             }
 
             var str = new StringBuilder();
-            str.AppendClr("[^ / v] SELECT MAP        [ENTER] DETAILS", Constants.Blue).AppendLines(2);
+			str.AppendClr("[^ / v] SELECT MAP        [ENTER] DETAILS", Constants.Blue).AppendLine();
+			str.AppendClr("[OPT 1] REFRESH".PadLeft(SCREEN_WIDTH), Constants.Blue).AppendLine();
 
             _selectionHandler.MaxIdx = _pageHandler.ItemsOnScreen - 1;
 
@@ -142,7 +143,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
         {
             if (_selectedMap == null) return;
 
-            ShowView<MapDetailsView>(_selectedMap);
+            ShowView<MapDetailsView>(_selectedMap, typeof(MapListView));
         }
 
         public override void OnKeyPressed(EKeyboardKey key)

@@ -25,6 +25,8 @@ namespace VmodMonkeMapLoader.ComputerInterface
         private bool _hasRequiredMods;
         private CancellationTokenSource _loaderCancelToken;
 
+        private Type _returnType;
+
         public MapDetailsView(MapLoader mapLoader)
         {
             _mapLoader = mapLoader;
@@ -42,6 +44,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
             }
 
             var mapInfo = args[0] as MapInfo ?? Constants.MapInfoError;
+            _returnType = args[1] as Type ?? typeof(MapListView);
 
             _isError = false;
             _isMapLoaded = false;
@@ -54,8 +57,8 @@ namespace VmodMonkeMapLoader.ComputerInterface
             if (_isError)
             {
                 _isError = false;
-                ShowView<MapListView>();
-                return;
+                ShowView(_returnType);
+				return;
             }
 
             if (_isMapLoaded)
@@ -69,7 +72,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
             {
                 case EKeyboardKey.Back:
                     _mapInfo = null;
-                    ShowView<MapListView>();
+                    ShowView(_returnType);
                     break;
 
                 case EKeyboardKey.Enter:

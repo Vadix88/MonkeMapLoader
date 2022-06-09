@@ -323,18 +323,20 @@ namespace VmodMonkeMapLoader.Behaviours
             }
         }
 
-		public bool IsMapDownloaded(MonkeMapHubResponse.Map map)
+		public bool IsMapDownloaded(MonkeMapHubResponse.Map map, out MapInfo mapInfo, bool refresh = false)
 		{
-            var mapInfos = MapFileUtils.GetMapListCached();
+			var mapInfos = refresh ? MapFileUtils.GetMapList() : MapFileUtils.GetMapListCached();
             foreach (var info in mapInfos)
 			{
 				if ((info.PackageInfo.Config.GUID == map.MapGuid)
 				 || (info.PackageInfo.Descriptor.Name == map.MapName && info.PackageInfo.Descriptor.Author == map.AuthorName))
 				{
+					mapInfo = info;
 					return true;
 				}
 			}
-			
+
+            mapInfo = null;
             return false;
 		}
 
