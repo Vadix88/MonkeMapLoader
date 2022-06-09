@@ -1,5 +1,6 @@
 ﻿using ComputerInterface;
 using ComputerInterface.ViewLib;
+using System.Collections.Generic;
 using System.Text;
 using VmodMonkeMapLoader.Helpers;
 using VmodMonkeMapLoader.Models;
@@ -12,6 +13,15 @@ namespace VmodMonkeMapLoader.ComputerInterface
 
 		private MapBrowseOptions _options;
 
+		Dictionary<int, (int id, string name)> _map = new Dictionary<int, (int, string)>
+		{
+			{ 1, (3, "DOWNLOADS") },
+			{ 2, (5, "VERIFIED DATE") },
+			{ 3, (1, "UPLOAD DATE") }, // This is technically the modified date
+			{ 4, (0, "MAP NAME") },
+			{ 5, (4, "AUTHOR") },
+		};
+
 		public MapBrowseOptionsView()
 		{
 			_selectionHandler = new UISelectionHandler(EKeyboardKey.Up, EKeyboardKey.Down, EKeyboardKey.Enter);
@@ -22,33 +32,13 @@ namespace VmodMonkeMapLoader.ComputerInterface
 
 		private void OnEntrySelected(int index)
 		{
-			switch (index)
+			if (index == 0)
 			{
-				case 0:
-					{
-						_options.IsDescending = !_options.IsDescending;
-						break;
-					}
-				case 1:
-					{
-						_options.OrderBy = 0;
-						break;
-					}
-				case 2:
-					{
-						_options.OrderBy = 1;
-						break;
-					}
-				case 3:
-					{
-						_options.OrderBy = 3;
-						break;
-					}
-				case 4:
-					{
-						_options.OrderBy = 4;
-						break;
-					}
+				_options.IsDescending = !_options.IsDescending;
+			}
+			else
+			{
+				_options.OrderBy = _map[index].id;
 			}
 
 			DrawView();
@@ -58,13 +48,13 @@ namespace VmodMonkeMapLoader.ComputerInterface
 		{
 			base.OnShow(args);
 
-            if (args == null || args.Length == 0)
-            {
-                Text = "No options container provided";
-                return;
-            }
+			if (args == null || args.Length == 0)
+			{
+				Text = "No options container provided";
+				return;
+			}
 
-			_options =  args[0] as MapBrowseOptions;
+			_options = args[0] as MapBrowseOptions;
 
 			DrawView();
 		}
@@ -74,27 +64,29 @@ namespace VmodMonkeMapLoader.ComputerInterface
 			SetText(str =>
 			{
 				// str.AppendClr("[^ / v] SELECT MAP        [ENTER] DETAILS", Constants.Blue).AppendLine();
+				str.AppendLine();
 				str.AppendClr(" SORT OPTIONS", Constants.Blue).AppendLine();
 				str.AppendLine();
 
-				str.AppendLine(_selectionHandler.GetIndicatedText(0, _options.IsDescending ? " DESCENDING" : " ASCENDING"));
+				str.AppendLine(_selectionHandler.GetIndicatedText(0, _options.IsDescending ? "DESCENDING" : "ASCENDING"));
 				str.AppendLine();
 
 				str.AppendLine(" ORDER BY");
-				AppendSelection(str, _selectionHandler, _options.OrderBy == 0, 1, "MAP NAME", Constants.Blue);
-				AppendSelection(str, _selectionHandler, _options.OrderBy == 1, 2, "DATE", Constants.Blue);
-				AppendSelection(str, _selectionHandler, _options.OrderBy == 3, 3, "DOWNLOADS", Constants.Blue);
-				AppendSelection(str, _selectionHandler, _options.OrderBy == 4, 4, "AUTHOR", Constants.Blue);
-			});
-		}
+				foreach (var item in _map)
+				{
+					if (_options.OrderBy == item.Value.id)
+					{
+						str.BeginColor(Constants.Blue);
+					}
 
-		void AppendSelection(StringBuilder str, UISelectionHandler selectionHandler, bool condition, int index, string name, string highlightColor)
-		{
-			if (condition)
-			{
-				name = new StringBuilder().AppendClr(name, highlightColor).ToString();
-			}
-			str.AppendLine(_selectionHandler.GetIndicatedText(index, name));
+					str.AppendLine(_selectionHandler.GetIndicatedText(item.Key, item.Value.name));
+
+					if (_options.OrderBy == item.Value.id)
+					{
+						str.EndColor();
+					}
+				}
+			});
 		}
 
 		public override void OnKeyPressed(EKeyboardKey key)
