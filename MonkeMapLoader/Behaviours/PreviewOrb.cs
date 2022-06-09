@@ -44,8 +44,19 @@ namespace VmodMonkeMapLoader.Behaviours
 			{
 				var texture = new Texture2D(1, 1);
 				texture.LoadImage(await response.Content.ReadAsByteArrayAsync());
-                // TODO: make this the correct color
-				ChangeOrb(new Color(0,0,0,0), texture);
+				// Get average color of image
+				int count = 0;
+				Color average = new Color(0, 0, 0, 0);
+				foreach (var pixel in texture.GetPixels())
+				{
+					average += pixel;
+					count++;
+				}
+
+				average /= count;
+
+				// TODO: make this the correct color
+				ChangeOrb(average, texture);
 			}
 		}
 
