@@ -11,7 +11,7 @@ namespace VmodMonkeMapLoader.Helpers
         public const string DefaultShaderName = "Standard";
         public const string CustomMapsFolderName = "CustomMaps";
         public const string MiscObjectsFolderName = "Misc";
-        public const string PluginVersion = "1.1.5";
+        public const string PluginVersion = "1.2.0";
         public static MapInfo MapInfoError = new MapInfo
         {
             PackageInfo = new MapPackageInfo
