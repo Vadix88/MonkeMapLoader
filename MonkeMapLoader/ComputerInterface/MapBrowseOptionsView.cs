@@ -63,12 +63,27 @@ namespace VmodMonkeMapLoader.ComputerInterface
 		{
 			SetText(str =>
 			{
-				// str.AppendClr("[^ / v] SELECT MAP        [ENTER] DETAILS", Constants.Blue).AppendLine();
+				// str.AppendClr("[^ / v] SELECT            [ENTER] DETAILS", Constants.Blue).AppendLine();
+				str.AppendClr("[^ / v] MOVE               [ENTER] SELECT", Constants.Blue).AppendLine();
+
 				str.AppendLine();
-				str.AppendClr(" SORT OPTIONS", Constants.Blue).AppendLine();
+				str.AppendLine(" SORT OPTIONS");
+				// str.AppendClr(" SORT OPTIONS", Constants.Blue).AppendLine();
 				str.AppendLine();
 
-				str.AppendLine(_selectionHandler.GetIndicatedText(0, _options.IsDescending ? "DESCENDING" : "ASCENDING"));
+				StringBuilder sortOrder = new StringBuilder();
+				if (_options.IsDescending)
+				{
+					sortOrder.AppendClr("DESCENDING", Constants.Blue);
+					sortOrder.Append(" ASCENDING");
+				}
+				else
+				{
+					sortOrder.Append("DESCENDING");
+					sortOrder.AppendClr(" ASCENDING", Constants.Blue);
+				}
+
+				str.AppendLine(_selectionHandler.GetIndicatedText(0, sortOrder.ToString())); ;
 				str.AppendLine();
 
 				str.AppendLine(" ORDER BY");
@@ -95,6 +110,11 @@ namespace VmodMonkeMapLoader.ComputerInterface
 			{
 				DrawView();
 				return;
+			}
+
+			if (key == EKeyboardKey.Left || key == EKeyboardKey.Right)
+			{
+				_selectionHandler.HandleKeypress(EKeyboardKey.Enter);
 			}
 
 			switch (key)
