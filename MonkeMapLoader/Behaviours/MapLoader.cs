@@ -5,13 +5,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using VmodMonkeMapLoader.Helpers;
 using VmodMonkeMapLoader.Models;
 using Zenject;
-using UnityEngine.SceneManagement;
 using Logger = VmodMonkeMapLoader.Helpers.Logger;
 using Object = UnityEngine.Object;
 
@@ -32,12 +32,13 @@ namespace VmodMonkeMapLoader.Behaviours
         private SharedCoroutineStarter _couroutineStarter;
 
         private static GameObject _forest;
+		private HttpClient _client;
 
-        [Inject]
-        private void Construct(SharedCoroutineStarter coroutineStarter)
+		[Inject]
+        private void Construct(SharedCoroutineStarter coroutineStarter, HttpClient client)
         {
             _couroutineStarter = coroutineStarter;
-
+            _client = client;
         }
 
         public void Initialize()
@@ -322,7 +323,52 @@ namespace VmodMonkeMapLoader.Behaviours
             }
         }
 
-        private async Task ProcessAndInstantiateMap(GameObject map)
+		public bool IsMapDownloaded(MonkeMapHubResponse.Map map, out MapInfo mapInfo, bool refresh = false)
+		{
+			var mapInfos = refresh ? MapFileUtils.GetMapList() : MapFileUtils.GetMapListCached();
+            foreach (var info in mapInfos)
+			{
+				if ((info.PackageInfo.Config.GUID == map.MapGuid)
+				 || (info.PackageInfo.Descriptor.Name == map.MapName && info.PackageInfo.Descriptor.Author == map.AuthorName))
+				{
+					mapInfo = info;
+					return true;
+				}
+			}
+
+            mapInfo = null;
+            return false;
+		}
+
+		public async void DownloadMap(MonkeMapHubResponse.Map map, Action<bool> isSuccess)
+		{
+            try
+			{
+				var path = Path.Combine(Path.GetDirectoryName(typeof(MapFileUtils).Assembly.Location), Constants.CustomMapsFolderName, map.MapFileName);
+				if (File.Exists(path))
+				{
+					Logger.LogText("Map already downloaded");
+				}
+
+				var response = await _client.GetStreamAsync(Constants.MonkeMapHubBase + map.MapFileUrl);
+				using (var fileStream = File.OpenWrite(path))
+				{
+					await response.CopyToAsync(fileStream);
+				}
+
+                await _client.GetAsync($"{Constants.MonkeMapHubBase}api/maps/downloaded/{map.MapGuid}");
+			}
+			catch (Exception e)
+			{
+				Logger.LogException(e);
+				isSuccess(false);
+                return;
+			}
+
+            isSuccess(true);
+		}
+
+		private async Task ProcessAndInstantiateMap(GameObject map)
         {
             await Task.Factory.StartNew(() =>
             {

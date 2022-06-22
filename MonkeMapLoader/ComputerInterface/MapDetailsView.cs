@@ -16,7 +16,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
 {
     public class MapDetailsView : ComputerView
     {
-        private readonly MapLoader _mapLoader;
+		private readonly MapLoader _mapLoader;
 
         private MapInfo _mapInfo;
         private bool _isError;
@@ -24,6 +24,8 @@ namespace VmodMonkeMapLoader.ComputerInterface
         private bool _isUpdated;
         private bool _hasRequiredMods;
         private CancellationTokenSource _loaderCancelToken;
+
+        private Type _returnType;
 
         public MapDetailsView(MapLoader mapLoader)
         {
@@ -42,6 +44,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
             }
 
             var mapInfo = args[0] as MapInfo ?? Constants.MapInfoError;
+            _returnType = args[1] as Type ?? typeof(MapListView);
 
             _isError = false;
             _isMapLoaded = false;
@@ -54,8 +57,8 @@ namespace VmodMonkeMapLoader.ComputerInterface
             if (_isError)
             {
                 _isError = false;
-                ShowView<MapListView>();
-                return;
+                ShowView(_returnType);
+				return;
             }
 
             if (_isMapLoaded)
@@ -69,7 +72,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
             {
                 case EKeyboardKey.Back:
                     _mapInfo = null;
-                    ShowView<MapListView>();
+                    ShowView(_returnType);
                     break;
 
                 case EKeyboardKey.Enter:
@@ -100,7 +103,7 @@ namespace VmodMonkeMapLoader.ComputerInterface
 			}
 
             var sb = new StringBuilder()
-                .AppendClr("<noparse> << [BACK]              [ENTER]  LOAD MAP</noparse>", "8dc2ef").AppendLine()
+                .AppendClr("<noparse> << [BACK]              [ENTER]  LOAD MAP</noparse>", Constants.Blue).AppendLine()
                 .AppendLine()
                 .AppendLine("MAP DETAILS")
                 .AppendLine();
@@ -116,9 +119,9 @@ namespace VmodMonkeMapLoader.ComputerInterface
                 sb.AppendLine();
 			}
 
-            sb.Append("NAME:  ").AppendClr(mapDescriptor.Name, "00cc44").AppendLine()
-                .Append("AUTHOR:  ").AppendClr(mapDescriptor.Author, "00cc44").AppendLine()
-                .Append("DESCRIPTION:  ").AppendClr(mapDescriptor.Description, "00cc44").AppendLine();
+            sb.Append("NAME:  ").AppendClr(mapDescriptor.Name, Constants.Green).AppendLine()
+                .Append("AUTHOR:  ").AppendClr(mapDescriptor.Author, Constants.Green).AppendLine()
+                .Append("DESCRIPTION:  ").AppendClr(mapDescriptor.Description, Constants.Green).AppendLine();
 
             Text = sb.ToString();
         }
@@ -131,7 +134,8 @@ namespace VmodMonkeMapLoader.ComputerInterface
                 .AppendLine()
                 .AppendLine()
                 .AppendLine()
-                .BeginCenter().Append("Get more maps at ").AppendClr("MonkeMapHub.com", "8dc2ef").EndAlign();
+                .BeginCenter().Append("Get more maps at ").AppendClr("MonkeMapHub.com", Constants.Blue).EndAlign().AppendLine()
+                .BeginCenter().Append("Or in the Monke Map Hub Browser view").EndAlign();
             });
 
             _isMapLoaded = true;
