@@ -19,14 +19,14 @@ namespace VmodMonkeMapLoader.Patches
 			if (_needToSet)
 			{
 				_needToSet = false;
-				GorillaTagManager.instance.slowJumpLimit = _descriptor.SlowJumpLimit;
-				GorillaTagManager.instance.slowJumpMultiplier = _descriptor.SlowJumpMultiplier;
-				GorillaTagManager.instance.fastJumpLimit = _descriptor.FastJumpLimit;
-				GorillaTagManager.instance.fastJumpMultiplier = _descriptor.FastJumpMultiplier;
+				__instance.slowJumpLimit = _descriptor.SlowJumpLimit;
+				__instance.slowJumpMultiplier = _descriptor.SlowJumpMultiplier;
+				__instance.fastJumpLimit = _descriptor.FastJumpLimit;
+				__instance.fastJumpMultiplier = _descriptor.FastJumpMultiplier;
 			}
 
-			Player.Instance.maxJumpSpeed = GorillaTagManager.instance.slowJumpLimit;
-			Player.Instance.jumpMultiplier = GorillaTagManager.instance.slowJumpMultiplier;
+			Player.Instance.maxJumpSpeed = __instance.slowJumpLimit;
+			Player.Instance.jumpMultiplier = __instance.slowJumpMultiplier;
 		}
 
 		public static void SetSpeed(MapDescriptor descriptor)
