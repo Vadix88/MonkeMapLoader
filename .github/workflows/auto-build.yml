@@ -113,11 +113,6 @@ jobs:
       with:
         name: Build
         path: Build
-      - name: check headcommit message
-        id: commit
-        run: |
-          echo ::set-output name=body::${str##*\\n} | tr -d '"'         # get the body
-
     - name: Upload to Discord
       env:
         WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
