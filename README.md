@@ -5,6 +5,7 @@
 A PC mod that loads custom maps for Gorilla Tag.
 
 **Monke Map Loader** initially started as a solo project to try to load a custom map into the game. Eventually, it became a group effort to provide a complex solution with:
+
 - A nice in-game interface for selecting maps
 - Fake "public lobby" matchmaking to play with others on custom maps
 - Sets of tools for map makers to use in their creations to add gameplay variety
@@ -20,14 +21,14 @@ Main contributors beside me:
 
 You can find all of us, as well as other mods, on the [Gorilla Tag Modding Discord](http://discord.gg/b2MhDBAzTv)
 
-**Contents**
+## Contents
 
-  - [Installation](#installation)
-  - [Custom maps](#custom-maps)
-  - [Loading a map](#loading-a-map)
-  - [Troubleshooting](#troubleshooting)
-  - [Map making](#map-making)
-  - [For Developers](#for-developers)
+- [Installation](#installation)
+- [Custom maps](#custom-maps)
+- [Loading a map](#loading-a-map)
+- [Troubleshooting](#troubleshooting)
+- [Map making](#map-making)
+- [For Developers](#for-developers)
 
 ## Installation
 
@@ -37,19 +38,19 @@ You can install **Monke Map Loader** automatically with the help of [Monke Mod M
 
 ### Manual
 
-**Monke Map Loader** requires BepInEx to work. You can download it from [this page](https://github.com/BepInEx/BepInEx/releases). From the *Assets* dropdown pick the appropriate version for your operating system (for example: *BepInEx_x64_VERSION.zip* for Windows 10 64-bit). 
+**Monke Map Loader** requires BepInEx to work. You can download it from [this page](https://github.com/BepInEx/BepInEx/releases). From the *Assets* dropdown pick the appropriate version for your operating system (for example: *BepInEx_x64_VERSION.zip* for Windows 10 64-bit).
 
 Then, extract the zip file to the main folder of the game, for example to:  
 *C:\\Program Files\\Steam\\steamapps\\common\\Gorilla Tag\\*  
 
 Run the game once and close it for the BepInEx to install itself and create the proper folder structure.
 
-
 Download all the dependencies and put them in suitable locations, according to the installation guide of each:
-   - [Utilla](https://github.com/legoandmars/Utilla/releases/latest)
-   - [ComputerInterface](https://github.com/ToniMacaroni/ComputerInterface/releases/latest)
-   - [Bepinject and Extenject](https://github.com/Auros/Bepinject/releases/latest)
-   - [Newtonsoft.Json](https://github.com/legoandmars/Newtonsoft.Json/releases/latest)
+
+- [Utilla](https://github.com/legoandmars/Utilla/releases/latest)
+- [ComputerInterface](https://github.com/ToniMacaroni/ComputerInterface/releases/latest)
+- [Bepinject and Extenject](https://github.com/Auros/Bepinject/releases/latest)
+- [Newtonsoft.Json](https://github.com/legoandmars/Newtonsoft.Json/releases/latest)
 
 Download the **Monke Map Loader** from the latest [release](https://github.com/Vadix88/VmodMonkeMapLoader/releases/latest) and extract the zip file into the games folder.
 
@@ -67,6 +68,7 @@ Therefore, `.gtmap` files are also compatible with Quest map loader.
 ## Loading a map
 
 **Monke Map Loader** uses the ComputerInterface mod to provide a comfortable way of selecting the map you want to load:
+
 1. On the main menu select the **Monke Map Loader** with the arrow keys and hit *Enter*.
 2. You'll see the list of all installed custom maps with an orb next to the PC to preview the current level. You can select one using *Up* and *Down* arrow keys or switch the page with *Left* and *Right* keys. Then select the desired map by pressing *Enter*.
 3. On the next screen there will be details of the chosen map, such as the Title, Author Name and Description. To confirm the choice hit *Enter* again (you can go back to previous screens using the *Back* key).
@@ -89,7 +91,7 @@ Custom maps are loaded in different location from the original map, so it stays 
 
 ## Map making
 
-The easiest and recommended way of making the map in the right format is to use the [Gorilla Tag Map Project](https://github.com/legoandmars/GorillaTagMapProject), an pre-setup Unity project with map tools, prefabs, and an export script that automates the making of the map package and saves it in the right format. 
+The easiest and recommended way of making the map in the right format is to use the [Gorilla Tag Map Project](https://github.com/legoandmars/GorillaTagMapProject), an pre-setup Unity project with map tools, prefabs, and an export script that automates the making of the map package and saves it in the right format.
 
 On that page you can also find an in-depth guide on how to use to its full potential and what tools and objects are available to use on your map. **MAKE SURE TO FOLLOW THE GUIDE IN THE README!**
 
