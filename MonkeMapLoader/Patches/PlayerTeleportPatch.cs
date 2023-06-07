@@ -37,11 +37,11 @@ namespace VmodMonkeMapLoader.Patches
                     ___velocityHistory = new Vector3[__instance.velocityHistorySize];
 
                     ___lastHeadPosition = __instance.headCollider.transform.position;
-                    var leftHandMethod = typeof(Player).GetMethod("CurrentLeftHandPosition",
+                    var leftHandMethod = typeof(Player).GetMethod("GetCurrentLeftHandPosition",
                         BindingFlags.NonPublic | BindingFlags.Instance);
                     ___lastLeftHandPosition = (Vector3)leftHandMethod.Invoke(__instance, new object[] { });
 
-                    var rightHandMethod = typeof(Player).GetMethod("CurrentRightHandPosition",
+                    var rightHandMethod = typeof(Player).GetMethod("GetCurrentRightHandPosition",
                         BindingFlags.NonPublic | BindingFlags.Instance);
                     ___lastRightHandPosition = (Vector3)rightHandMethod.Invoke(__instance, new object[] { });
                     ___currentVelocity = Vector3.zero;
