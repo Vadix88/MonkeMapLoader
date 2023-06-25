@@ -44,8 +44,6 @@ namespace VmodMonkeMapLoader.Behaviours
         public void Initialize()
         {
             InitializeGlobalData();
-
-            GorillaComputer.instance.gameObject.AddComponent<MonkeRoomManager>();
         }
 
         public static void ForceRespawn()

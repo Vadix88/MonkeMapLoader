@@ -112,9 +112,6 @@ namespace VmodMonkeMapLoader.ComputerInterface
 
                 if (isSelected) str.EndColor();
 
-                int userCount = MonkeRoomManager.Instance.PlayersOnMap(map.GetLobbyName());
-                str.Append(userCount >= 1000 ? " >1k" : userCount.ToString().PadLeft(4));
-
                 str.AppendLine();
             });
 
