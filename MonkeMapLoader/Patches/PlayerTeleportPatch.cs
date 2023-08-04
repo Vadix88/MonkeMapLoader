@@ -22,7 +22,9 @@ namespace VmodMonkeMapLoader.Patches
                 {
                     Vector3 correctedPosition = _teleportDestination.position - __instance.bodyCollider.transform.position + __instance.transform.position;
 
-                    playerRigidBody.velocity = Vector3.zero;
+                    // Throw the player slightly to prevent them from being stuck right away
+                    playerRigidBody.velocity = Physics.gravity == new Vector3(0, Helpers.SharedConstants.Gravity, 0) ? Vector3.zero : GorillaLocomotion.Player.Instance.headCollider.transform.forward * 1.5f;
+
                     playerRigidBody.isKinematic = true;
                     __instance.transform.position = correctedPosition;
                     Debug.Log(__instance.bodyCollider.transform.position);

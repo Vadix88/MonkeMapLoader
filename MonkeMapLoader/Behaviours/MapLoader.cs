@@ -1,5 +1,4 @@
 ﻿using BepInEx;
-using GorillaNetworking;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,6 +10,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using VmodMonkeMapLoader.Helpers;
 using VmodMonkeMapLoader.Models;
+using VmodMonkeMapLoader.Patches;
 using Zenject;
 using Logger = VmodMonkeMapLoader.Helpers.Logger;
 using Object = UnityEngine.Object;
@@ -103,7 +103,8 @@ namespace VmodMonkeMapLoader.Behaviours
 					if(_descriptor.GravitySpeed != SharedConstants.Gravity)
 					{
 						Physics.gravity = new Vector3(0, _descriptor.GravitySpeed, 0);
-					}
+                        GorillaLocomotion.Player.Instance.GetComponent<Rigidbody>().velocity = GorillaLocomotion.Player.Instance.headCollider.transform.forward * 1.5f;
+                    }
 
                     // We need to wait for GorillaTagManager to be instanciated,
                     // which is after we connect to a server.
@@ -119,7 +120,7 @@ namespace VmodMonkeMapLoader.Behaviours
                 }
 
                 // Increase the clipping plane
-                Camera.main.farClipPlane += 500;
+                PlayerUpdatePatch._addedFarPlane = 500;
 
                 // Disable forest
                 _forest = _forest ?? GameObject.Find(Constants.ForestPath);
@@ -142,11 +143,11 @@ namespace VmodMonkeMapLoader.Behaviours
             //GorillaLocomotion.Player.Instance.maxJumpSpeed = SharedConstants.SlowJumpLimit;
             //GorillaLocomotion.Player.Instance.jumpMultiplier = SharedConstants.SlowJumpMultiplier;
 
-			// Decrease the clipping plane
-			Camera.main.farClipPlane -= 500;
+            // Decrease the clipping plane
+            PlayerUpdatePatch._addedFarPlane = 0;
 
             // Enable forest
-			_forest = _forest ?? GameObject.Find(Constants.ForestPath);
+            _forest = _forest ?? GameObject.Find(Constants.ForestPath);
 			_forest?.SetActive(true);
 
             if (isMoved)
@@ -383,7 +384,7 @@ namespace VmodMonkeMapLoader.Behaviours
                     Material oldMat = fakeSkybox.GetComponent<Renderer>().material; 
                     if (oldMat.HasProperty("_Tex"))
                     {
-                        oldMat.SetTexture("_Tex", Resources.Load<Texture2D>("objects/newsky/materials/day"));
+                        oldMat.SetTexture("_Tex", BetterDayNightManager.instance.dayNightSkyboxTextures[4]);
                         oldMat.SetColor("_Color", new Color(1, 1, 1, 1));
                     }
                 }

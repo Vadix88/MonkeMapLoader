@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using VmodMonkeMapLoader.Models;
+﻿using VmodMonkeMapLoader.Models;
 
 namespace VmodMonkeMapLoader.Helpers
 {
@@ -24,7 +23,7 @@ namespace VmodMonkeMapLoader.Helpers
                 }
             }
         };
-		public const string ForestPath = "Level/forest";
+		public const string ForestPath = "Environment Objects/LocalObjects_Prefab/Forest";
 		public const string MonkeMapHubBase = "https://monkemaphub.com/";
 		public const string Blue = "8dc2ef";
         public const string Green = "00cc44";
