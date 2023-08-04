@@ -103,6 +103,7 @@ namespace VmodMonkeMapLoader.Behaviours
 					if(_descriptor.GravitySpeed != SharedConstants.Gravity)
 					{
 						Physics.gravity = new Vector3(0, _descriptor.GravitySpeed, 0);
+                        GorillaLocomotion.Player.Instance.GetComponent<Rigidbody>().velocity = GorillaLocomotion.Player.Instance.headCollider.transform.forward * 1.5f;
                     }
 
                     // We need to wait for GorillaTagManager to be instanciated,
